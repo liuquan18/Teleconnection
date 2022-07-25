@@ -214,22 +214,6 @@ def doeof(seasondata,nmode = 2):
     
     return eofx,pcx,frax
 
-def _compute_slope(x,y):
-    """
-    using np.polyfit compute the linear regression coefcient.
-    Arguments:
-        x: one vector
-        y: another vector
-    Returns:
-        slope of fitted line.
-    """
-    x = x.values
-    return np.polyfit(x,y,1)[0] # only output the slope
-
-def compute_pc(eof,field):
-    """
-    project a field onto EOFs.
-    """
 
 
 
