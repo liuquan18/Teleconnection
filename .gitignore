@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # data folder
-/data/*
+data/*
 src/__init__.py
