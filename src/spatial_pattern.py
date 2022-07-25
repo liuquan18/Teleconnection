@@ -82,37 +82,64 @@ def stack_win_ens(xarr):
     time_com_space = xarr.stack(com = ('ens','windown_dim'))
     return time_com_space
 
+def standardize(xarr):
+    """
+    standardize the DataArray with the temporal mean and std.
+    Arguments:
+        xarr: The DataArray to be standarized.
+    Returns:
+        xarr: standarized DataArray 
+    """
+    time_mean = xarr.mean(dim = 'time')
+    time_std = xarr.std(dim = 'time')
+    return (xarr-time_mean)/time_std
 
+########## Function to do EOF #####################
 
-
-
-# function to calculate coefficent to change the sign of the data    
-def coefcal(eof):
-    data = eof
+def sign_coef(eof):
+    """
+    function to calculate the coefficient for eof, so that the sign is consistent.
+    for NAO, the positive NAO with a low in the North and high at the south.
+    for EA, the positive EA with a low in the center.
+    Arguments:
+        eof: the eof (spatial pattern) to be changed. much include NAO and EA the same time.
+    Returns:
+        coefficient of NAO and EA in xarray.
+    """
     # NAO
-    coef_NAO = data.sel(lat = slice(90,60),lon = slice(-70,-10),mode = 'NAO').mean(dim = ['lat','lon'])<0
+    coef_NAO = eof.sel(lat = slice(90,60),lon = slice(-70,-10),mode = 'NAO').mean(dim = ['lat','lon'])<0
     coef_NAO = (2*coef_NAO-1)  # to make 1 to 1 , 0 to -1
 
     # EA
-    coef_EA = data.sel(lat = slice(65,45),lon = slice(-40,40),mode = 'EA').mean(dim = ['lat','lon'])<0
+    coef_EA = eof.sel(lat = slice(65,45),lon = slice(-40,40),mode = 'EA').mean(dim = ['lat','lon'])<0
     coef_EA = (2*coef_EA-1)
 
     return xr.concat([coef_NAO,coef_EA],dim = 'mode')
 
+def sqrtcoslat (xarr):
+    """
+    calculte the square-root of the cosine of the latitude as the weight
+    Arguments:
+        xarr: the DataArray to calculate the weight.
+    Returns:
+        weight with the right shape.
+    """
+    # the shape should be the same as the spatial shape, like lon-lat, or lon-lat-height.
+    spatial_shape = len(xarr.shape)-1  # minus one since the first dim is not the spatial dim.
+    
+    # cos of rad of latitude
+    coslat = np.cos(np.deg2rad(xarr.lat)).clip(0.,1.)
 
-# In[46]:
-
-
-def standardizex(data):
-    time_mean = data.mean(dim = 'time')
-    time_std = data.std(dim = 'time')
-    return (data-time_mean)/time_std
-
-
-# In[47]:
 
 
 def doeof(seasondata,wgts = wgts,nmode = 2):
+    """
+    do eof to seasonal data along a combined dim, which is gotten from the above function 
+    'stack_win_ens'
+    Arguments:
+        seasondata: The data to be decomposed, where the first dim should be the dim of 'com' or 'time'.
+        wgts: the 
+    """
     
     # data pre-process
     seasondata = seasondata.transpose('com','lat','lon')
