@@ -116,51 +116,88 @@ def sign_coef(eof):
 
     return xr.concat([coef_NAO,coef_EA],dim = 'mode')
 
+def detect_spdim(xarr):
+    """
+    output the length of the spatil dim. since some of the xarr is lon-lat, while some lon-lat-height.
+    Arguments: 
+        xarr: the DataArray, with spatil dim starting from the second dim. e.g, [com,lat,lon,height]
+    Returns:
+        np.array, the number of spatial dim, but with value of one.
+    """
+    # the number of spatial dims
+    sp_dim_len = len(xarr.shape)-1 
+
+    # output a np.array with same number of spatial dims.
+    sp_dim = np.ones(sp_dim_len).astype('int')  # [1,1] or [1,1,1]
+    return sp_dim
+
+
 def sqrtcoslat (xarr):
     """
     calculte the square-root of the cosine of the latitude as the weight
     Arguments:
-        xarr: the DataArray to calculate the weight.
+        xarr: the DataArray to calculate the weight, with the shape ['com','lat','lon',...]
     Returns:
         weight with the right shape.
     """
-    # the shape should be the same as the spatial shape, like lon-lat, or lon-lat-height.
-    spatial_shape = len(xarr.shape)-1  # minus one since the first dim is not the spatial dim.
-    
+    # the shape of the weight should have the same number of spatial dims as the input DataArray. 
+    # the first dim is lat of course, all the rest spatial dim should be 1.
+    sp_dim = detect_spdim(xarr)
+    weight_shape = np.hstack([-1,sp_dim[1:]]) # the size of 'lat' should not be 1.
+
     # cos of rad of latitude
     coslat = np.cos(np.deg2rad(xarr.lat)).clip(0.,1.)
+    # sqrt
+    wgts = np.sqrt(coslat.values).reshape(weight_shape)
+    return wgts
 
 
-
-def doeof(seasondata,wgts = wgts,nmode = 2):
+def doeof(seasondata,nmode = 2):
     """
     do eof to seasonal data along a combined dim, which is gotten from the above function 
     'stack_win_ens'
     Arguments:
         seasondata: The data to be decomposed, where the first dim should be the dim of 'com' or 'time'.
-        wgts: the 
+        nmode: how many modes, mode=2,means NAO and EA respectively.
+    Returns:
+        eof: DataArray, spatial patterns scaled (multiplied) with the temporal std of seasonal index.
+             has the same spatial size as the input seasondata.[mode, lat,lon,...]
+        pc: DataArray, seasonal index, scaled (divided) by the temporal std of itself. [mode,time]]
+        exp_var: explained variance of each mode. [mode]
     """
     
     # data pre-process
-    seasondata = seasondata.transpose('com','lat','lon')
+    seasondata = seasondata.transpose('com',...)
+
+    # weights
+    wgts = sqrtcoslat(seasondata)
     
-    # eof decompose
-    # print("spatial patterns...")
+    # EOF decompose
     solver = Eof(seasondata.values,weights = wgts,center = True)  
-    eof = solver.eofs(neofs = nmode)     # (mode,lat,lon)
+    eof = solver.eofs(neofs = nmode)     # (mode,lat,lon,...)
     pc = solver.pcs(npcs = nmode)        # (com,mode)
     fra = solver.varianceFraction(nmode) # (mode)
     
     # deweight
     eof_dw = eof/wgts
     
-    # standarize
+    # standarize coef
     std_pc = (np.std(pc,axis = 0)).astype('float64')  #(mode)
-    eof_stded = eof_dw*std_pc[...,np.newaxis,np.newaxis] 
+    dim_add_sp = np.hstack([-1,detect_spdim(seasondata)) #[-1,1,1] or [-1,1,1,1]
+    std_pc_sp = std_pc.reshape(dim_add_sp) 
+
+    # do standarization
+    eof_stded = eof_dw*std_pc_sp
+    pc_stded = pc/std_pc
+
+    # xarray container for eof
+    eof_cnt = seasondata.isel(com = slice(0,nmode))
+    eof_cnt = eof_cnt.rename({'com':'mode'})
+    eof_cnt['mode'] = ['NAO','EA']
+
+    # to xarray
+    eofx = eof_cnt.copy(data = eof_stded)
     
-    # to xarray  
-    eofx = xr.DataArray(eof_stded,dims = ['mode','lat','lon'],
-                        coords = {'mode':['NAO','EA'],'lat':seasondata.lat,'lon':seasondata.lon})
     frax = xr.DataArray(fra,dims= ['mode'],coords = {'mode':['NAO','EA']})
     
     
@@ -171,7 +208,7 @@ def doeof(seasondata,wgts = wgts,nmode = 2):
 
     return eofx,frax
 
-
+'''
 # In[ ]:
 
 
@@ -732,5 +769,4 @@ plt.show()
 # In[ ]:
 
 
-
-
+'''
