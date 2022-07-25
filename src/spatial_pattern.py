@@ -189,7 +189,7 @@ def doeof(seasondata,nmode = 2):
 
     # do standarization
     eof_stded = eof_dw*std_pc_sp
-    pc_stded = pc#/std_pc
+    pc_stded = pc/std_pc
 
     # xarray container for eof
     eof_cnt = seasondata.isel(com = slice(0,nmode))
