@@ -189,7 +189,7 @@ def doeof(seasondata,nmode = 2):
 
     # do standarization
     eof_stded = eof_dw*std_pc_sp
-    pc_stded = pc/std_pc
+    pc_stded = pc#/std_pc
 
     # xarray container for eof
     eof_cnt = seasondata.isel(com = slice(0,nmode))
@@ -210,11 +210,26 @@ def doeof(seasondata,nmode = 2):
     pcx = pcx*coef
 
     # unstack the dim 'ens' and 'time' or 'win'
-    pcx = pcx.unstack()
+    # pcx = pcx.unstack()
     
     return eofx,pcx,frax
 
+def _compute_slope(x,y):
+    """
+    using np.polyfit compute the linear regression coefcient.
+    Arguments:
+        x: one vector
+        y: another vector
+    Returns:
+        slope of fitted line.
+    """
+    x = x.values
+    return np.polyfit(x,y,1)[0] # only output the slope
 
+def compute_pc(eof,field):
+    """
+    project a field onto EOFs.
+    """
 
 
 
