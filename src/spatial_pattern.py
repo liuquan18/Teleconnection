@@ -153,14 +153,14 @@ def sqrtcoslat (xarr):
     return wgts
 
 
-def doeof(seasondata,nmode = 2,return_solver=False):
+def doeof(seasondata,nmode = 2,dim = 'com'):
     """
     do eof to seasonal data along a combined dim, which is gotten from the above function 
     'stack_ens'
     **Arguments**:
-        seasondata: The data to be decomposed, where the first dim should be the dim of 'com' or 'time'.
-        nmode: how many modes, mode=2,means NAO and EA respectively.
-        return_solver: booled, save so as to do projectField.
+        *seasondata*: The data to be decomposed, where the first dim should be the dim of 'com' or 'time'.
+        *nmode*: how many modes, mode=2,means NAO and EA respectively.
+        *dim*: along which dim to do the eof
     **Returns**:
         eof: DataArray, spatial patterns scaled (multiplied) with the temporal std of seasonal index.
              has the same spatial size as the input seasondata.[mode, lat,lon,...]
@@ -169,7 +169,7 @@ def doeof(seasondata,nmode = 2,return_solver=False):
     """
     
     # make sure that the first dim is the 'com'.
-    seasondata = seasondata.transpose('com',...)
+    seasondata = seasondata.transpose(dim,...)
 
     # weights
     wgts = sqrtcoslat(seasondata)
@@ -193,13 +193,13 @@ def doeof(seasondata,nmode = 2,return_solver=False):
     pc_stded = pc/std_pc
 
     # xarray container for eof
-    eof_cnt = seasondata.isel(com = slice(0,nmode))
-    eof_cnt = eof_cnt.rename({'com':'mode'})
+    eof_cnt = seasondata[:nmode]
+    eof_cnt = eof_cnt.rename({dim:'mode'})
     eof_cnt['mode'] = ['NAO','EA']
 
     # to xarray
     eofx = eof_cnt.copy(data = eof_stded)
-    pcx = xr.DataArray(pc_stded, dims = ['com','mode'],coords = {'com':seasondata.com, 'mode':['NAO','EA']}) 
+    pcx = xr.DataArray(pc_stded, dims = [dim,'mode'],coords = {dim:seasondata[dim], 'mode':['NAO','EA']}) 
     frax = xr.DataArray(fra,dims= ['mode'],coords = {'mode':['NAO','EA']})
     eofx.name = 'eof'
     pcx.name = 'pc'
@@ -212,121 +212,86 @@ def doeof(seasondata,nmode = 2,return_solver=False):
 
     # unstack the dim 'ens' and 'time' or 'win'
     pcx = pcx.unstack()
-    if return_solver:
-        return eofx,pcx,frax,solver
-    else:
-        return eofx,pcx,frax
 
-def project_field(solver, field, neofs=2, eofscaling=0, weighted=True):
-    """Project a field onto the EOFs. this function is copied from
-       python eofs package, just replaced the self with a solver. bad guy.
+    return eofx,pcx,frax
 
-    Given a data set, projects it onto the EOFs to generate a
-    corresponding set of pseudo-PCs.
 
-    **Argument:**
-
-    *field*
-        A `numpy.ndarray` or `numpy.ma.MaskedArray` with two or more
-        dimensions containing the data to be projected onto the
-        EOFs. It must have the same corresponding spatial dimensions
-        (including missing values in the same places) as the `Eof`
-        input *dataset*. *field* may have a different length time
-        dimension to the `Eof` input *dataset* or no time dimension
-        at all.
-
-    **Optional arguments:**
-
-    *neofs*
-        Number of EOFs to project onto. Defaults to all EOFs. If the
-        number of EOFs requested is more than the number that are
-        available, then the field will be projected onto all
-        available EOFs.
-
-    *eofscaling*
-        Set the scaling of the EOFs that are projected onto. The
-        following values are accepted:
-
-        * *0* : Un-scaled EOFs (default).
-        * *1* : EOFs are divided by the square-root of their
-            eigenvalue.
-        * *2* : EOFs are multiplied by the square-root of their
-            eigenvalue.
-
-    *weighted*
-        If *True* then *field* is weighted using the same weights
-        used for the EOF analysis prior to projection. If *False*
-        then no weighting is applied. Defaults to *True* (weighting
-        is applied). Generally only the default setting should be
-        used.
-
-    **Returns:**
-
-    *pseudo_pcs*
-        An array where the columns are the ordered pseudo-PCs.
-
-    **Examples:**
-
-    Project a data set onto all EOFs::
-
-        pseudo_pcs = solver.projectField(data)
-
-    Project a data set onto the four leading EOFs::
-
-        pseudo_pcs = solver.projectField(data, neofs=4)
-
+def project_field(fieldx,eofx):
     """
-    # Check that the shape/dimension of the data set is compatible with
-    # the EOFs.
-    solver._verify_projection_shape(field, solver._originalshape)
-    input_ndim = field.ndim
-    eof_ndim = len(solver._originalshape) + 1
-    # Create a slice object for truncating the EOFs.
-    slicer = slice(0, neofs)
-    # If required, weight the data set with the same weighting that was
-    # used to compute the EOFs.
-    field = field.copy()
-    if weighted:
-        wts = solver.getWeights()
-        if wts is not None:
-            field = field * wts
-    # Fill missing values with NaN if this is a masked array.
+    project original field onto eofs to get the temporal index
+    **Arguments:**
+        *field*: the DataArray field to be projected
+        *eof*: the eofs
+    **Returns:**
+        projected pcs
+    """
+    neofs = eofx.shape[0]
+
+    # weight
+    wgts = sqrtcoslat(fieldx)
+    field = fieldx.values*wgts
+
+    # fill with nan
     try:
         field = field.filled(fill_value=np.nan)
     except AttributeError:
         pass
-    # Flatten the data set into [time, space] dimensionality.
-    if eof_ndim > input_ndim:
-        field = field.reshape((1,) + field.shape)
+
+    # flat field to [time,lon-lat] or [time,lon-lat,heith]
     records = field.shape[0]
-    channels = np.product(field.shape[1:])
-    field_flat = field.reshape([records, channels])
-    # Locate the non-missing values and isolate them.
-    if not solver._valid_nan(field_flat):
-        raise ValueError('missing values detected in different '
-                            'locations at different times')
+    channels = np.product(field.shape[1:3]) # only lat and lon stack here.
+    nspdim = len(detect_spdim(fieldx))  # how many spatial dims
+    if nspdim >2:
+        heights = eofx.shape[3]
+    try:
+        field_flat = field.reshape([records, channels,heights])
+    except NameError:
+        field_flat = field.reshape([records, channels])
+
+
+    # non missing value check
     nonMissingIndex = np.where(np.logical_not(np.isnan(field_flat[0])))[0]
     field_flat = field_flat[:, nonMissingIndex]
-    # Locate the non-missing values in the EOFs and check they match those
-    # in the data set, then isolate the non-missing values.
+
+    # flat eof to [mode, space]
+    try:
+        _flatE = eofx.values.reshape(neofs,channels,heights)
+    except NameError:
+        _flatE = eofx.values.reshape(neofs,channels)
+
     eofNonMissingIndex = np.where(
-        np.logical_not(np.isnan(solver._flatE[0])))[0]
+        np.logical_not(np.isnan(_flatE[0])))[0]
+
+    # missing value align check
     if eofNonMissingIndex.shape != nonMissingIndex.shape or \
             (eofNonMissingIndex != nonMissingIndex).any():
         raise ValueError('field and EOFs have different '
                             'missing value locations')
-    eofs_flat = solver._flatE[slicer, eofNonMissingIndex]
-    if eofscaling == 1:
-        eofs_flat /= np.sqrt(solver._L[slicer])[:, np.newaxis]
-    elif eofscaling == 2:
-        eofs_flat *= np.sqrt(solver._L[slicer])[:, np.newaxis]
-    # Project the data set onto the EOFs using a matrix multiplication.
-    projected_pcs = np.dot(field_flat, eofs_flat.T)
-    if eof_ndim > input_ndim:
-        # If an extra dimension was introduced, remove it before returning
-        # the projected PCs.
-        projected_pcs = projected_pcs[0]
-    return projected_pcs
+    eofs_flat = _flatE[:, eofNonMissingIndex]
+
+    # for three dimentional space data
+    try:
+        projected_pcs = [] # for all height layers
+        for h in range(heights):
+            field_flat_h = field_flat[:,:,h]
+            eofs_flat_h = eofs_flat[:,:,h]
+            projected_pc = np.dot(field_flat_h,eofs_flat_h.T)
+            projected_pcs.append(projected_pc)
+        projected_pcs = np.array(projected_pcs)
+
+        PPC = xr.DataArray(projected_pcs,dims = [fieldx.dims[-1],
+                                                            fieldx.dims[0],eofx.dims[0]],
+                            coords={fieldx.dims[-1]:fieldx[fieldx.dims[-1]],
+                                    fieldx.dims[0] :fieldx[fieldx.dims[0]],
+                                    eofx.dims[0]: eofx[eofx.dims[0]]})
+    # for 2-d space
+    except NameError:
+        projected_pcs = np.dot(field_flat,eofs_flat.T)
+        PPC = xr.DataArray(projected_pcs, dims = [fieldx.dims[0],eofx.dims[0]],
+                            coords = {fieldx.dims[0]: fieldx[fieldx.dims[0]],
+                                      eofx.dims[0]: eofx[eofx.dims[0]]})
+
+    return PPC
 
 
 def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,standard = True):
@@ -340,7 +305,9 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,standard = True)
         nmode: the number of modes reserved.
         window: the rolling window.
         fixed_pattern: booled data, determine how the pcs generated. 
-                       if fixed_pattern = True, then pc is the second output (pcx) of 'doeof' 
+                       if fixed_pattern = all, then 'pc' is calculated by projecting the original 
+                       fields onto a temporally-fixed pattern.
+                        is the second output (pcx) of 'doeof' 
                        on a combined dataset, which concates all the  ensembles and years 
                        togerther. In which case the spatial pattern is assumed to be fixed.
                        if fixed_pattern = False, the pc is calculated by projecting the seasonal
@@ -418,9 +385,8 @@ def changing_pc(xarr,eof,standard = True):
 
 
 
+
 '''
-
-
 eofs = list()
 pcs = list()
 fras = list()
