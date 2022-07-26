@@ -14,26 +14,105 @@ import importlib
 importlib.reload(sp) # after changed the source code
 
 # %%
-ex = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season.nc")
+allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
 #%%
-sex = ex.isel(time = slice(0,30),ens = slice(0,10))
+splitens = sp.split_ens(allens)
+#%% select traposphere
+trop = splitens.sel(hlayers = slice(20000,100000))
+
+
+
+########## independent ##############
+# %%
+# standard-independent-rolling fixed all eof
+eof_sira,pc_sira,fra_sira = sp.season_eof(trop.var156,nmode=2,fixed_pattern='all',
+standard=True,method = 'rolling_eof',independent = True)
 
 #%%
-sex = sp.standardize(sex)
-
-# %%
-sex = sex.var156.stack(com = ('time','ens'))
-# %%
-sex
-# %%
-eof,pc,fra = sp.doeof(sex,dim = 'com')
+eof_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/eof.nc")
+pc_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/pc.nc")
+fra_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/fra.nc")
 
 #%%
-plt.plot(pc.sel(mode = 'NAO',plev = 100000,ens = 0))
+del(eof_sira)
+del(pc_sira)
+del(fra_sira)
+
+
 # %%
-ppc = sp.project_field(sex,eof)
+# standard-alllevel-rolling fixed first eof
+eof_sirf,pc_sirf,fra_sirf = sp.season_eof(trop.var156,nmode=2,fixed_pattern='first',
+standard=True,method = 'rolling_eof',independent = True)
+
 #%%
-plt.plot(ppc.sel(mode = 'NAO',plev = 100000,ens = 0))
+eof_sirf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_first/eof.nc")
+pc_sirf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_first/pc.nc")
+fra_sirf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_first/fra.nc")
+
+#%%
+del(eof_sirf)
+del(pc_sirf)
+del(fra_sirf)
+
+
 # %%
-ppc = sp.standardize(ppc)
+# standard-alllevel-rolling fixed first eof
+eof_sirl,pc_sirl,fra_sirl = sp.season_eof(trop.var156,nmode=2,fixed_pattern='last',
+standard=True,method = 'rolling_eof',independent = True)
+
+#%%
+eof_sirl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_last/eof.nc")
+pc_sirl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_last/pc.nc")
+fra_sirl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_last/fra.nc")
+
+#%%
+del(eof_sirl)
+del(pc_sirl)
+del(fra_sirl)
+
+
+
+############# non independent ########################
+
 # %%
+# standard-alllevel-rolling eof first pattern
+eof_snra,pc_snra,fra_snra = sp.season_eof(trop.var156,nmode=2,fixed_pattern='all',
+standard=True,method = 'rolling_eof',independent = False)
+
+eof_snra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_all/eof.nc")
+pc_snra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_all/pc.nc")
+fra_snra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_all/fra.nc")
+
+#%%
+del(eof_snra)
+del(pc_snra)
+del(fra_snra)
+
+
+# %%
+# standard-alllevel-rolling eof first pattern
+eof_snrf,pc_snrf,fra_snrf = sp.season_eof(trop.var156,nmode=2,fixed_pattern='first',
+standard=True,method = 'rolling_eof',independent = False)
+
+eof_snrf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_first/eof.nc")
+pc_snrf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_first/pc.nc")
+fra_snrf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_first/fra.nc")
+
+#%%
+del(eof_snrf)
+del(pc_snrf)
+del(fra_snrf)
+
+# %%
+# standard-alllevel-rolling eof first pattern
+eof_snrl,pc_snrl,fra_snrl = sp.season_eof(trop.var156,nmode=2,fixed_pattern='last',
+standard=True,method = 'rolling_eof',independent = False)
+
+eof_snrl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_last/eof.nc")
+pc_snrl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_last/pc.nc")
+fra_snrl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_nonind_rolling_last/fra.nc")
+
+#%%
+del(eof_snrl)
+del(pc_snrl)
+del(fra_snrl)
