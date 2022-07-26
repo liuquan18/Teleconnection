@@ -14,11 +14,9 @@ import importlib
 importlib.reload(sp) # after changed the source code
 
 # %%
-ex = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/sep_ens_season.nc")
-# %%
-ex
+ex = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season.nc")
 #%%
-sex = ex.isel(time = slice(0,10),plev = slice(20,26),ens = slice(0,30))
+sex = ex.isel(time = slice(0,30),ens = slice(0,10))
 
 #%%
 sex = sp.standardize(sex)
