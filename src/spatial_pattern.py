@@ -213,10 +213,13 @@ def doeof(seasondata,nmode = 2,dim = 'com'):
     # unstack the dim 'ens' and 'time' or 'win'
     pcx = pcx.unstack()
 
+    # standarization
+    pcx = standardize(pcx)
+
     return eofx,pcx,frax
 
 
-def project_field(fieldx,eofx):
+def project_field(fieldx,eofx,dim = 'com'):
     """
     project original field onto eofs to get the temporal index
     **Arguments:**
@@ -225,6 +228,7 @@ def project_field(fieldx,eofx):
     **Returns:**
         projected pcs
     """
+    fieldx = fieldx.transpose(dim,...)
     neofs = eofx.shape[0]
 
     # weight
@@ -325,72 +329,73 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,standard = True)
                      if fixed_pattern=False, the pcs should be [ens,time-10, mode]
         FRA: the explained variances, the shape should be [time-10,mode]
     """
-    # the validtime period where totally ten years of data are fully avaiable.
-    validtime = xarr.sel(time = slice('1856','1995')).time
 
     # pre-process
     if standard:
         xarr = standardize(xarr)
-    xarr = rolling(xarr)
-    xarr = stack_ens(xarr,withdim = 'windown_dim')
 
+    # EOF and FRA
+    eof_field = rolling(xarr,win = window)
+    eof_field = stack_ens(eof_field,withdim = 'windown_dim')
+    # the validtime period where totally ten years of data are fully avaiable.
+    validtime = xarr.sel(time = slice('1856','1995')).time
+    EOF,FRA = changing_eof(eof_field,validtime,nmode = 2)
 
+    # PC
+    if fixed_pattern == 'all':
+        pc_field = stack_ens(xarr, withdim='time') # all time and ens together
+        _,PC,_ = doeof(pc_field,nmode = '2',dim = 'com')
+    elif fixed_pattern == 'first':
+        pc_field = stack_ens(xarr, withdim = 'time')
+        PC = fixed_pc(pc_field,EOF.isel(time = 0))  # the first eof as spatial pattern
+    elif fixed_pattern == 'last':
+        pc_field = stack_ens(xarr, withdim = 'time')
+        PC = fixed_pc(pc_field,EOF.isel(time = -1)) # the last eof as spatial pattern
+    elif fixed_pattern == False:
+        PC = []
+        for time in validtime:
+            pc_field = xarr.sel(time = time)
+            pc = fixed_pattern(pc_field,dim = 'ens') # project all ens onto one eof.
+            PC.append(pc)
+        PC = xr.concat(pc,dim = validtime)
+
+    return EOF,PC,FRA
+
+def changing_eof(xarr,validtime,nmode):
     # calculate eof and fra
     eofs = list()
-    pcs  = list()
     fras = list()
 
     for time in tqdm(validtime):
         tenyear_xarr = xarr.sel(time = time)
-        eof,_,fra = doeof(tenyear_xarr)  # the pc here is neither fixed nor non-fixed pattern.
+        eof,_,fra = doeof(tenyear_xarr,nmode=2,dim = 'com')  # the pc here is neither 
+                                                             # fixed nor non-fixed pattern.
         
         eofs.append(eof)
         fras.append(fra)
 
     EOF = xr.concat(eofs,dim = validtime)
     FRA = xr.concat(fras,dim = validtime)
-    if fixed_pattern = 'all':
-        PC = fixed_pc(xarr,standard=True)
-    else:
+    return EOF, FRA
 
 
-    return EOF,PC,FRA
-
-
-def fixed_pc(xarr,standard = True):
+def fixed_pc(fieldx,pattern,dim = 'com'):
     """
     projecting the xarr to a fixed spatial pattern.
     **Arguments**
         *xarr*: the xarr to be decomposed.
+        *pattern*: the fixed pattern to project on.
     **Returns**
         *pcx*: the coresponding temporal index
     """
-    if standard:
-        xarr = standardize(xarr)
-
     # stack
-    xarr = xarr.stack(com = ('time','ens'))  # all the years and ensembles together.
-
-    # do eof
-    _,pc,_ = doeof(xarr)
+    pc = project_field(fieldx, pattern,dim = dim)
     return pc
 
-def changing_pc(xarr,eof,standard = True):
-    """
-    calculate the temporal index with changing spatial patterns.
-    **Arguments**:
-        *xarr*: xarr of this year
-        *eof*: the rolling eof of this year
-    **Return**
-        temporal index with changing spatial patterns
-    """
+
 
 
 '''
-
-
-
-
 eofs = list()
 pcs = list()
 fras = list()
