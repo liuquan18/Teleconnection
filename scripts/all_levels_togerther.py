@@ -18,11 +18,11 @@ ex = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/sep_ens_sea
 # %%
 ex
 # %%
-sex = ex.var156.sel(ens = 0,plev = 50000)
+sex = ex.var156.stack(com = ('time','ens'))
 # %%
 sex
 # %%
-eof,pc,fra = sp.doeof(sex,dim = 'time')
+eof,pc,fra = sp.doeof(sex,dim = 'com')
 # %%
 ppc = sp.project_field(sex,eof)
 # %%

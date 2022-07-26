@@ -291,7 +291,7 @@ def project_field(fieldx,eofx):
                             coords = {fieldx.dims[0]: fieldx[fieldx.dims[0]],
                                       eofx.dims[0]: eofx[eofx.dims[0]]})
 
-    return PPC
+    return PPC.unstack()  # to unstack 'com' to 'time' and 'ens' if 'com' exists.
 
 
 def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,standard = True):
@@ -304,12 +304,16 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,standard = True)
         xarr: the DataArray that is going to be decomposed by rolling_eof. [time,lat,lon,ens,height,window_dim]
         nmode: the number of modes reserved.
         window: the rolling window.
-        fixed_pattern: booled data, determine how the pcs generated. 
-                       if fixed_pattern = all, then 'pc' is calculated by projecting the original 
-                       fields onto a temporally-fixed pattern.
-                        is the second output (pcx) of 'doeof' 
-                       on a combined dataset, which concates all the  ensembles and years 
-                       togerther. In which case the spatial pattern is assumed to be fixed.
+        fixed_pattern: string, determine how the pcs generated. 
+                       if fixed_pattern = 'all', then 'pc' is calculated by projecting the original 
+                       fields onto a temporally-fixed pattern. i.e, the 'pc' is the second output
+                       (pcx) of 'doeof' on a combined dataset, which concates all the  ensembles
+                       and years togerther. In which case the spatial pattern is assumed to be
+                       fixed.
+                       if fixed_pattern = 'first'. then 'pc' is calculted by projecting the original
+                       fields onto the spatial pattern of the first 10 years. 
+                       if fixed_pattern = 'last', the 'pc' is calculated by projecting the original
+                       fields onto the spatial pattern of the last 10 years.
                        if fixed_pattern = False, the pc is calculated by projecting the seasonal
                        data onto to the spatail pattern of this year, in this case, the sptial
                        pattern is gotten by the data ten years around this year. And the length
@@ -345,7 +349,7 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,standard = True)
 
     EOF = xr.concat(eofs,dim = validtime)
     FRA = xr.concat(fras,dim = validtime)
-    if fixed_pattern:
+    if fixed_pattern = 'all':
         PC = fixed_pc(xarr,standard=True)
     else:
 
@@ -382,11 +386,11 @@ def changing_pc(xarr,eof,standard = True):
     """
 
 
-
-
-
-
 '''
+
+
+
+
 eofs = list()
 pcs = list()
 fras = list()
