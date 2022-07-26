@@ -67,69 +67,12 @@ ppc = solver.projectField(z_djf,neofs = 1)
 plt.plot(ppc)
 
 # %%
-def project_field(solver, field, neofs=2, eofscaling=0, weighted=True):
-    """Project a field onto the EOFs.
+def project_field_h(solver, field, neofs=2, eofscaling=0, weighted=True):
 
-    Given a data set, projects it onto the EOFs to generate a
-    corresponding set of pseudo-PCs.
-
-    **Argument:**
-
-    *field*
-        A `numpy.ndarray` or `numpy.ma.MaskedArray` with two or more
-        dimensions containing the data to be projected onto the
-        EOFs. It must have the same corresponding spatial dimensions
-        (including missing values in the same places) as the `Eof`
-        input *dataset*. *field* may have a different length time
-        dimension to the `Eof` input *dataset* or no time dimension
-        at all.
-
-    **Optional arguments:**
-
-    *neofs*
-        Number of EOFs to project onto. Defaults to all EOFs. If the
-        number of EOFs requested is more than the number that are
-        available, then the field will be projected onto all
-        available EOFs.
-
-    *eofscaling*
-        Set the scaling of the EOFs that are projected onto. The
-        following values are accepted:
-
-        * *0* : Un-scaled EOFs (default).
-        * *1* : EOFs are divided by the square-root of their
-            eigenvalue.
-        * *2* : EOFs are multiplied by the square-root of their
-            eigenvalue.
-
-    *weighted*
-        If *True* then *field* is weighted using the same weights
-        used for the EOF analysis prior to projection. If *False*
-        then no weighting is applied. Defaults to *True* (weighting
-        is applied). Generally only the default setting should be
-        used.
-
-    **Returns:**
-
-    *pseudo_pcs*
-        An array where the columns are the ordered pseudo-PCs.
-
-    **Examples:**
-
-    Project a data set onto all EOFs::
-
-        pseudo_pcs = solver.projectField(data)
-
-    Project a data set onto the four leading EOFs::
-
-        pseudo_pcs = solver.projectField(data, neofs=4)
-
-    """
     # Check that the shape/dimension of the data set is compatible with
     # the EOFs.
-    solver._verify_projection_shape(field, solver._originalshape)
     input_ndim = field.ndim
-    eof_ndim = len(solver._originalshape) + 1
+    eof_ndim = 4
     # Create a slice object for truncating the EOFs.
     slicer = slice(0, neofs)
     # If required, weight the data set with the same weighting that was
@@ -176,4 +119,43 @@ def project_field(solver, field, neofs=2, eofscaling=0, weighted=True):
         # the projected PCs.
         projected_pcs = projected_pcs[0]
     return projected_pcs
+
+# %%
+def project_field(field,eof,wgts):
+    neofs = eof.shape[0]
+    
+    # weight
+    field = field*wgts
+
+    # fill with nan
+    field = field.filled(fill_value = np.nan)
+
+    # flat field to [time,space]
+    records = field.shape[0]
+    channels = np.product(field.shape[1:])
+    field_flat = field.reshape([records, channels])
+
+    # non missing value check
+    nonMissingIndex = np.where(np.logical_not(np.isnan(field_flat[0])))[0]
+    field_flat = field_flat[:, nonMissingIndex]
+
+    # flat eof to [mode, space]
+    _flatE = eof.reshape(neofs,-1)
+    eofNonMissingIndex = np.where(
+        np.logical_not(np.isnan(_flatE[0])))[0]
+
+    # missing value check
+    if eofNonMissingIndex.shape != nonMissingIndex.shape or \
+            (eofNonMissingIndex != nonMissingIndex).any():
+        raise ValueError('field and EOFs have different '
+                            'missing value locations')
+    eofs_flat = _flatE[:, eofNonMissingIndex]
+
+    # projection
+    projected_pcs = np.dot(field_flat, eofs_flat.T)
+
+    return projected_pcs
+
+
+
 # %%
