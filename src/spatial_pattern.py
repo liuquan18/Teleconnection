@@ -1,5 +1,6 @@
 
 ############ imports ###############
+from pprint import pformat
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -63,12 +64,12 @@ def rolling(xarr,win = 10):
     roller = xarr.rolling (time = win, center = True)
 
     # construct the rolling object to a DatArray
-    rolled = roller.construct("windown_dim")
+    rolled = roller.construct("window_dim")
 
     return rolled
 
 
-def stack_ens(xarr,withdim='windown_dim'):
+def stack_ens(xarr,withdim='window_dim'):
     """
     The first dim of input data for python-eofs-package standard interface should be 'time', but 
     here we do eof not along the time dim only, but the win (10) years of all ensembles. so should
@@ -91,8 +92,12 @@ def standardize(xarr):
     **Returns**:
         xarr: standarized DataArray 
     """
-    time_mean = xarr.mean(dim = 'time')
-    time_std = xarr.std(dim = 'time')
+    try:
+        time_mean = xarr.mean(dim = 'time')
+        time_std = xarr.std(dim = 'time')
+    except ValueError:
+        time_mean = xarr.mean(dim = 'window_dim')
+        time_std = xarr.std(dim = 'window_dim')
     return (xarr-time_mean)/time_std
 
 ########## Function to do EOF #####################
@@ -168,10 +173,6 @@ def doeof(seasondata,nmode = 2,dim = 'com'):
         exp_var: explained variance of each mode. [mode]
     """
     
-    try:
-        seasondata = stack_ens(seasondata,withdim='time')
-    except KeyError:
-        pass
 
     # make sure that the first dim is the 'com'.
     seasondata = seasondata.transpose(dim,...)
@@ -340,7 +341,7 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True):
     validtime = xarr.sel(time = slice('1856','1995')).time
 
     # EOF and FRA
-    EOF,FRA = changing_eof(xarr,validtime,nmode = 2,dindow = window)
+    EOF,FRA = changing_eof(xarr,validtime,nmode = 2,window = window)
 
     # PC
     if fixed_pattern == 'all':  # a little different from the following two.
@@ -497,12 +498,8 @@ independent = True):
     **Return:**
         EOF, PC and FRA
     """
-    try:  # if the ens is not splitted yet.
-        xarr = split_ens(xarr)
-    except ValueError:
-        pass
-
-    xarr = standardize(xarr)
+    if standard:
+        xarr = standardize(xarr)
     eof,pc,fra = eof_method(xarr,nmode=nmode,fixed_pattern=fixed_pattern,method=method,
     independent=independent)
 
@@ -510,8 +507,18 @@ independent = True):
 
 
 
-
 '''
+ex = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/sample.nc")
+ex = ex.var156
+
+eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,fixed_pattern='all',
+standard=True,method = 'rolling_eof',independent = False)
+
+
+
+
+
+
 
 
 fig,axes = plt.subplots(1,3,figsize = (14,4),dpi = 150)
