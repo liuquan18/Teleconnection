@@ -1,10 +1,11 @@
 from pprint import pformat
+from pyrsistent import PSet
 import xarray as xr
 import numpy as np
 import pandas as pd
 from eofs.standard import Eof
 from tqdm.notebook import trange, tqdm
-
+import seaborn as sn
 
 def lon_height(eof):
     """
@@ -56,5 +57,42 @@ def lat_height(eof,mode = 'NAO'):
     EA_lat_height = eof_height.sel(mode =mode).groupby_bins('lat',bins = lat_bins,labels = lat_labels).mean(dim = 'lon')
     return EA_lat_height
 
+def df_sel(df,condition):
+    """
+    select rows depend on the condition of items in columns. {'column':'item'}
+    """
+    for item in condition.items():
+        col = item[0]
+        value = item[1]
+        df = df[df[col]==value]
 
-def 
+    return df
+
+def pc_todf(xarr,name):
+    """
+    transform xarray to dataframe.
+    **Arguments**
+        *xarr* the dataarray to be transoformed
+        *name* the column name for the dataframe.
+    """
+    df = xarr.__xarray_dataarray_variable__.to_dataframe().reset_index()
+    df = df.rename(columns = {'__xarray_dataarray_variable__':name})
+    return df
+
+def merge_df(dfs):
+
+    dfm = pd.merge(dfs[0],dfs[1],on =['hlayers','mode','ens','time'])
+
+    dfm = pd.merge(dfm,dfs[2],on = ['hlayers','mode','ens','time'])
+
+    old_columns = dfs[0].columns[:4]
+    new_columns = [dfs[0].columns[-1],dfs[1].columns[-1],dfs[2].columns[-1]]
+
+    dfm.columns = np.r_[old_columns,new_columns]
+    return dfm
+
+def show_allyears_ens(df,mode):
+    Z200_EA = df_sel(df,{'hlayers':20000,'mode':mode}).set_index(['hlayers','mode','ens','time'])
+    Z500_EA = df_sel(df,{'hlayers':50000,'mode':mode}).set_index(['hlayers','mode','ens','time'])
+    Z850_EA = df_sel(df,{'hlayers':85000,'mode':mode}).set_index(['hlayers','mode','ens','time'])
+    return Z200_EA,Z500_EA,Z850_EA

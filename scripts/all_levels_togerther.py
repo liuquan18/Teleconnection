@@ -40,7 +40,7 @@ del(fra_sira)
 
 
 # %%
-# standard-alllevel-rolling fixed first eof
+# standard-independent-rolling fixed first eof
 eof_sirf,pc_sirf,fra_sirf = sp.season_eof(trop.var156,nmode=2,fixed_pattern='first',
 standard=True,method = 'rolling_eof',independent = True)
 
@@ -56,7 +56,7 @@ del(fra_sirf)
 
 
 # %%
-# standard-alllevel-rolling fixed first eof
+# standard-independent-rolling fixed first eof
 eof_sirl,pc_sirl,fra_sirl = sp.season_eof(trop.var156,nmode=2,fixed_pattern='last',
 standard=True,method = 'rolling_eof',independent = True)
 
@@ -75,7 +75,7 @@ del(fra_sirl)
 ############# non independent ########################
 
 # %%
-# standard-alllevel-rolling eof first pattern
+# standard-alllevel-rolling eof all pattern
 eof_snra,pc_snra,fra_snra = sp.season_eof(trop.var156,nmode=2,fixed_pattern='all',
 standard=True,method = 'rolling_eof',independent = False)
 
