@@ -71,7 +71,10 @@ def stack_ens(xarr,withdim='window_dim'):
 
 def standardize(xarr):
     """
-    standardize the DataArray with the temporal mean and std.
+    standardize the DataArray with the temporal mean and std. Note here the function standardize 
+    the input with the mean and std of its own. for comparation the mean and std should be the 
+    same across different enterties. 
+    or the function here should be applied onto the input, not the output.
     **Arguments**:
         xarr: The DataArray to be standarized.
     **Returns**:
@@ -203,9 +206,6 @@ def doeof(seasondata,nmode = 2,dim = 'com'):
 
     # unstack the dim 'ens' and 'time' or 'win'
     pcx = pcx.unstack()
-
-    # standarization
-    pcx = standardize(pcx)
 
     return eofx,pcx,frax
 
@@ -395,6 +395,7 @@ def changing_pc(xarr,validtime,EOF):
     **Return**
         changing pc, whose length is time-10.
     """
+    xarr = stack_ens(xarr,withdim='window_dim')
     PC = []
     for time in validtime:
         field = xarr.sel(time = time)
@@ -455,13 +456,16 @@ def alllevel_eof(xarr,nmode=2,fixed_pattern='all', method='rolling_eof'):
         eofs,pcs,fras = doeof(xarr)
     return eofs,pcs,fras
 
-def eof_method(xarr,nmode = 2,fixed_pattern = 'all', method='rolling_eof', independent = True):
+def vertical_eof(xarr,nmode = 2,fixed_pattern = 'all', method='rolling_eof', independent = True):
     """
-    select one method to do eof. 
+    different way to do the eof vertically, 
     **Arguments**:
         *xarr*: DataArry to decompose
         *method*: simple 'eof' or 'rolling_eof'
         *independent*: all layers decompose independently or not.
+                       if independent = True, the eof is applied independently over all levels.
+                       if independent = False, the vertical dimension is seen as one of the 
+                       spatial dimension. so the eof stands for the common pattern of all layers.
     """
     if independent==True:
         eof, pc, fra = independent_eof(xarr,nmode=nmode,fixed_pattern=fixed_pattern,
@@ -486,7 +490,7 @@ independent = True):
     """
     if standard:
         xarr = standardize(xarr)
-    eof,pc,fra = eof_method(xarr,nmode=nmode,fixed_pattern=fixed_pattern,method=method,
+    eof,pc,fra = vertical_eof(xarr,nmode=nmode,fixed_pattern=fixed_pattern,method=method,
     independent=independent)
 
     return eof,pc,fra
