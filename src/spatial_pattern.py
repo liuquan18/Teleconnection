@@ -412,7 +412,8 @@ def changing_pc(xarr,validtime,EOF):
 
 
 
-def independent_eof(xarr,nmode=2, fixed_pattern='all',method='rolling_eof'):
+def independent_eof(xarr,nmode=2, fixed_pattern='all',method='rolling_eof',
+return_full_eof=False,window=10):
     """
     do eof independently over all layers.
     **Arguments**
@@ -430,8 +431,9 @@ def independent_eof(xarr,nmode=2, fixed_pattern='all',method='rolling_eof'):
         hlayers = xarr.hlayers
         for h in tqdm(hlayers):
             field = xarr.sel(hlayers = h)
-            eof,pc,fra = rolling_eof(field,nmode =nmode, window = 10,
-                                    fixed_pattern=fixed_pattern)
+            eof,pc,fra = rolling_eof(field,nmode =nmode, window,
+                                    fixed_pattern=fixed_pattern,
+                                    return_full_eof=return_full_eof)
             eofs.append(eof)
             pcs.append(pc)
             fras.append(fra)
@@ -443,7 +445,8 @@ def independent_eof(xarr,nmode=2, fixed_pattern='all',method='rolling_eof'):
         eofs,pcs,fras = doeof(xarr,nmode=nmode,dim = 'com')
     return eofs,pcs,fras
 
-def alllevel_eof(xarr,nmode=2,fixed_pattern='all', method='rolling_eof'):
+def alllevel_eof(xarr,nmode=2,fixed_pattern='all', method='rolling_eof',
+return_full_eof=False,window=10):
     """
     do eof independently over all layers.
     **Arguments**
@@ -454,13 +457,13 @@ def alllevel_eof(xarr,nmode=2,fixed_pattern='all', method='rolling_eof'):
         EOF, PC and FRA.
     """
     if method=='rolling_eof':
-        eofs,pcs,fras = rolling_eof(xarr,nmode = nmode,window=10,
-        fixed_pattern=fixed_pattern)
+        eofs,pcs,fras = rolling_eof(xarr,nmode,window,fixed_pattern)
     else:
         eofs,pcs,fras = doeof(xarr)
     return eofs,pcs,fras
 
-def vertical_eof(xarr,nmode = 2,fixed_pattern = 'all', method='rolling_eof', independent = True):
+def vertical_eof(xarr,nmode,fixed_pattern = 'all', method='rolling_eof', independent = True,
+return_full_eof=False,window=10):
     """
     different way to do the eof vertically, 
     **Arguments**:
@@ -472,17 +475,16 @@ def vertical_eof(xarr,nmode = 2,fixed_pattern = 'all', method='rolling_eof', ind
                        spatial dimension. so the eof stands for the common pattern of all layers.
     """
     if independent==True:
-        eof, pc, fra = independent_eof(xarr,nmode=nmode,fixed_pattern=fixed_pattern,
-                                        method=method)
+        eof, pc, fra = independent_eof(xarr,nmode,fixed_pattern,method,return_full_eof,window)
     else:
-        eof, pc, fra = alllevel_eof(xarr,nmode=nmode,fixed_pattern=fixed_pattern,method=method)
+        eof, pc, fra = alllevel_eof(xarr,nmode,fixed_pattern,method,return_full_eof,window)
 
     return eof,pc,fra
 
 
 ###### high level APIs #################
-def season_eof(xarr,nmode=2,fixed_pattern='all',standard = True,method = 'rolling_eof', 
-independent = True):
+def season_eof(xarr,nmode=2,method = 'rolling_eof',window=10, fixed_pattern='all',
+return_full_eof=False,independent = True,standard = True):
     """
     high_level API for seasonal data eof analysis.
     **Arguments:**
@@ -493,10 +495,20 @@ independent = True):
     **Return:**
         EOF, PC and FRA
     """
+    # if the data should be standarize
     if standard:
         xarr = standardize(xarr)
-    eof,pc,fra = vertical_eof(xarr,nmode=nmode,fixed_pattern=fixed_pattern,method=method,
-    independent=independent)
+
+    # passing parameters
+    kwargs = {  "nmode":nmode,                       # for doeof
+                "method":method,                     # choose eof or rolling_eof
+                "window":window,                     # for rolling_eof
+                "fixed_pattern":fixed_pattern,       # for rolling_eof
+                "return_full_eof":return_full_eof,   # for rolling eof
+                "independent":independent,           # choose vetrical eof method.
+    }
+
+    eof,pc,fra = vertical_eof(xarr,**kwargs)
 
     return eof,pc,fra
 
