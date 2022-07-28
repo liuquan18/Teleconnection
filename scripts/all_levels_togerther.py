@@ -25,11 +25,11 @@ trop = splitens.sel(hlayers = slice(20000,100000))
 ########## independent ##############
 # %%
 # standard-independent-rolling fixed all eof
-eof_sira,pc_sira,fra_sira = sp.season_eof(trop.var156,nmode=2,fixed_pattern='all',
-standard=True,method = 'rolling_eof',independent = True)
+eof_sira,pc_sira,fra_sira = sp.season_eof(trop.var156,nmode=2,method ="rolling_eof",
+window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
 #%%
-eof_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/eof.nc")
+# eof_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/eof.nc")
 pc_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/pc.nc")
 fra_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/fra.nc")
 
@@ -41,11 +41,11 @@ del(fra_sira)
 
 # %%
 # standard-independent-rolling fixed first eof
-eof_sirf,pc_sirf,fra_sirf = sp.season_eof(trop.var156,nmode=2,fixed_pattern='first',
-standard=True,method = 'rolling_eof',independent = True)
+eof_sirf,pc_sirf,fra_sirf = sp.season_eof(trop.var156,nmode=2,method ="rolling_eof",
+window=10,fixed_pattern='first',return_full_eof= False,independent = True,standard=True)
 
 #%%
-eof_sirf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_first/eof.nc")
+# eof_sirf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_first/eof.nc")
 pc_sirf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_first/pc.nc")
 fra_sirf.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_first/fra.nc")
 
@@ -57,11 +57,11 @@ del(fra_sirf)
 
 # %%
 # standard-independent-rolling fixed first eof
-eof_sirl,pc_sirl,fra_sirl = sp.season_eof(trop.var156,nmode=2,fixed_pattern='last',
-standard=True,method = 'rolling_eof',independent = True)
+eof_sirl,pc_sirl,fra_sirl = sp.season_eof(trop.var156,nmode=2,method ="rolling_eof",
+window=10,fixed_pattern='last',return_full_eof= False,independent = True,standard=True)
 
 #%%
-eof_sirl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_last/eof.nc")
+# eof_sirl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_last/eof.nc")
 pc_sirl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_last/pc.nc")
 fra_sirl.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_last/fra.nc")
 

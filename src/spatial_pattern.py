@@ -162,7 +162,7 @@ def doeof(seasondata,nmode = 2,dim = 'com'):
     """
 
 
-    # make sure that the first dim is the 'com'.
+    # make sure that the first dim is the 'com' or 'time'.
     seasondata = seasondata.transpose(dim,...)
 
     # weights

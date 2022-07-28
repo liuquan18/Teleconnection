@@ -12,11 +12,9 @@ import sys
 sys.path.append("..")
 import src.pattern_statistic as ps
 import src.spatial_pattern as sp
-import src.eof_plots as eplt
 
 import importlib
 importlib.reload(ps) # after changed the source code
-importlib.reload(eplt) # after changed the source code
 
 #%% Load seasonal PCs
 
