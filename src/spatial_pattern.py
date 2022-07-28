@@ -412,8 +412,7 @@ def changing_pc(xarr,validtime,EOF):
 
 
 
-def independent_eof(xarr,nmode=2, fixed_pattern='all',method='rolling_eof',
-return_full_eof=False,window=10):
+def independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
     """
     do eof independently over all layers.
     **Arguments**
@@ -431,9 +430,7 @@ return_full_eof=False,window=10):
         hlayers = xarr.hlayers
         for h in tqdm(hlayers):
             field = xarr.sel(hlayers = h)
-            eof,pc,fra = rolling_eof(field,nmode =nmode, window,
-                                    fixed_pattern=fixed_pattern,
-                                    return_full_eof=return_full_eof)
+            eof,pc,fra = rolling_eof(field,nmode,window,fixed_pattern,return_full_eof)
             eofs.append(eof)
             pcs.append(pc)
             fras.append(fra)
@@ -445,8 +442,7 @@ return_full_eof=False,window=10):
         eofs,pcs,fras = doeof(xarr,nmode=nmode,dim = 'com')
     return eofs,pcs,fras
 
-def alllevel_eof(xarr,nmode=2,fixed_pattern='all', method='rolling_eof',
-return_full_eof=False,window=10):
+def alllevel_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
     """
     do eof independently over all layers.
     **Arguments**
@@ -457,13 +453,14 @@ return_full_eof=False,window=10):
         EOF, PC and FRA.
     """
     if method=='rolling_eof':
-        eofs,pcs,fras = rolling_eof(xarr,nmode,window,fixed_pattern)
+        eofs,pcs,fras = rolling_eof(xarr,nmode,window,fixed_pattern,return_full_eof)
     else:
+        xarr = stack_ens(xarr,withdim='window_dim')
         eofs,pcs,fras = doeof(xarr)
     return eofs,pcs,fras
 
-def vertical_eof(xarr,nmode,fixed_pattern = 'all', method='rolling_eof', independent = True,
-return_full_eof=False,window=10):
+def vertical_eof(xarr,nmode,method='rolling_eof',window=10, fixed_pattern = 'all',
+return_full_eof=False, independent = True):
     """
     different way to do the eof vertically, 
     **Arguments**:
@@ -475,9 +472,9 @@ return_full_eof=False,window=10):
                        spatial dimension. so the eof stands for the common pattern of all layers.
     """
     if independent==True:
-        eof, pc, fra = independent_eof(xarr,nmode,fixed_pattern,method,return_full_eof,window)
+        eof, pc, fra = independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof)
     else:
-        eof, pc, fra = alllevel_eof(xarr,nmode,fixed_pattern,method,return_full_eof,window)
+        eof, pc, fra = alllevel_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof)
 
     return eof,pc,fra
 
