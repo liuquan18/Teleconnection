@@ -511,6 +511,9 @@ return_full_eof=False,independent = True,standard = True):
 
 
 def main():
+    """
+    for debug
+    """
     ex = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/sample.nc")
     ex = ex.var156
 
