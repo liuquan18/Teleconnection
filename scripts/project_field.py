@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 
 # %%
 def project_field(field,eof,wgts):
+    """
+    same function as eofs python package
+    """
     neofs = eof.shape[0]
     
     # weight
@@ -23,7 +26,7 @@ def project_field(field,eof,wgts):
     field_flat = field_flat[:, nonMissingIndex]
 
     # flat eof to [mode, space]
-    _flatE = eof.reshape(neofs,-1)
+    _flatE = eof.reshape(neofs,channels)
     eofNonMissingIndex = np.where(
         np.logical_not(np.isnan(_flatE[0])))[0]
 
@@ -38,3 +41,26 @@ def project_field(field,eof,wgts):
     projected_pcs = np.dot(field_flat, eofs_flat.T)
 
     return projected_pcs
+
+
+#%%
+def _compute_slope(x,y):
+    """
+    private function to compute linear coefficient.
+    """
+    return np.polyfit(x,y,1)[0]
+
+def project_polyfit(field,eof,wgts):
+    """
+    project by linearly regress the data onto the patterns.
+    """
+    slopes = xr.apply_ufunc(_compute_slope,
+                            eof,field,
+                            vectorize=True,
+                            dask='parallelized', 
+                            input_core_dims=[['lat','lon']],
+                            output_dtypes=[float]
+    )
+
+
+

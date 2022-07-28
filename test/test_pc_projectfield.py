@@ -1,4 +1,13 @@
 #%%
+import sys
+sys.path.append("..")
+import scripts.project_field as pjh
+
+import importlib
+importlib.reload(pjh) # after changed the source code
+
+
+#%%
 """
 Compute and plot the leading EOF of geopotential height on the 500 hPa
 pressure surface over the European/Atlantic sector during winter time.
@@ -19,7 +28,7 @@ import numpy as np
 
 from eofs.standard import Eof
 from eofs.examples import example_data_path
-
+import xarray as xr
 
 # Read geopotential height data using the netCDF4 module. The file contains
 # December-February averages of geopotential height at 500 hPa for the
@@ -43,7 +52,7 @@ solver = Eof(z_djf, weights=wgts,center=True)
 
 # Retrieve the leading EOF, expressed as the covariance between the leading PC
 # time series and the input SLP anomalies at each grid point.
-eof1 = solver.eofsAsCovariance(neofs=1)
+eof1 = solver.eofs(neofs=1)
 
 # Plot the leading EOF expressed as covariance in the European/Atlantic domain.
 clevs = np.linspace(-75, 75, 11)
@@ -66,3 +75,11 @@ plt.plot(pc)
 ppc = solver.projectField(z_djf,neofs = 1)
 plt.plot(ppc)
 
+
+# %%
+hpc = pjh.project_field(z_djf,eof1.filled(fill_value = 0),wgts = wgts)
+plt.plot(hpc)
+# %%
+fieldx = xr.open_dataset(filename)
+eofx = fieldx.isel(time = eof1.shape[0]).copy(eof1)
+# %%
