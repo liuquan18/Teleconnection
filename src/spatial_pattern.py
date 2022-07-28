@@ -331,7 +331,7 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
         # EOF and FRA
         EOF,FRA = changing_eofs(xarr,validtime,nmode = nmode,window = window)
     else:
-        EOF,FRA = changing_eofs(xarr, validtime[0,-1],nmode = nmode,window=window)
+        EOF,FRA = changing_eofs(xarr, validtime[[0,-1]],nmode = nmode,window=window)
 
     # PC
     if fixed_pattern == 'all':  # a little different from the following two.
@@ -514,8 +514,8 @@ def main():
     ex = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/sample.nc")
     ex = ex.var156
 
-    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,fixed_pattern='all',
-    standard=True,method = 'rolling_eof',independent = False)
+    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
+window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
 if __name__ == "__main__":
     main()
