@@ -14,8 +14,10 @@ def project_field(field,eof,wgts):
     field = field*wgts
 
     # fill with nan
-    field = field.filled(fill_value = np.nan)
-
+    try:
+        field = field.filled(fill_value = np.nan)
+    except AttributeError:
+        pass
     # flat field to [time,space]
     records = field.shape[0]
     channels = np.product(field.shape[1:])
@@ -43,24 +45,28 @@ def project_field(field,eof,wgts):
     return projected_pcs
 
 
-#%%
 def _compute_slope(x,y):
     """
     private function to compute linear coefficient.
     """
+    x = x.reshape(-1)
+    y = y.reshape(-1)
     return np.polyfit(x,y,1)[0]
 
 def project_polyfit(field,eof,wgts):
     """
     project by linearly regress the data onto the patterns.
     """
+
+    field = field*wgts
+
     slopes = xr.apply_ufunc(_compute_slope,
                             eof,field,
                             vectorize=True,
                             dask='parallelized', 
-                            input_core_dims=[['lat','lon']],
+                            input_core_dims=[['latitude','longitude'],
+                            ['latitude','longitude']],
                             output_dtypes=[float]
     )
-
-
+    return slopes
 

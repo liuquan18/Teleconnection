@@ -51,6 +51,7 @@ fra = solver.varianceFraction(neigs=nmode)
 
 # to xarray
 eof_container = z_djf.isel(time = slice(0,nmode)).rename({'time':'mode'})
+eof_container['mode'] = ['NAO','EA']
 eofx = eof_container.copy(data = eof)
 pcx = xr.DataArray(pc,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['NAO','EA']})
 
@@ -63,14 +64,53 @@ eofplots.axes.gridlines()
 
 #%% plot pc
 pcx.isel(mode=1).plot()
-plt.suptitle('pc from python eofs')
+plt.suptitle('pc from python solver.pcs')
 
 #%% using the projectField function from the package
-ppc = solver.projectField(z_djf.values,neofs = 2)
+ppc = solver.projectField(z_djf.values,neofs = 2,weighted = True)
 ppcx = xr.DataArray(ppc,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['NAO','EA']})
 
 ppcx.isel(mode=1).plot()
-plt.suptitle("pc from eofs.projectField")
+plt.suptitle("pc from solver.projectField")
 
 
 #%% using the hand defined project_field function.
+hpc = pjh.project_field(z_djf.values,eof,wgts)
+hpcx = xr.DataArray(hpc,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['NAO','EA']})
+hpcx.isel(mode=1).plot()
+plt.suptitle("pc from hand defined func projectField")
+
+# %% using the linear regression np.polyfit
+nppc = pjh.project_polyfit(z_djf.isel(pressure=0),eofx.sel(mode='EA').isel(pressure=0),wgts)
+nppcx = xr.DataArray(nppc,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['EA']})
+nppcx.isel(mode =0).plot()
+# %%
+A = z_djf.isel(pressure=0)
+B = eofx.isel(mode=1,pressure=0)
+C = pjh.project_polyfit(A,B,wgts)
+# %%
+C.plot()
+# %%
+fig,axes = plt.subplots(2,2,dpi = 150,figsize = (8,8))
+plt.subplots_adjust(hspace = 0.5)
+
+pcx.isel(mode=1).plot(ax = axes[0,0])
+axes[0,0].set_title('package: solver.pcs')
+
+ppcx.isel(mode=1).plot(ax = axes[0,1])
+axes[0,1].set_title("package: solver.projectField")
+
+hpcx.isel(mode=1).plot(ax = axes[1,0])
+axes[1,0].set_title("hand_define: projectField")
+
+C.plot(ax=axes[1,1])
+axes[1,1].set_title("hand_define: linear regrssion")
+plt.show()
+# %%
+
+
+D = pjh.project_field(A.values,eofx.isel(pressure = 0)[1].values,wgts)
+D = xr.DataArray(D,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['NAO','EA']})
+D.isel(mode=1).plot()
+plt.suptitle("pc from hand defined func projectField")
+# %%
