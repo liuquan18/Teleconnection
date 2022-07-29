@@ -113,4 +113,8 @@ D = pjh.project_field(A.values,eofx.isel(pressure = 0)[1].values,wgts)
 D = xr.DataArray(D,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['NAO','EA']})
 D.isel(mode=1).plot()
 plt.suptitle("pc from hand defined func projectField")
+# %% std pc first
+pcx_std = (pcx-pcx.mean(dim = 'time'))/pcx.std(dim = 'time')
+pcx_std.isel(mode=1).plot()
+
 # %%
