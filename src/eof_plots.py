@@ -14,7 +14,7 @@ from cartopy.mpl.ticker import (LongitudeFormatter, LatitudeFormatter,
                                 LatitudeLocator)
 
 import seaborn as sn
-
+import numpy as np
 
 
 def exp_time_height(exp_plot):
@@ -51,3 +51,50 @@ def exp_time_height(exp_plot):
 # plt.savefig('/work/mh0033/m300883/output_plots/gr19/exp_var_allhieght.png')
     plt.show()
 
+def axbuild(ax):
+    
+    theta = np.linspace(0,2*np.pi, 100)
+    center, radius = [0.5, 0.5], 0.5
+    verts = np.vstack([np.sin(theta), np.cos(theta)]).T
+    circle = mpath.Path(verts * radius + center)
+    
+    
+    # ax.coastlines()
+    gl=ax.gridlines(crs = ccrs.PlateCarree(),draw_labels=False)
+    gl.xformatter = LongitudeFormatter(zero_direction_label=False)
+    gl.xlocator = mticker.FixedLocator(np.arange(-180,180,45))
+
+    gl.ylocator = mticker.FixedLocator([20,40,60])
+    gl.yformatter = LatitudeFormatter()
+
+    ax.get_extent(crs = ccrs.PlateCarree())
+    ax.set_extent([-180,180,20,90],crs = ccrs.PlateCarree())
+    ax.set_boundary(circle, transform=ax.transAxes)
+
+def visu_eofspa(eofs):
+    fig,axes = plt.subplots(2,2,figsize = (8,8),
+                        subplot_kw={'projection':
+                                    ccrs.LambertAzimuthalEqualArea(
+                                        central_longitude=0.0,
+                                        central_latitude=90.0)
+                                    })                     
+    for ax in axes.flat:
+        axbuild(ax)
+    plev = ['500hpa','850hpa']
+    mode = ['NAO','EA']
+        
+    for i,row in enumerate(axes): # plev
+        for j, col in enumerate(row):  # mode
+            data = eofs.isel(time = 0, plev = i, mode = j).values
+            im = col.contourf(eofs.lon,eofs.lat,data,
+                        levels = np.arange(-40,40.1,5.0),
+                        extend = 'both',
+                        transform = ccrs.PlateCarree(),
+                        cmap = 'RdBu_r'
+                        )
+            col.set_title(f'plev:{plev[i]} mode:{mode[j]}')
+    fig.subplots_adjust(hspace = 0.05,wspace = 0.05,right = 0.8)
+    cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
+    fig.colorbar(im, cax=cbar_ax,label = 'eofs')
+
+    plt.show()
