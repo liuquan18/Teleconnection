@@ -146,7 +146,7 @@ def sqrtcoslat (xarr):
     return wgts
 
 
-def doeof(seasondata,nmode = 2,dim = 'com'):
+def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
     """
     do eof to seasonal data along a combined dim, which is gotten from the above function 
     'stack_ens'
@@ -183,8 +183,9 @@ def doeof(seasondata,nmode = 2,dim = 'com'):
     std_pc_sp = std_pc.reshape(dim_add_sp) 
 
     # do standarization
-    eof_stded = eof_dw*std_pc_sp
-    pc_stded = pc/std_pc
+    if standard:
+        eof = eof_dw*std_pc_sp
+        pc = pc/std_pc
 
     # xarray container for eof
     eof_cnt = seasondata[:nmode]
@@ -192,8 +193,8 @@ def doeof(seasondata,nmode = 2,dim = 'com'):
     eof_cnt['mode'] = ['NAO','EA']
 
     # to xarray
-    eofx = eof_cnt.copy(data = eof_stded)
-    pcx = xr.DataArray(pc_stded, dims = [dim,'mode'],coords = {dim:seasondata[dim], 'mode':['NAO','EA']}) 
+    eofx = eof_cnt.copy(data = eof)
+    pcx = xr.DataArray(pc, dims = [dim,'mode'],coords = {dim:seasondata[dim], 'mode':['NAO','EA']}) 
     frax = xr.DataArray(fra,dims= ['mode'],coords = {'mode':['NAO','EA']})
     eofx.name = 'eof'
     pcx.name = 'pc'
@@ -336,7 +337,8 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
     # PC
     if fixed_pattern == 'all':  # a little different from the following two.
         xarr = stack_ens(xarr,withdim='time')
-        _,PC,_ = doeof(xarr,nmode = nmode,dim = 'com')
+        _,PC,_ = doeof(xarr,nmode = nmode,dim = 'com',standard=False) # the pc is not standard to
+                                                                      # it consistent with following.
     elif fixed_pattern == 'first':
         PC = fixed_pc(xarr,EOF.isel(time = 0))  # the first eof as spatial pattern
     elif fixed_pattern == 'last':
