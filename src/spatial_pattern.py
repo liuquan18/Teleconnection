@@ -338,7 +338,7 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
     if fixed_pattern == 'all':  # a little different from the following two.
         xarr = stack_ens(xarr,withdim='time')
         _,PC,_ = doeof(xarr,nmode = nmode,dim = 'com',standard=False) # the pc is not standard to
-                                                                      # it consistent with following.
+                                                                      # be consistent with following.
     elif fixed_pattern == 'first':
         PC = fixed_pc(xarr,EOF.isel(time = 0))  # the first eof as spatial pattern
     elif fixed_pattern == 'last':
@@ -426,7 +426,7 @@ def independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
     pcs = []
     fras = []
 
-    hlayers = xarr.halyers
+    hlayers = xarr.hlayers
     for h in tqdm(hlayers):
         field = xarr.sel(hlayers = h)
         if method == "rolling_eof":
