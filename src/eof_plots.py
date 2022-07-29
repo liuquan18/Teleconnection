@@ -131,7 +131,7 @@ def visu_eof_single(eof):
                                         central_longitude=0.0,
                                         central_latitude=90.0)})
     ax = axbuild(ax)
-    im = ax.contourf(eof.lon.values,eof.lat.values,eof.values,
+    im = ax.contourf(eof.lon,eof.lat,eof.values,
                             levels = np.arange(-1,1.1,0.2),
                             extend = 'both',
                             transform = ccrs.PlateCarree(),
