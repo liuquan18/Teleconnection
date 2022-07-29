@@ -45,3 +45,5 @@ plt.show()
 # %%
 ept.visu_eofspa(all_eof)
 # %%
+ept.visu_eofspa_all(all_eof,mode = 'NAO')
+# %%

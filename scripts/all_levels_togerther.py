@@ -9,9 +9,11 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append("..")
 import src.spatial_pattern as sp
+import src.eof_plots as ept
 
 import importlib
 importlib.reload(sp) # after changed the source code
+importlib.reload(ept)
 
 # %%
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
@@ -121,4 +123,21 @@ del(fra_snrl)
 #%% spatial patterns of all years and all ensembles.
 eof_all,_,_ = sp.season_eof(trop.var156,nmode=2,method ="eof",independent = True)
 
+
+#%%
 eof_all.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/eof_all/eof_all.nc")
+
+
+#%% Z500 only test
+trop500 = trop.sel(hlayers = 50000).var156
+# %%
+trop500std = sp.standardize(trop500)
+# %%
+trop500com = sp.stack_ens(trop500std,withdim ='time')
+# %%
+trop500com
+# %%
+eof500,_,_ = sp.doeof(trop500com)
+# %%
+ept.visu_eof_single(eof500)
+# %%

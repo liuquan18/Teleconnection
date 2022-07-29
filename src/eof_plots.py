@@ -70,6 +70,7 @@ def axbuild(ax):
     ax.get_extent(crs = ccrs.PlateCarree())
     ax.set_extent([-180,180,20,90],crs = ccrs.PlateCarree())
     ax.set_boundary(circle, transform=ax.transAxes)
+    return ax
 
 def visu_eofspa(eofs,plev = [50000,85000]):
     fig,axes = plt.subplots(2,2,figsize = (8,8),
@@ -97,4 +98,45 @@ def visu_eofspa(eofs,plev = [50000,85000]):
     cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
     fig.colorbar(im, cax=cbar_ax,label = 'eofs')
 
+    plt.show()
+
+
+def visu_eofspa_all(eofs,mode = 'EA'):
+
+    cols = len(eofs.hlayers)//3+1
+    fig,axes = plt.subplots(3,cols,figsize = (3*3,3*cols),
+                        subplot_kw={'projection':
+                                    ccrs.LambertAzimuthalEqualArea(
+                                        central_longitude=0.0,
+                                        central_latitude=90.0)
+                                    })                     
+    for i,ax in enumerate(axes.flat):
+        axbuild(ax)
+        if i < len(eofs.hlayers):
+            data = eofs.sel(mode=mode).isel(hlayers = i).values
+            im = ax.contourf(eofs.lon,eofs.lat,data,
+                            levels = np.arange(-1,1.1,0.2),
+                            extend = 'both',
+                            transform = ccrs.PlateCarree(),
+                            cmap = 'RdBu_r'        
+            )
+            ax.set_title("eof {}".format(eofs.isel(hlayers = i).hlayers.values))
+    cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
+    fig.colorbar(im, cax=cbar_ax,label = 'eofs')
+
+    plt.show()
+def visu_eof_single(eof):
+    fig,ax = plt.subplots(1,1,subplot_kw={'projection':
+                                    ccrs.LambertAzimuthalEqualArea(
+                                        central_longitude=0.0,
+                                        central_latitude=90.0)})
+    ax = axbuild(ax)
+    im = ax.contourf(eof.lon.values,eof.lat.values,eof.values,
+                            levels = np.arange(-1,1.1,0.2),
+                            extend = 'both',
+                            transform = ccrs.PlateCarree(),
+                            cmap = 'RdBu_r'      
+    )
+    cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
+    fig.colorbar(im, cax=cbar_ax,label = 'eofs')
     plt.show()

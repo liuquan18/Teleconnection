@@ -179,7 +179,7 @@ def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
     
     # standarize coef
     std_pc = (np.std(pc,axis = 0)).astype('float64')  #(mode)  # here should it be temporal std????
-    dim_add_sp = np.hstack([-1,detect_spdim(seasondata)]) #[-1,1,1] or [-1,1,1,1]
+    dim_add_sp = np.hstack([nmode,detect_spdim(seasondata)]) #[-1,1,1] or [-1,1,1,1]
     std_pc_sp = std_pc.reshape(dim_add_sp) 
 
     # do standarization
@@ -517,8 +517,10 @@ def main():
     ex = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/sample.nc")
     ex = ex.var156
 
-    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
-window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
+#     eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
+# window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
+
+    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="eof")
 
 if __name__ == "__main__":
     main()
