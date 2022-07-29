@@ -433,7 +433,7 @@ def independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
             eof,pc,fra = rolling_eof(field,nmode,window,fixed_pattern,return_full_eof)
         elif method == "eof":
             field = stack_ens(field,withdim="time")
-            eof,pc,fra= doeof(xarr,nmode,dim='com')
+            eof,pc,fra= doeof(field,nmode,dim='com')
         eofs.append(eof)
         pcs.append(pc)
         fras.append(fra)
