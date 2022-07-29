@@ -126,17 +126,23 @@ def visu_eofspa_all(eofs,mode = 'EA'):
 
     plt.show()
 def visu_eof_single(eof):
-    fig,ax = plt.subplots(1,1,subplot_kw={'projection':
-                                    ccrs.LambertAzimuthalEqualArea(
-                                        central_longitude=0.0,
-                                        central_latitude=90.0)})
-    ax = axbuild(ax)
-    im = ax.contourf(eof.lon,eof.lat,eof.values,
-                            levels = np.arange(-1,1.1,0.2),
-                            extend = 'both',
-                            transform = ccrs.PlateCarree(),
-                            cmap = 'RdBu_r'      
-    )
-    cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
-    fig.colorbar(im, cax=cbar_ax,label = 'eofs')
+    EOFmaps = eof.plot.contourf('lon','lat',col = 'mode',
+                                        levels = np.arange(-40,40.1,5),
+                                        extend = 'both',
+                                        subplot_kws=dict(projection = ccrs.LambertAzimuthalEqualArea(central_longitude=0.0,
+                                                                                                    central_latitude=90.0),
+                                                        )
+                                        ,transform = ccrs.PlateCarree(),add_colorbar = True )
+
+    for i,ax in enumerate(EOFmaps.axes.reshape(-1)):
+        axbuild(ax)
+        
+        ax.set_title(f'mode={eof.mode[i].values}')
+        
+        
+    fig = EOFmaps.fig
+    fig.set_figheight(6)
+    fig.set_figwidth(13.5)
+
+    EOFmaps.cbar.set_label("gph/m")
     plt.show()
