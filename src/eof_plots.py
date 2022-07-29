@@ -15,6 +15,7 @@ from cartopy.mpl.ticker import (LongitudeFormatter, LatitudeFormatter,
 
 import seaborn as sn
 import numpy as np
+import xarray as xr
 
 
 def exp_time_height(exp_plot):
@@ -145,4 +146,32 @@ def visu_eof_single(eof):
     fig.set_figwidth(13.5)
 
     EOFmaps.cbar.set_label("gph/m")
+    plt.show()
+
+def visu_spatial_type(eofs,plev,mode = 'EA'):
+
+    all_eof,first_eof,last_eof = [eof.sel(hlayers = plev) for eof in eofs]
+    eof = xr.concat([first_eof,all_eof,last_eof],dim = 'type',coords='minimal',compat='override')
+    eof['type'] = ['first','all','last']
+
+    EOFmaps = eof.sel(mode=mode).plot.contourf('lon','lat',col = 'type',
+                                        levels = np.arange(-1,1.1,0.2),
+                                        extend = 'both',
+                                        subplot_kws=dict(projection = ccrs.LambertAzimuthalEqualArea(central_longitude=0.0,
+                                                                                                    central_latitude=90.0),
+                                                        )
+                                        ,transform = ccrs.PlateCarree(),add_colorbar = True )
+
+    for i,ax in enumerate(EOFmaps.axes.reshape(-1)):
+        axbuild(ax)
+        
+        ax.set_title(f'{eof.type[i].values}')
+        
+        
+    fig = EOFmaps.fig
+    fig.set_figheight(6)
+    fig.set_figwidth(13.5)
+
+    EOFmaps.cbar.set_label("gph/m")
+    plt.suptitle(f"plev = {plev}")
     plt.show()
