@@ -119,8 +119,6 @@ del(fra_snrl)
 
 
 #%% spatial patterns of all years and all ensembles.
-eof_all,_,_ = sp.season_eof(trop.var156,nmode=2,method ="eof")
+eof_all,_,_ = sp.season_eof(trop.var156,nmode=2,method ="eof",independent = True)
 
-# %%
 eof_all.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/eof_all/eof_all.nc")
-# %%
