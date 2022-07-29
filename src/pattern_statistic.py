@@ -7,7 +7,7 @@ from eofs.standard import Eof
 from tqdm.notebook import trange, tqdm
 import seaborn as sn
 
-def lon_height(eof):
+def lon_height(eof,mode='EA'):
     """
     calculate zonally mean of eof
     **Arguments**
@@ -29,7 +29,7 @@ def lon_height(eof):
     
     # groupby 
     lon_bins = np.arange(-90,41,5)
-    EA_lon_height = eof_lat.sel(mode = 'EA').groupby_bins('lon',bins = lon_bins).mean(dim = 'lat')
+    EA_lon_height = eof_lat.sel(mode = mode).groupby_bins('lon',bins = lon_bins).mean(dim = 'lat')
     return EA_lon_height
 
 def lat_height(eof,mode = 'NAO'):
