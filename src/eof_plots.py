@@ -71,7 +71,7 @@ def axbuild(ax):
     ax.set_extent([-180,180,20,90],crs = ccrs.PlateCarree())
     ax.set_boundary(circle, transform=ax.transAxes)
 
-def visu_eofspa(eofs):
+def visu_eofspa(eofs,plev = [50000,85000]):
     fig,axes = plt.subplots(2,2,figsize = (8,8),
                         subplot_kw={'projection':
                                     ccrs.LambertAzimuthalEqualArea(
@@ -80,14 +80,14 @@ def visu_eofspa(eofs):
                                     })                     
     for ax in axes.flat:
         axbuild(ax)
-    plev = ['500hpa','850hpa']
+    
     mode = ['NAO','EA']
         
     for i,row in enumerate(axes): # plev
         for j, col in enumerate(row):  # mode
-            data = eofs.isel(time = 0, plev = i, mode = j).values
+            data = eofs.sel(hlayers = plev[i], mode = mode[j]).values
             im = col.contourf(eofs.lon,eofs.lat,data,
-                        levels = np.arange(-40,40.1,5.0),
+                        levels = np.arange(-1,1.1,0.2),
                         extend = 'both',
                         transform = ccrs.PlateCarree(),
                         cmap = 'RdBu_r'
