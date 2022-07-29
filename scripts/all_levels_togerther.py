@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
-
+import cartopy.crs as ccrs
 #%%
 import sys
 sys.path.append("..")
@@ -133,11 +133,19 @@ trop500 = trop.sel(hlayers = 50000).var156
 # %%
 trop500std = sp.standardize(trop500)
 # %%
-trop500com = sp.stack_ens(trop500std,withdim ='time')
+trop500com = sp.stack_ens(trop500,withdim ='time')
 # %%
 trop500com
 # %%
 eof500,_,_ = sp.doeof(trop500com)
 # %%
 ept.visu_eof_single(eof500)
+
+
+
+
+# %%
+trop_sm = trop.sel(hlayers = [50000,85000])
+# %%
+trop_sm.to_netcdf("/work/mh0033/m300883/3rdPanel/")
 # %%
