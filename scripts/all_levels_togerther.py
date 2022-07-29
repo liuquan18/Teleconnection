@@ -17,10 +17,14 @@ importlib.reload(ept)
 
 # %%
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
-#%%
+#%% split ens
 splitens = sp.split_ens(allens)
+
+#%% demean ens-mean
+demean = splitens-splitens.mean(dim = 'ens')
+
 #%% select traposphere
-trop = splitens.sel(hlayers = slice(20000,100000))
+trop = demean.sel(hlayers = slice(20000,100000))
 
 
 
@@ -147,5 +151,5 @@ ept.visu_eof_single(eof500)
 # %%
 trop_sm = trop.sel(hlayers = [50000,85000])
 # %%
-trop_sm.to_netcdf("/work/mh0033/m300883/3rdPanel/")
+trop_sm.to_netcdf("/work/mh0033/m300883/3rdPanel/data/sample/Z500_850.nc")
 # %%
