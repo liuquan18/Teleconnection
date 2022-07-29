@@ -35,7 +35,7 @@ eof_sira,pc_sira,fra_sira = sp.season_eof(trop.var156,nmode=2,method ="rolling_e
 window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
 #%%
-# eof_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/eof.nc")
+eof_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/eof.nc")
 pc_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/pc.nc")
 fra_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/fra.nc")
 
