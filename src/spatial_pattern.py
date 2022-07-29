@@ -411,9 +411,7 @@ def changing_pc(xarr,validtime,EOF):
         PC.append(pc)
     PC = xr.concat(pc,dim = validtime)
     return PC
-
-
-
+    
 def independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
     """
     do eof independently over all layers.
@@ -424,25 +422,25 @@ def independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
     **Return**
         EOF, PC and FRA.
     """
-    if method == 'rolling_eof':
-        eofs = []
-        pcs = []
-        fras = []
+    eofs = []
+    pcs = []
+    fras = []
 
-        hlayers = xarr.hlayers
-        for h in tqdm(hlayers):
-            field = xarr.sel(hlayers = h)
+    hlayers = xarr.halyers
+    for h in tqdm(hlayers):
+        field = xarr.sel(hlayers = h)
+        if method == "rolling_eof":
             eof,pc,fra = rolling_eof(field,nmode,window,fixed_pattern,return_full_eof)
-            eofs.append(eof)
-            pcs.append(pc)
-            fras.append(fra)
-        eofs = xr.concat(eofs,dim = xarr.hlayers)
-        pcs = xr.concat(pcs, dim = xarr.hlayers)
-        fras = xr.concat(fras,dim = xarr.hlayers)
-    else:
-        xarr = stack_ens(xarr, withdim = 'time')
-        eofs,pcs,fras = doeof(xarr,nmode=nmode,dim = 'com')
-    return eofs,pcs,fras
+        elif method == "eof":
+            field = stack_ens(field,withdim="time")
+            eof,pc,fra= doeof(xarr,nmode,dim='com',return_full_eof=return_full_eof)
+        eofs.append(eof)
+        pcs.append(pc)
+        fras.append(fra)
+    eofs = xr.concat(eofs,dim = xarr.hlayers)
+    pcs = xr.concat(pcs, dim = xarr.hlayers)
+    fras = xr.concat(fras,dim = xarr.hlayers) 
+    return eofs,pcs,fras   
 
 def alllevel_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
     """
