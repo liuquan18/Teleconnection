@@ -139,7 +139,7 @@ def visu_eofspa_all(eofs,mode = 'EA'):
     plt.show()
 def visu_eof_single(eof):
     EOFmaps = eof.plot.contourf('lon','lat',col = 'mode',
-                                        levels = np.arange(-40,40.1,5),
+                                        levels = np.arange(-1,1.1,0.2),
                                         extend = 'both',
                                         subplot_kws=dict(projection = ccrs.LambertAzimuthalEqualArea(central_longitude=0.0,
                                                                                                     central_latitude=90.0),
