@@ -35,3 +35,16 @@ splitens = sp.split_ens(allens)
 demean = splitens-splitens.mean(dim = 'ens')
 #select traposphere
 trop = demean.sel(hlayers = slice(20000,100000))
+
+# columns: project all onto the three spatial patterns.
+# %%
+_,all_all,_ = sp.season_eof(trop.var156, nmode=2,window=10,
+fixed_pattern="all")  # "method" doesn't matter since the pc is 
+                      # calculated independently.
+_, all_first,_ = sp.season_eof(trop.var156,nmode=2,window=10,
+fixed_pattern="first")
+_, all_last,_ = sp.season_eof(trop.var156,nmode=2,window=10,
+fixed_pattern="last")
+
+# second row: first 10 years of data projected on all, first10,and last10 eofs.
+# %%
