@@ -286,7 +286,7 @@ def project_field(fieldx,eofx,dim = 'com'):
         PPC = xr.DataArray(projected_pcs, dims = [fieldx.dims[0],eofx.dims[0]],
                             coords = {fieldx.dims[0]: fieldx[fieldx.dims[0]],
                                       eofx.dims[0]: eofx[eofx.dims[0]]})
-
+    PPC.name='pc'
     return PPC.unstack()  # to unstack 'com' to 'time' and 'ens' if 'com' exists.
 
 
