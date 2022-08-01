@@ -28,18 +28,21 @@ import xarray as xr
 # Read geopotential height data using the netCDF4 module. The file contains
 # December-February averages of geopotential height at 500 hPa for the
 # European/Atlantic domain (80W-40E, 20-90N).
-filename = example_data_path('hgt_djf.nc')
+filename = "/work/mh0033/m300883/3rdPanel/data/sample.nc"
 z_djf = xr.open_dataset(filename)
-z_djf = z_djf.z
+z_djf = z_djf.var156
+z_djf = z_djf.isel(hlayers = 0)
 
 #%% standardize.
 z_djf_mean = z_djf.mean(dim = 'time')
 z_djf_std = z_djf.std(dim = 'time')
 z_djf = (z_djf - z_djf_mean)/z_djf_std
+z_djf = z_djf.stack(com = ('time','ens'))
+z_djf['com'] = np.arange(len(z_djf['com']))
+z_djf = z_djf.transpose('com',...)
 #%% do eof
-
 # weights
-coslat = np.cos(np.deg2rad(z_djf.latitude)).values.clip(0., 1.)
+coslat = np.cos(np.deg2rad(z_djf.lat)).values.clip(0., 1.)
 wgts = np.sqrt(coslat)[..., np.newaxis]
 
 solver = Eof(z_djf.values, weights=wgts,center=True)
@@ -50,10 +53,10 @@ pc = solver.pcs(npcs = nmode)
 fra = solver.varianceFraction(neigs=nmode)
 
 # to xarray
-eof_container = z_djf.isel(time = slice(0,nmode)).rename({'time':'mode'})
+eof_container = z_djf.isel(com = slice(0,nmode)).rename({'com':'mode'})
 eof_container['mode'] = ['NAO','EA']
 eofx = eof_container.copy(data = eof)
-pcx = xr.DataArray(pc,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['NAO','EA']})
+pcx = xr.DataArray(pc,dims = ['com','mode'],coords = {'com':np.arange(len(z_djf.com)),'mode':['NAO','EA']})
 
 
 #%% show here eof
@@ -68,7 +71,7 @@ plt.suptitle('pc from python solver.pcs')
 
 #%% using the projectField function from the package
 ppc = solver.projectField(z_djf.values,neofs = 2,weighted = True)
-ppcx = xr.DataArray(ppc,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['NAO','EA']})
+ppcx = xr.DataArray(ppc,dims = ['com','mode'],coords = {'com':np.arange(len(z_djf.com)),'mode':['NAO','EA']})
 
 ppcx.isel(mode=1).plot()
 plt.suptitle("pc from solver.projectField")
