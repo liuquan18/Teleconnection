@@ -3,6 +3,8 @@ from mpl_toolkits.axes_grid1 import AxesGrid
 import matplotlib.path as mpath
 from matplotlib.colorbar import Colorbar
 import matplotlib.ticker as mticker
+import matplotlib.patches as mpatches
+
 
 import cartopy.crs as ccrs
 import cartopy.mpl.ticker as cticker
@@ -13,7 +15,7 @@ from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from cartopy.mpl.ticker import (LongitudeFormatter, LatitudeFormatter,
                                 LatitudeLocator)
 
-import seaborn as sn
+import seaborn as sns
 import numpy as np
 import xarray as xr
 
@@ -188,7 +190,24 @@ def visu_spatial_type(eofs,plev,mode = 'EA'):
     plt.show()
 
 
+def tenyr_hist(data,hlayer = 50000,bins = 50):
+    if hlayer == 'all':
+        data = data
+    else:
+        data = data.loc[hlayer]
+    fig,ax = plt.subplots()
+    hf = sns.histplot(data = data,x = 'pc_all',y = 'pc_first',
+    ax = ax,color= 'b', bins = bins,label = 'first',legend = False,alpha = 0.9)
 
+    hl = sns.histplot(data = data,x = 'pc_all',y = 'pc_last',
+    ax = ax,color = 'r', bins = bins,label = 'last',legend = False,alpha = 0.9)
+
+    line = ax.plot(np.arange(-3,4,1),np.arange(-3,4,1),linestyle = 'dotted',color = 'k')
+
+    blue_patch = mpatches.Patch(color='blue',label="first")
+    red_patch = mpatches.Patch(color='red', label='last')
+
+    plt.legend(handles=[blue_patch,red_patch],loc = 'upper left')
 
 
 
