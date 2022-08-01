@@ -60,5 +60,9 @@ def pc_column(pcs,mode='NAO'):
     """
     dfs = [pc.sel(mode=mode).to_dataframe()[['pc']] for pc in pcs]
     df = dfs[0].join(dfs[1],lsuffix = '_first',rsuffix = '_all')
-    df = df.join(dfs[2],lsuffix = '',rsuffix = '_last')
+    df = df.join(dfs[2])
+    df.columns = ['pc_first','pc_all','pc_last']
+
+
     return df
+
