@@ -18,6 +18,17 @@ import numpy as np
 import xarray as xr
 
 
+import sys
+sys.path.append("..")
+import src.spatial_pattern as ssp
+import src.index_statistic as sis
+
+import importlib
+importlib.reload(ssp) # after changed the source code
+importlib.reload(sis)
+
+
+
 def exp_time_height(exp_plot):
     """
     draw contourf of explained variance as function of time and height.
@@ -175,3 +186,14 @@ def visu_spatial_type(eofs,plev,mode = 'EA'):
     EOFmaps.cbar.set_label("gph/m")
     plt.suptitle(f"plev = {plev}")
     plt.show()
+
+
+
+
+
+
+
+
+
+
+
