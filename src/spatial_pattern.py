@@ -513,13 +513,20 @@ def main():
     """
     for debug
     """
-    ex = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/sample.nc")
-    ex = ex.var156
+    # ex = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/sample.nc")
+    # ex = ex.var156
+    allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
+    # split ens
+    splitens = split_ens(allens)
+    # demean ens-mean
+    demean = splitens-splitens.mean(dim = 'ens')
+    #select traposphere
+    trop = demean.sel(hlayers = slice(20000,100000))
 
 #     eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
 # window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
-    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,fixed_pattern="all")
+    eof_sar,pc_sar,fra_sar = season_eof(trop.var156,nmode=2,fixed_pattern="first")
 
 if __name__ == "__main__":
     main()
