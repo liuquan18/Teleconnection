@@ -182,10 +182,9 @@ def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
     dim_add_sp = np.hstack([nmode,detect_spdim(seasondata)]) #[-1,1,1] or [-1,1,1,1]
     std_pc_sp = std_pc.reshape(dim_add_sp) 
 
-    # do standarization
+    eof = eof_dw*std_pc_sp  # eof should always be normalized.
     if standard:
-        eof = eof_dw*std_pc_sp
-        pc = pc/std_pc
+        pc = pc/std_pc      # while pc sometime should not for comparation. 
 
     # xarray container for eof
     eof_cnt = seasondata[:nmode]
@@ -520,7 +519,7 @@ def main():
 #     eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
 # window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
-    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="eof")
+    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,fixed_pattern="first")
 
 if __name__ == "__main__":
     main()
