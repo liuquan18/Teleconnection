@@ -335,9 +335,9 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
 
     # PC
     if fixed_pattern == 'all':  # a little different from the following two.
-        xarr = stack_ens(xarr,withdim='time')
-        _,PC,_ = doeof(xarr,nmode = nmode,dim = 'com',standard=False) # the pc is not standard to
+        eof,pc,_ = doeof(stack_ens(xarr,withdim='time'),nmode = nmode,dim = 'com',standard=False) # the pc is not standard to
                                                                       # be consistent with following.
+        PC = fixed_pc(xarr,eof)
     elif fixed_pattern == 'first':
         PC = fixed_pc(xarr,EOF.isel(time = 0))  # the first eof as spatial pattern
     elif fixed_pattern == 'last':
@@ -526,7 +526,7 @@ def main():
 #     eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
 # window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
-    eof_sar,pc_sar,fra_sar = season_eof(trop.var156,nmode=2,fixed_pattern="first")
+    eof_sar,pc_sar,fra_sar = season_eof(trop.var156,nmode=2,fixed_pattern="all")
 
 if __name__ == "__main__":
     main()
