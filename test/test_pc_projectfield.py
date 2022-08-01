@@ -3,6 +3,7 @@ from contextlib import AsyncExitStack
 import sys
 sys.path.append("..")
 import scripts.project_field as pjh
+import src.spatial_pattern as ssp
 
 import importlib
 importlib.reload(pjh) # after changed the source code
@@ -28,12 +29,16 @@ import xarray as xr
 # Read geopotential height data using the netCDF4 module. The file contains
 # December-February averages of geopotential height at 500 hPa for the
 # European/Atlantic domain (80W-40E, 20-90N).
-filename = "/work/mh0033/m300883/3rdPanel/data/sample.nc"
-z_djf = xr.open_dataset(filename)
-z_djf = z_djf.var156
-z_djf = z_djf.isel(hlayers = 0)
+allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
+# split ens
+splitens = ssp.split_ens(allens)
+# demean ens-mean
+demean = splitens-splitens.mean(dim = 'ens')
+#select traposphere
+z_djf = demean.sel(hlayers = 50000)
 
 #%% standardize.
+z_djf = z_djf.var156
 z_djf_mean = z_djf.mean(dim = 'time')
 z_djf_std = z_djf.std(dim = 'time')
 z_djf = (z_djf - z_djf_mean)/z_djf_std
@@ -79,9 +84,14 @@ plt.suptitle("pc from solver.projectField")
 
 #%% using the hand defined project_field function.
 hpc = pjh.project_field(z_djf.values,eof,wgts)
-hpcx = xr.DataArray(hpc,dims = ['time','mode'],coords = {'time':z_djf.time,'mode':['NAO','EA']})
+hpcx = xr.DataArray(hpc,dims = ['com','mode'],coords = {'com':np.arange(len(z_djf.com)),'mode':['NAO','EA']})
 hpcx.isel(mode=1).plot()
 plt.suptitle("pc from hand defined func projectField")
+
+#%%
+hpcs = ssp.project_field(z_djf,eofx)
+
+
 
 # %% using the linear regression np.polyfit
 nppc = pjh.project_polyfit(z_djf.isel(pressure=0),eofx.sel(mode='EA').isel(pressure=0),wgts)
