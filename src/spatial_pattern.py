@@ -519,7 +519,7 @@ def main():
 #     eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
 # window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
-    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,fixed_pattern="first")
+    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,fixed_pattern="all")
 
 if __name__ == "__main__":
     main()
