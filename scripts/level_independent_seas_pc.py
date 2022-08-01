@@ -9,10 +9,21 @@ The scripts should generate 9 index.
     last10            X       X           X
 """
 # imports
+#%%
 import numpy as np
 import pandas as pd
 import xarray as xr
 import matplotlib.pyplot as pld
+
+#%%
+import sys
+sys.path.append("..")
+import src.spatial_pattern as sp
+import src.pattern_statistic as ps
+
+import importlib
+importlib.reload(sp) # after changed the source code
+importlib.reload(ps)
 
 
 # Data load and pre-process
