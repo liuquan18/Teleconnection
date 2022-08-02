@@ -63,6 +63,8 @@ def pc_column(pcs,mode='NAO'):
     df = df.join(dfs[2])
     df.columns = ['pc_first','pc_all','pc_last']
 
-
+    df = df.stack()
+    df = pd.DataFrame(df,columns = ['pc'])
+    df.index.names = ['hlayers','ens','time','spap']
     return df
 
