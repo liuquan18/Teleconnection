@@ -90,9 +90,16 @@ lsuffix = '_last',rsuffix = '_all'
 
 
 #%%
-sept.tenyr_scatter(mix_first,mix_last,hlayer = 'all',mode = 'NAO')
+sept.tenyr_scatter(mix_first,mix_last,hlayer = 'all')
 
 
 # %%
-sept.tenyr_scatter(mix_first,mix_last,hlayer = 'all',mode = 'EA')
+sept.tenyr_scatter_extreme(mix_first,mix_last,hlayer = 'all')
+
+
+# %%
+first_np = first_first.to_dataframe().loc[50000,'NAO']['pc'].values
+last_np = last_last.to_dataframe().loc[50000,'NAO']['pc'].values
+mix_np = np.c_[first_np,last_np]
+mix_mix = pd.DataFrame(data = mix_np,columns = ['pc_first','pc_last'])
 # %%
