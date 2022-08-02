@@ -191,6 +191,10 @@ def visu_spatial_type(eofs,plev,mode = 'EA'):
 
 
 def tenyr_hist(data,hlayer = 50000,bins = 50):
+    """
+    visu 2d histplots of first-first---first-all, last-last---last-all
+    """
+
     if hlayer == 'all':
         data = data
     else:
