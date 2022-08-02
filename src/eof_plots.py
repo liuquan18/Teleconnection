@@ -210,8 +210,35 @@ def tenyr_hist(data,hlayer = 50000,bins = 50):
     plt.legend(handles=[blue_patch,red_patch],loc = 'upper left')
 
 
+def tenyr_scatter(first,last,hlayer = all, mode = 'NAO'):
+    """
+    make scaterplots of two first_on_first_first_on_all and last_on_last_last_on_all.
+    """
+    if hlayer=='all':
+        first,last = first.loc[:,mode,:],last.loc[:,mode,:]
+    else:
+        first,last = first.loc[hlayer,mode,:],last.loc[hlayer,mode,:]
+
+    fig, axes = plt.subplots(1,2,figsize = (8,3.5),dpi = 150)
+    plt.subplots_adjust(wspace = 0.3)
+    for ax in axes:
+        scaf = sns.scatterplot(data = first, x = 'pc_all',y = 'pc_first',
+        ax = ax,label = 'first')
+        scar = sns.scatterplot(data = last, x = 'pc_all',y = 'pc_last',
+        ax = ax,label = 'last',color = 'r',alpha=0.5)
+        
+        line = ax.plot(np.arange(-5,5,1),np.arange(-5,5,1),linestyle = 'dotted',color = 'k')
+
+        ax.legend(loc = 'upper left')
+        ax.set_ylabel('pc/std')
+        ax.set_xlabel('pc_all/std')
 
 
+    axes[0].set_xlim(2,4)
+    axes[0].set_ylim(2,4)
+
+    axes[1].set_xlim(-4,-2)
+    axes[1].set_ylim(-4,-2)
 
 
 
