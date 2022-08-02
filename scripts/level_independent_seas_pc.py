@@ -89,17 +89,29 @@ lsuffix = '_last',rsuffix = '_all'
 )
 
 
+## all levels
+### all scatterplots
 #%%
 sept.tenyr_scatter(mix_first,mix_last,hlayer = 'all')
 
-
+### extreme scatterplots
 # %%
 sept.tenyr_scatter_extreme(mix_first,mix_last,hlayer = 'all')
 
+#%%
+sept.tenyr_scatter(mix_first,mix_last,hlayer = 20000)
+sept.tenyr_scatter(mix_first,mix_last,hlayer = 100000)
 
-# %%
-first_np = first_first.to_dataframe().loc[50000,'NAO']['pc'].values
-last_np = last_last.to_dataframe().loc[50000,'NAO']['pc'].values
-mix_np = np.c_[first_np,last_np]
-mix_mix = pd.DataFrame(data = mix_np,columns = ['pc_first','pc_last'])
-# %%
+
+## different levels
+#%%
+### 200hpa
+sept.tenyr_scatter_extreme(mix_first,mix_last,hlayer = 20000)
+### 500hpa
+sept.tenyr_scatter_extreme(mix_first,mix_last,hlayer = 50000)
+### 850hpa
+sept.tenyr_scatter_extreme(mix_first,mix_last,hlayer = 85000)
+### 1000hpa
+sept.tenyr_scatter_extreme(mix_first,mix_last,hlayer = 100000)
+
+
