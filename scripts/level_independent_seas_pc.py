@@ -80,8 +80,8 @@ last_first = all_first.isel(time = slice(-10,None))
 last_last = all_last.isel(time = slice(-10,None))
 
 
-
-
+# The first_on_all and first_on_first, vs last_on_all and last_on_last
+#%%
 mix_first = first_first.to_dataframe().join(first_all.to_dataframe(),
 lsuffix = '_first',rsuffix = '_all')
 mix_last = last_last.to_dataframe().join(last_all.to_dataframe(),
@@ -89,38 +89,10 @@ lsuffix = '_last',rsuffix = '_all'
 )
 
 
-# %%
-bins = 50
-fig,ax = plt.subplots()
-hf = sns.histplot(data = mix_first,x = 'pc_all',y = 'pc_first',
-ax = ax,color= 'b', bins = bins,label = 'first',legend = False,alpha = 0.9)
+#%%
+sept.tenyr_scatter(mix_first,mix_last,hlayer = 'all',mode = 'NAO')
 
-hl = sns.histplot(data = mix_last,x = 'pc_all',y = 'pc_last',
-ax = ax,color = 'r', bins = bins,label = 'last',legend = False,alpha = 0.9)
-
-line = ax.plot(np.arange(-3,4,1),np.arange(-3,4,1),linestyle = 'dotted',color = 'k')
-
-blue_patch = mpatches.Patch(color='blue',label="first")
-red_patch = mpatches.Patch(color='red', label='last')
-
-plt.legend(handles=[blue_patch,red_patch],loc = 'upper left')
-# %%
-
-fig,ax = plt.subplots()
-sns.scatterplot(data = mix_first, x = "pc_all", y = "pc_first",ax = ax)
-sns.scatterplot(data = mix_last, x = "pc_all", y = "pc_last",ax = ax,
-color = 'r',alpha = 0.3)
-line = ax.plot(np.arange(-3,5,1),np.arange(-3,5,1),linestyle = 'dotted',color = 'k')
-ax.set_xlim(2,4)
-ax.set_ylim(2,4)
 
 # %%
-fig,ax = plt.subplots()
-sns.scatterplot(data = mix_first, x = "pc_all", y = "pc_first",ax = ax)
-sns.scatterplot(data = mix_last, x = "pc_all", y = "pc_last",ax = ax,
-color = 'r',alpha = 0.3)
-line = ax.plot(np.arange(-5,5,1),np.arange(-5,5,1),linestyle = 'dotted',color = 'k')
-ax.set_xlim(-4,-2)
-ax.set_ylim(-4,-2)
-
+sept.tenyr_scatter(mix_first,mix_last,hlayer = 'all',mode = 'EA')
 # %%
