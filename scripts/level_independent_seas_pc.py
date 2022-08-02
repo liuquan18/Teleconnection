@@ -81,32 +81,6 @@ last_last = all_last.isel(time = slice(-10,None))
 
 
 
-# To dataframes
-# %%
-all_dfs = sis.pc_column([all_all, all_first,all_last])
-first_dfs = sis.pc_column([first_first,first_all,first_last])
-last_dfs = sis.pc_column([last_first,last_all,last_last])
-
-# check Z500
-# %%
-sept.tenyr_hist(all_dfs, hlayer = 50000)
-
-# %%
-sept.tenyr_hist(first_dfs, hlayer = 50000)
-
-# %%
-sept.tenyr_hist(last_dfs, hlayer = 50000)
-# %%
-
-sept.tenyr_hist(last_dfs, hlayer = 'all')
-# %%
-sept.tenyr_hist(last_dfs, hlayer = 100000)
-# %%
-sept.tenyr_hist(last_dfs, hlayer = 20000)
-# %%
-sept.tenyr_hist(mix_dfs, hlayer = 'all')
-# %%
-
 
 mix_first = first_first.to_dataframe().join(first_all.to_dataframe(),
 lsuffix = '_first',rsuffix = '_all')
