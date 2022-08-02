@@ -283,10 +283,3 @@ def tenyr_scatter_extreme(first,last,hlayer = all):
     axes[0,1].set_title("EA")
 
 
-def join_ten_all():
-mix_first = first_first.to_dataframe().join(first_all.to_dataframe(),
-lsuffix = '_first',rsuffix = '_all')
-mix_last = last_last.to_dataframe().join(last_all.to_dataframe(),
-lsuffix = '_last',rsuffix = '_all'
-)
-
