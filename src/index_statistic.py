@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from eofs.standard import Eof
 from tqdm.notebook import trange, tqdm
-import seaborn as sn
+import seaborn as sns
 
 def df_sel(df,condition):
     """
@@ -49,3 +49,22 @@ def show_allyears_ens(df,mode):
     Z500_EA = df_sel(df,{'hlayers':50000,'mode':mode}).set_index(['hlayers','mode','ens','time'])
     Z850_EA = df_sel(df,{'hlayers':85000,'mode':mode}).set_index(['hlayers','mode','ens','time'])
     return Z200_EA,Z500_EA,Z850_EA
+
+
+def pc_column(pcs,mode='NAO'):
+    """
+    combine all three pcs make them into three columns of dataframe.
+    **Arguments**
+        *pcs* list of pcs in xarray, [first,all,last]
+        *mode* mode to plot.
+    """
+    dfs = [pc.sel(mode=mode).to_dataframe()[['pc']] for pc in pcs]
+    df = dfs[0].join(dfs[1],lsuffix = '_first',rsuffix = '_all')
+    df = df.join(dfs[2])
+    df.columns = ['pc_first','pc_all','pc_last']
+
+    df = df.stack()
+    df = pd.DataFrame(df,columns = ['pc'])
+    df.index.names = ['hlayers','ens','time','spap']
+    return df
+

@@ -3,6 +3,8 @@ from mpl_toolkits.axes_grid1 import AxesGrid
 import matplotlib.path as mpath
 from matplotlib.colorbar import Colorbar
 import matplotlib.ticker as mticker
+import matplotlib.patches as mpatches
+
 
 import cartopy.crs as ccrs
 import cartopy.mpl.ticker as cticker
@@ -13,8 +15,20 @@ from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from cartopy.mpl.ticker import (LongitudeFormatter, LatitudeFormatter,
                                 LatitudeLocator)
 
-import seaborn as sn
+import seaborn as sns
 import numpy as np
+import xarray as xr
+
+
+import sys
+sys.path.append("..")
+import src.spatial_pattern as ssp
+import src.index_statistic as sis
+
+import importlib
+importlib.reload(ssp) # after changed the source code
+importlib.reload(sis)
+
 
 
 def exp_time_height(exp_plot):
@@ -126,17 +140,150 @@ def visu_eofspa_all(eofs,mode = 'EA'):
 
     plt.show()
 def visu_eof_single(eof):
-    fig,ax = plt.subplots(1,1,subplot_kw={'projection':
-                                    ccrs.LambertAzimuthalEqualArea(
-                                        central_longitude=0.0,
-                                        central_latitude=90.0)})
-    ax = axbuild(ax)
-    im = ax.contourf(eof.lon.values,eof.lat.values,eof.values,
-                            levels = np.arange(-1,1.1,0.2),
-                            extend = 'both',
-                            transform = ccrs.PlateCarree(),
-                            cmap = 'RdBu_r'      
-    )
-    cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
-    fig.colorbar(im, cax=cbar_ax,label = 'eofs')
+    EOFmaps = eof.plot.contourf('lon','lat',col = 'mode',
+                                        levels = np.arange(-1,1.1,0.2),
+                                        extend = 'both',
+                                        subplot_kws=dict(projection = ccrs.LambertAzimuthalEqualArea(central_longitude=0.0,
+                                                                                                    central_latitude=90.0),
+                                                        )
+                                        ,transform = ccrs.PlateCarree(),add_colorbar = True )
+
+    for i,ax in enumerate(EOFmaps.axes.reshape(-1)):
+        axbuild(ax)
+        
+        ax.set_title(f'mode={eof.mode[i].values}')
+        
+        
+    fig = EOFmaps.fig
+    fig.set_figheight(6)
+    fig.set_figwidth(13.5)
+
+    EOFmaps.cbar.set_label("gph/m")
     plt.show()
+
+def visu_spatial_type(eofs,plev,mode = 'EA'):
+
+    all_eof,first_eof,last_eof = [eof.sel(hlayers = plev) for eof in eofs]
+    eof = xr.concat([first_eof,all_eof,last_eof],dim = 'type',coords='minimal',compat='override')
+    eof['type'] = ['first','all','last']
+
+    EOFmaps = eof.sel(mode=mode).plot.contourf('lon','lat',col = 'type',
+                                        levels = np.arange(-1,1.1,0.2),
+                                        extend = 'both',
+                                        subplot_kws=dict(projection = ccrs.LambertAzimuthalEqualArea(central_longitude=0.0,
+                                                                                                    central_latitude=90.0),
+                                                        )
+                                        ,transform = ccrs.PlateCarree(),add_colorbar = True )
+
+    for i,ax in enumerate(EOFmaps.axes.reshape(-1)):
+        axbuild(ax)
+        
+        ax.set_title(f'{eof.type[i].values}')
+        
+        
+    fig = EOFmaps.fig
+    fig.set_figheight(6)
+    fig.set_figwidth(13.5)
+
+    EOFmaps.cbar.set_label("gph/m")
+    plt.suptitle(f"plev = {plev}")
+    plt.show()
+
+
+def tenyr_hist(data,hlayer = 50000,bins = 50):
+    """
+    visu 2d histplots of first-first---first-all, last-last---last-all
+    """
+
+    if hlayer == 'all':
+        data = data
+    else:
+        data = data.loc[hlayer]
+    fig,ax = plt.subplots()
+    hf = sns.histplot(data = data,x = 'pc_all',y = 'pc_first',
+    ax = ax,color= 'b', bins = bins,label = 'first',legend = False,alpha = 0.9)
+
+    hl = sns.histplot(data = data,x = 'pc_all',y = 'pc_last',
+    ax = ax,color = 'r', bins = bins,label = 'last',legend = False,alpha = 0.9)
+
+    line = ax.plot(np.arange(-3,4,1),np.arange(-3,4,1),linestyle = 'dotted',color = 'k')
+
+    blue_patch = mpatches.Patch(color='blue',label="first")
+    red_patch = mpatches.Patch(color='red', label='last')
+
+    plt.legend(handles=[blue_patch,red_patch],loc = 'upper left')
+
+
+def tenyr_scatter(first,last,hlayer = all):
+    """
+    make scaterplots of first_on_first v.s first_on_all and last_on_last v.s last_on_all.
+    """
+
+    fig, axes = plt.subplots(1,2,figsize = (8,3.5),dpi = 150)
+    plt.subplots_adjust(wspace = 0.3)
+    modes = ['NAO','EA']
+    for i,ax in enumerate(axes):
+        if hlayer=='all':
+            first_data,last_data = first.loc[:,modes[i],:],last.loc[:,modes[i],:]
+        else:
+            first_data,last_data = first.loc[hlayer,modes[i],:],last.loc[hlayer,modes[i],:]
+
+        scaf = sns.scatterplot(data = first_data, x = 'pc_all',y = 'pc_first',
+        ax = ax,label = 'first')
+        scar = sns.scatterplot(data = last_data, x = 'pc_all',y = 'pc_last',
+        ax = ax,label = 'last',color = 'r',alpha=0.3)
+        
+        line = ax.plot(np.arange(-5,5,1),np.arange(-5,5,1),linestyle = 'dotted',color = 'k')
+
+        ax.legend(loc = 'upper left')
+        ax.set_ylabel('pc/std')
+        ax.set_xlabel('pc_all/std')
+    axes[0].set_title("NAO")
+    axes[1].set_title("EA")
+    plt.suptitle("first_first on first_all and last_last on last_all")
+    plt.show()
+
+
+
+def tenyr_scatter_extreme(first,last,hlayer = all):
+    """
+    make scaterplots of two first_on_first_first_on_all and last_on_last_last_on_all.
+    """
+
+    fig, axes = plt.subplots(2,2,figsize = (7,7),dpi = 150)
+    plt.subplots_adjust(wspace = 0.3,hspace = 0.3)
+    modes = ['NAO','EA']
+    for i,row in enumerate(axes.T):
+        for ax in row:
+            if hlayer=='all':
+                first_data,last_data = first.loc[:,modes[i],:],last.loc[:,modes[i],:]
+            else:
+                first_data,last_data = first.loc[hlayer,modes[i],:],last.loc[hlayer,modes[i],:]
+
+            scaf = sns.scatterplot(data = first_data, x = 'pc_all',y = 'pc_first',
+            ax = ax,label = 'first')
+            scar = sns.scatterplot(data = last_data, x = 'pc_all',y = 'pc_last',
+            ax = ax,label = 'last',color = 'r',alpha=0.3)
+            
+            line = ax.plot(np.arange(-5,5,1),np.arange(-5,5,1),linestyle = 'dotted',color = 'k')
+
+            ax.legend(loc = 'upper left')
+            ax.set_ylabel('pc/std')
+            ax.set_xlabel('pc_all/std')
+
+
+    axes[0,0].set_xlim(2,4)
+    axes[0,0].set_ylim(2,4)
+
+    axes[0,1].set_xlim(2,4)
+    axes[0,1].set_ylim(2,4)
+
+    axes[1,0].set_xlim(-4,-2)
+    axes[1,0].set_ylim(-4,-2)
+    axes[1,1].set_xlim(-4,-2)
+    axes[1,1].set_ylim(-4,-2) 
+
+    axes[0,0].set_title("NAO")
+    axes[0,1].set_title("EA")
+
+

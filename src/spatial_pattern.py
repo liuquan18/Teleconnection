@@ -182,10 +182,9 @@ def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
     dim_add_sp = np.hstack([nmode,detect_spdim(seasondata)]) #[-1,1,1] or [-1,1,1,1]
     std_pc_sp = std_pc.reshape(dim_add_sp) 
 
-    # do standarization
+    eof = eof_dw*std_pc_sp  # eof should always be normalized.
     if standard:
-        eof = eof_dw*std_pc_sp
-        pc = pc/std_pc
+        pc = pc/std_pc      # while pc sometime should not for comparation. 
 
     # xarray container for eof
     eof_cnt = seasondata[:nmode]
@@ -286,7 +285,7 @@ def project_field(fieldx,eofx,dim = 'com'):
         PPC = xr.DataArray(projected_pcs, dims = [fieldx.dims[0],eofx.dims[0]],
                             coords = {fieldx.dims[0]: fieldx[fieldx.dims[0]],
                                       eofx.dims[0]: eofx[eofx.dims[0]]})
-
+    PPC.name='pc'
     return PPC.unstack()  # to unstack 'com' to 'time' and 'ens' if 'com' exists.
 
 
@@ -336,9 +335,9 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
 
     # PC
     if fixed_pattern == 'all':  # a little different from the following two.
-        xarr = stack_ens(xarr,withdim='time')
-        _,PC,_ = doeof(xarr,nmode = nmode,dim = 'com',standard=False) # the pc is not standard to
+        eof,pc,_ = doeof(stack_ens(xarr,withdim='time'),nmode = nmode,dim = 'com',standard=False) # the pc is not standard to
                                                                       # be consistent with following.
+        PC = fixed_pc(xarr,eof)
     elif fixed_pattern == 'first':
         PC = fixed_pc(xarr,EOF.isel(time = 0))  # the first eof as spatial pattern
     elif fixed_pattern == 'last':
@@ -514,13 +513,20 @@ def main():
     """
     for debug
     """
-    ex = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/sample.nc")
-    ex = ex.var156
+    # ex = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/sample.nc")
+    # ex = ex.var156
+    allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
+    # split ens
+    splitens = split_ens(allens)
+    # demean ens-mean
+    demean = splitens-splitens.mean(dim = 'ens')
+    #select traposphere
+    trop = demean.sel(hlayers = slice(20000,100000))
 
 #     eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
 # window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
-    eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="eof")
+    eof_sar,pc_sar,fra_sar = season_eof(trop.var156,nmode=2,fixed_pattern="all")
 
 if __name__ == "__main__":
     main()

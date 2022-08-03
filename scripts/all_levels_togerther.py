@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
-
+import cartopy.crs as ccrs
 #%%
 import sys
 sys.path.append("..")
@@ -17,10 +17,14 @@ importlib.reload(ept)
 
 # %%
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
-#%%
+#%% split ens
 splitens = sp.split_ens(allens)
+
+#%% demean ens-mean
+demean = splitens-splitens.mean(dim = 'ens')
+
 #%% select traposphere
-trop = splitens.sel(hlayers = slice(20000,100000))
+trop = demean.sel(hlayers = slice(20000,100000))
 
 
 
@@ -31,7 +35,7 @@ eof_sira,pc_sira,fra_sira = sp.season_eof(trop.var156,nmode=2,method ="rolling_e
 window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
 #%%
-# eof_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/eof.nc")
+eof_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/eof.nc")
 pc_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/pc.nc")
 fra_sira.to_netcdf("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/fra.nc")
 
@@ -133,11 +137,19 @@ trop500 = trop.sel(hlayers = 50000).var156
 # %%
 trop500std = sp.standardize(trop500)
 # %%
-trop500com = sp.stack_ens(trop500std,withdim ='time')
+trop500com = sp.stack_ens(trop500,withdim ='time')
 # %%
 trop500com
 # %%
 eof500,_,_ = sp.doeof(trop500com)
 # %%
 ept.visu_eof_single(eof500)
+
+
+
+
+# %%
+trop_sm = trop.sel(hlayers = [50000,85000])
+# %%
+trop_sm.to_netcdf("/work/mh0033/m300883/3rdPanel/data/sample/Z500_850.nc")
 # %%
