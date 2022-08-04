@@ -112,12 +112,12 @@ def pattern_compare(all_indexes,period = 'first'):
     last_all, last_first, last_last = period_index(all_indexes,period = 'last')
     
     # first 10 periods
-    first_first_all = join_xarr(first_first,first_all)
-    first_last_all  = join_xarr(first_last, first_all)
+    first_first_all = join_xarr(first_first,first_all,lsuffix='_first')
+    first_last_all  = join_xarr(first_last, first_all,lsuffix='_last')
 
     # last 10 periods
-    last_first_all = join_xarr(last_first,last_all)
-    last_last_all = join_xarr(last_last, last_all)
+    last_first_all = join_xarr(last_first,last_all,lsuffix='_first')
+    last_last_all = join_xarr(last_last, last_all,lsuffix='_last')
 
     return [first_first_all, first_last_all],[last_first_all,last_last_all],\
         [first_first_all,last_last_all]
