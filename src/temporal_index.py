@@ -50,10 +50,11 @@ def index_diff_pattern(xarr,independent = True, standard=True):
 
     return all_all, all_first, all_last
 
-def ten_period_index(all_indexes,period = 'first'):
+def period_index(all_indexes,period = 'first'):
     """
-    get the first 10 or last 10 index. the index name can be seen from
-    the table below:
+    get the first 10 or last 10 index by projecting onto three different
+    patterns. 
+    the index name can be seen from the table below:
     |spatial pattern|   all   |    first    |    last   |
     |temporal period|
     |---------------|---------|-------------| ----------|
@@ -103,7 +104,7 @@ def first_first_all(all_all,all_first,all_last):
         two Dataframe. the first with columns 'pc_first', the second with column
         'pc_last','pc_all'.
     """
-    first_all, first_first,first_last = ten_period_index([all_all,all_first,all_last],
+    first_all, first_first,first_last = period_index([all_all,all_first,all_last],
     period='first')
     first_first_all = ten_period_all(first_first,first_all, '_first','_all')
     first_last_all  = ten_period_all(first_last, first_all, '_last','_all')
@@ -121,7 +122,7 @@ def last_last_all(all_all, all_first,all_last):
         two Dataframe. the first with columns 'pc_first', the second with column
         'pc_last','pc_all'.
     """
-    last_all, last_first, last_last = ten_period_index([all_all,all_first,all_last],
+    last_all, last_first, last_last = period_index([all_all,all_first,all_last],
     period = 'last')
     last_first_all = ten_period_all(last_first,last_all, '_first','_all')
     last_last_all  = ten_period_all(last_last,last_all, '_last','_all')
@@ -138,18 +139,19 @@ def first_last_all(all_all, all_first,all_last):
         two Dataframe. the first with columns 'pc_first', the second with column
         'pc_last','pc_all'.
     """
-    first_all, first_first,_ = ten_period_index([all_all,all_first,all_last],
+    first_all, first_first,_ = period_index([all_all,all_first,all_last],
     period='first')
-    last_all, _, last_last = ten_period_index([all_all,all_first,all_last],
+    last_all, _, last_last = period_index([all_all,all_first,all_last],
     period = 'last')
     first_first_all = ten_period_all(first_first,first_all,'_first','_all')
     last_last_all = ten_period_all(last_last, last_all, '_last','_all')
     return first_first_all, last_last_all
 
 
-def ten_all_dataframe(all_all,all_first,all_last,period='first'):
+def project_dataframe(all_all,all_first,all_last,period='first'):
     """
-    return the dataframe given the periods
+    return the dataframe, where the first column is the index from first or last pattern,
+    the second column is the index from all pattern. 
     **Argument**:
         *all_all* all data projected on all pattern.
         *all_first* all data projected on first pattern.
@@ -165,3 +167,6 @@ def ten_all_dataframe(all_all,all_first,all_last,period='first'):
     elif period == 'dynamic':
         first, last = first_last_all(all_all, all_first, all_last)
     return first, last
+
+def extreme(xarr,threshod = 2):
+    return xarr.where((xarr>threshod)|(xarr<-1*threshod))
