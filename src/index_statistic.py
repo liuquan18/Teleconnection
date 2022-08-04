@@ -71,3 +71,15 @@ def pc_column(pcs,mode='NAO'):
     df.index.names = ['hlayers','ens','time','spap']
     return df
 
+def ten_period_all(lxarr, rxarr,lsuffix,rsuffix = "_all"):
+    """
+    join two xarry into dataframes.
+    **Arguments**
+        *lxarr* the index of ten period onto first or last pattern.
+        *rxarr* the index of ten period onto all pattern
+        *lsuffix* "_first" or "_last"
+        *rsuffix* "_all"
+    **Return**
+        one dataframe with the first column as "pc_first" or "pc_last" (lsuffix).
+        the second column as "pc_all"
+    """

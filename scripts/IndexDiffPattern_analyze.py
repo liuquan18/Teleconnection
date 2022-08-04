@@ -1,13 +1,4 @@
-"""
-This file generate the seasonal pc, from different fixed patterns,
-which is the common pattern for all levels. 
-The scripts should generate 9 index.
-    spatial pattern: all    first10    last10
-    temporal pattern:
-    all               X       X           X
-    first10           X       X           X
-    last10            X       X           X
-"""
+
 # imports
 #%%
 import numpy as np
@@ -32,6 +23,24 @@ importlib.reload(ssp) # after changed the source code
 importlib.reload(sps)
 importlib.reload(sis)
 importlib.reload(sept)
+
+
+# all IndexDiffPattern load
+#%%
+all_all_ind = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_all_ind.nc')
+all_first_ind = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_first_ind.nc')
+all_last_ind = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_ind.nc')
+
+all_all_dep = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_all_dep.nc')
+all_first_dep = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_frist_dep.nc')
+all_last_dep = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_dep.nc')
+
+
+
+#%%
+
+
+
 
 
 
