@@ -214,7 +214,7 @@ def tenyr_hist(data,hlayer = 50000,bins = 50):
     plt.legend(handles=[blue_patch,red_patch],loc = 'upper left')
 
 
-def tenyr_scatter(first,last,hlayer = all):
+def tenyr_scatter(first,last,hlayer = 'all'):
     """
     make scaterplots of first_on_first v.s first_on_all and last_on_last v.s last_on_all.
     """
@@ -241,9 +241,9 @@ def tenyr_scatter(first,last,hlayer = all):
     axes[0].set_title("NAO")
     axes[1].set_title("EA")
     plt.suptitle("first_first on first_all and last_last on last_all")
-    
 
-def tenyr_scatter_extreme(first,last,hlayer = all):
+
+def tenyr_scatter_extreme(first,last,hlayer = 'all'):
     """
     make scaterplots of two first_on_first_first_on_all and last_on_last_last_on_all.
     """
@@ -284,4 +284,46 @@ def tenyr_scatter_extreme(first,last,hlayer = all):
     axes[0,0].set_title("NAO")
     axes[0,1].set_title("EA")
 
+
+def scatter_extreme(*args,mode = 'NAO', hlayer = 'all'):
+    """
+    plot extreme scatter of one mode at all three periods (first10, last10, dynamic)
+    **Arguments**
+        *dfs* the three rows of dataframes to plot.
+               for each period, dataframes of projection on first and last10 should be 
+               included. e.g. [first_first_all, last_first_all]
+    """
+    nperiods = len(args)
+    fig, axes = plt.subplots(2,nperiods,figsize = (8,5),dpi = 150) # rows for pos-neg, 
+                                                                   # columns for periods.
+    plt.subplots_adjust(hspace = 0.4,wspace = 0.4)
+    for row in axes: # first row for positive extreme, second row for negative extreme
+        for i, period in enumerate(args):
+            if hlayer == 'all':
+                firstPattern, lastPattern = [period_ten.loc[:,mode,:,:]
+                for period_ten in period]
+            else:
+                firstPattern, lastPattern = [period_ten.loc[hlayer,mode,:,:]
+                for period_ten in period]
+            
+            scatterfirst = sns.scatterplot(data = firstPattern,x = 'pc_all',y = 'pc_first',
+            ax = row[i],label = 'first_pattern')
+            scatterlast = sns.scatterplot(data = lastPattern,x = 'pc_all',y = 'pc_last',
+            ax = row[i], label = 'last_pattern',color = 'r',alpha=0.5)
+
+            line = row[i].plot(np.arange(-5,5,1),np.arange(-5,5,1),
+            linestyle = 'dotted',color = 'k')
+
+            row[i].legend(loc = 'upper left',fontsize = 7)
+            row[i].set_ylabel("index")
+            row[i].set_xlabel("index_all")
+    for ax in axes[0]:
+        ax.set_xlim(2,4)
+        ax.set_ylim(2,4)
+    for ax in axes[1]:
+        ax.set_xlim(-4,-2)
+        ax.set_ylim(-4,-2)
+    axes[0,0].set_title("first 10 period")
+    axes[0,1].set_title("dynamic")
+    axes[0,2].set_title("last 10 period")
 
