@@ -48,3 +48,27 @@ def index_diff_pattern(xarr,independent = True, standard=True):
 
     return all_all, all_first, all_last
 
+def ten_period_index(all_indexes,period = 'first'):
+    """
+    get the first 10 or last 10 index. the index name can be seen from
+    the table below:
+    |spatial pattern|   all   |    first    |    last   |
+    |temporal period|
+    |---------------|---------|-------------| ----------|
+    |first 10       |first-all| first-first | first-last|
+    |last 10        |last-all | last-first  | last-last |
+    **Arguments**
+        *all_index* the three index of all years to the three patterns.
+                    should be order in [all_all, all_first, all_last]
+        *period* the first 10 or last 10 years of index
+    **Return**
+        the three index for first or last 10 years. ordered in 
+        [_all,_first,_last]
+    """
+    if period=='first':
+        ten_all, ten_first, ten_last = [all_index.isel(time = slice(0,10))
+        for all_index in all_indexes]
+    if period =='last':
+        ten_all, ten_first, ten_last = [all_index.isel(time = slice(-10,None))
+        for all_index in all_indexes]
+    return ten_all, ten_first, ten_last
