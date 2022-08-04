@@ -76,9 +76,10 @@ def period_index(all_indexes,period = 'first'):
         for all_index in all_indexes]
     return ten_all, ten_first, ten_last
 
-def ten_period_all(lxarr, rxarr,lsuffix,rsuffix = "_all"):
+def ten_all(lxarr, rxarr,lsuffix,rsuffix = "_all"):
     """
-    join two xarry into dataframes.
+    join two xarry into dataframes, first the index from ten-pattern,
+    second the index from all-pattern.
     **Arguments**
         *lxarr* the index of ten period onto first or last pattern.
         *rxarr* the index of ten period onto all pattern
@@ -106,8 +107,8 @@ def first_first_all(all_all,all_first,all_last):
     """
     first_all, first_first,first_last = period_index([all_all,all_first,all_last],
     period='first')
-    first_first_all = ten_period_all(first_first,first_all, '_first','_all')
-    first_last_all  = ten_period_all(first_last, first_all, '_last','_all')
+    first_first_all = ten_all(first_first,first_all, '_first','_all')
+    first_last_all  = ten_all(first_last, first_all, '_last','_all')
     return first_first_all, first_last_all
 
 def last_last_all(all_all, all_first,all_last):
@@ -124,8 +125,8 @@ def last_last_all(all_all, all_first,all_last):
     """
     last_all, last_first, last_last = period_index([all_all,all_first,all_last],
     period = 'last')
-    last_first_all = ten_period_all(last_first,last_all, '_first','_all')
-    last_last_all  = ten_period_all(last_last,last_all, '_last','_all')
+    last_first_all = ten_all(last_first,last_all, '_first','_all')
+    last_last_all  = ten_all(last_last,last_all, '_last','_all')
     return last_first_all,last_last_all
 
 def first_last_all(all_all, all_first,all_last):
@@ -143,8 +144,8 @@ def first_last_all(all_all, all_first,all_last):
     period='first')
     last_all, _, last_last = period_index([all_all,all_first,all_last],
     period = 'last')
-    first_first_all = ten_period_all(first_first,first_all,'_first','_all')
-    last_last_all = ten_period_all(last_last, last_all, '_last','_all')
+    first_first_all = ten_all(first_first,first_all,'_first','_all')
+    last_last_all = ten_all(last_last, last_all, '_last','_all')
     return first_first_all, last_last_all
 
 
@@ -170,3 +171,15 @@ def project_dataframe(all_all,all_first,all_last,period='first'):
 
 def extreme(xarr,threshod = 2):
     return xarr.where((xarr>threshod)|(xarr<-1*threshod))
+
+def period_extreme(all_indexes,period = 'first'):
+    """
+    The same as period_index, but now mask out the non-extreme elements.
+    **Arguments**
+        *all_index* the three index of all years to the three patterns.
+                    should be order in [all_all, all_first, all_last]
+        *period* the first 10 or last 10 years of index
+    **Return**
+        the three index for 10 period, only with the extreme elements.
+        ordered in [_all,_first,_last]
+    """
