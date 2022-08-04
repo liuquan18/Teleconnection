@@ -5,7 +5,9 @@ This is the source code for temporal index generator
 import numpy as np
 import xarray as xr
 
-import spatial_pattern as ssp
+import sys
+sys.path.append("..")
+import src.spatial_pattern as ssp
 
 import importlib
 importlib.reload(ssp) # after changed the source code

@@ -27,12 +27,14 @@ import src.spatial_pattern as ssp
 import src.pattern_statistic as sps
 import src.index_statistic as sis
 import src.eof_plots as sept
+import src.temporal_index as sti
 
 import importlib
 importlib.reload(ssp) # after changed the source code
 importlib.reload(sps)
 importlib.reload(sis)
 importlib.reload(sept)
+importlib.reload(sti)
 
 
 
@@ -45,9 +47,39 @@ splitens = ssp.split_ens(allens)
 demean = splitens-splitens.mean(dim = 'ens')
 #select traposphere
 trop = demean.sel(hlayers = slice(20000,100000))
+trop = trop.var156
 
 
-# first row: project all onto the three spatial patterns.
+# all periods on three patterns
+#%%
+print("independent index")
+all_all_ind,all_first_ind,all_last_ind = sti.index_diff_pattern(trop,
+independent=True,standard=True)
+
+print("dependent index")
+all_all_dep, all_first_dep,all_last_dep = sti.index_diff_pattern(trop,
+independent=False, standard=True)
+
+#%% save the data
+all_all_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/index_diff_pattern/all_all_ind.nc')
+all_first_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/index_diff_pattern/all_first_ind.nc')
+all_last_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/index_diff_pattern/all_last_ind.nc')
+
+all_all_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/index_diff_pattern/all_all_dep.nc')
+all_first_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/index_diff_pattern/all_frist_dep.nc')
+all_last_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/index_diff_pattern/all_last_dep.nc')
+
+# Ten period index
+## independent
+### first 10 periods
+#%%
+first_first_ind, first_all_ind, first_last_ind = sti.ten_period_index([all_first_ind,
+all_all_ind,all_last_ind],period='first')
+
+### last 10 periods
+last_first_ind, last_all_ind, last_last_ind = sti.ten_period_index([all_first_ind,
+all_all_ind,])
+
 # %%
 _,all_all,_ = ssp.season_eof(trop.var156, nmode=2,window=10,
 fixed_pattern="all")  # "method" doesn't matter since the pc is 
