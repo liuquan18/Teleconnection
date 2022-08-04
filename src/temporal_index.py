@@ -76,7 +76,7 @@ def period_index(all_indexes,period = 'first'):
         for all_index in all_indexes]
     return ten_all, ten_first, ten_last
 
-def ten_all(lxarr, rxarr,lsuffix,rsuffix = "_all"):
+def join_xarr(lxarr, rxarr,lsuffix,rsuffix = "_all"):
     """
     join two xarry into dataframes, first the index from ten-pattern,
     second the index from all-pattern.
@@ -93,81 +93,36 @@ def ten_all(lxarr, rxarr,lsuffix,rsuffix = "_all"):
     lsuffix = lsuffix, rsuffix = rsuffix)  # ten_ten, ten_all
     return ten_ten_all
 
-def first_first_all(all_all,all_first,all_last):
+def pattern_compare(all_indexes,period = 'first'):
     """
-    generate dataframe for first 10 period, with the columns of 'pc_first','pc_all',
-    and 'pc_last','pc_all'.
-    **Argument**:
-        *all_all* all data projected on all pattern.
-        *all_first* all data projected on first pattern.
-        *all_last* all data projected on last pattern
+    compare the index from first (last) pattern and all pattern. 
+    **Argument**
+        *all_indexes* index of projecting all the time series onto three patterns.
+        *period* "first","last","dynamic", corresponding to the comparation between
+            - first-first --- first-all, first-last --- first-all
+            - last-first  --- last-all,  last-last  --- last-all
+            - first-first --- first-all, last-last --- last-all
+            here the first 'first' represent period, the second 'first' represent pattern.
     **Return**
-        two Dataframe. the first with columns 'pc_first', the second with column
-        'pc_last','pc_all'.
+        dataframe with the first column being the index from first pattern ,the second
+        column being the index from all.
     """
-    first_all, first_first,first_last = period_index([all_all,all_first,all_last],
-    period='first')
-    first_first_all = ten_all(first_first,first_all, '_first','_all')
-    first_last_all  = ten_all(first_last, first_all, '_last','_all')
-    return first_first_all, first_last_all
+    # getting the index for the two periods
+    first_all, first_first,first_last = period_index(all_indexes,period = period) # ten-->period
+    last_all, last_first, last_last = period_index(all_indexes,period = 'last')
+    
+    # first 10 periods
+    first_first_all = join_xarr(first_first,first_all)
+    first_last_all  = join_xarr(first_last, first_all)
 
-def last_last_all(all_all, all_first,all_last):
-    """
-    generate dataframe for last 10 period, with the columsn of 'pc_first','pc_all'
-    and 'pc_last','pc_all'
-    **Argument**:
-        *all_all* all data projected on all pattern.
-        *all_first* all data projected on first pattern.
-        *all_last* all data projected on last pattern
-    **Return**
-        two Dataframe. the first with columns 'pc_first', the second with column
-        'pc_last','pc_all'.
-    """
-    last_all, last_first, last_last = period_index([all_all,all_first,all_last],
-    period = 'last')
-    last_first_all = ten_all(last_first,last_all, '_first','_all')
-    last_last_all  = ten_all(last_last,last_all, '_last','_all')
-    return last_first_all,last_last_all
+    # last 10 periods
+    last_first_all = join_xarr(last_first,last_all)
+    last_last_all = join_xarr(last_last, last_all)
 
-def first_last_all(all_all, all_first,all_last):
-    """
-    generate dataframe for first-first-first-all and last-last-last-all.
-    **Argument**:
-        *all_all* all data projected on all pattern.
-        *all_first* all data projected on first pattern.
-        *all_last* all data projected on last pattern
-    **Return**
-        two Dataframe. the first with columns 'pc_first', the second with column
-        'pc_last','pc_all'.
-    """
-    first_all, first_first,_ = period_index([all_all,all_first,all_last],
-    period='first')
-    last_all, _, last_last = period_index([all_all,all_first,all_last],
-    period = 'last')
-    first_first_all = ten_all(first_first,first_all,'_first','_all')
-    last_last_all = ten_all(last_last, last_all, '_last','_all')
-    return first_first_all, last_last_all
+    return [first_first_all, first_last_all],[last_first_all,last_last_all],\
+        [first_first_all,last_last_all]
 
 
-def project_dataframe(all_all,all_first,all_last,period='first'):
-    """
-    return the dataframe, where the first column is the index from first or last pattern,
-    the second column is the index from all pattern. 
-    **Argument**:
-        *all_all* all data projected on all pattern.
-        *all_first* all data projected on first pattern.
-        *all_last* all data projected on last pattern
-        *period* 'first','last','dynamic'
-    **Return**
-        dataframe with the columns of ten_first, ten_all and ten_last, ten_all
-    """
-    if period == 'first':
-        first, last = first_first_all(all_all,all_first, all_last)
-    elif period == 'last':
-        first, last = last_last_all (all_all, all_first, all_last)
-    elif period == 'dynamic':
-        first, last = first_last_all(all_all, all_first, all_last)
-    return first, last
 
 def extreme(xarr,threshod = 2):
     return xarr.where((xarr>threshod)|(xarr<-1*threshod))
@@ -183,3 +138,7 @@ def period_extreme(all_indexes,period = 'first'):
         the three index for 10 period, only with the extreme elements.
         ordered in [_all,_first,_last]
     """
+    ten_all, ten_first, ten_last  = period_index(all_indexes)
+    ten_all, ten_first, ten_last = extreme(ten_all),extreme(ten_first),\
+        extreme(ten_last)
+    return ten_all, ten_first,ten_last
