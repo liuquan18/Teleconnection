@@ -93,7 +93,7 @@ def join_xarr(lxarr, rxarr,lsuffix,rsuffix = "_all"):
     lsuffix = lsuffix, rsuffix = rsuffix)  # ten_ten, ten_all
     return ten_ten_all
 
-def pattern_compare(all_indexes,period = 'first'):
+def pattern_compare(all_indexes):
     """
     compare the index from first (last) pattern and all pattern. 
     **Argument**
@@ -108,7 +108,7 @@ def pattern_compare(all_indexes,period = 'first'):
         column being the index from all.
     """
     # getting the index for the two periods
-    first_all, first_first,first_last = period_index(all_indexes,period = period) # ten-->period
+    first_all, first_first,first_last = period_index(all_indexes,period = 'first') # ten-->period
     last_all, last_first, last_last = period_index(all_indexes,period = 'last')
     
     # first 10 periods
