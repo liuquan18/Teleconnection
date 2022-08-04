@@ -124,8 +124,16 @@ def pattern_compare(all_indexes):
 def extreme(xarr,threshod = 2):
     """
     mask out non-extreme data
+    **Arguments**
+        *xarr* the xarr to be process
+    **Return**
+        new xarray with one extra dimension called 'extr_type'
     """
-    return xarr.where((xarr>threshod)|(xarr<-1*threshod))
+    pos_ex = xarr.where(xarr>threshod)
+    neg_ex = xarr.where(xarr<-1*thredshod)
+    ex = xr.concat([pos_ex,neg_ex],dim = ['pos','neg'])
+    ex = ex.rename({'concat_dim':'extr_type'})
+    return ex
 
 def period_extreme(all_indexes,period = 'first'):
     """
