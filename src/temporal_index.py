@@ -52,8 +52,7 @@ def index_diff_pattern(xarr,independent = True, standard=True):
 
 def period_index(all_indexes,period = 'first'):
     """
-    get the first 10 or last 10 index by projecting onto three different
-    patterns. 
+    get the first 10 or last 10 year index from the whole time series.
     the index name can be seen from the table below:
     |spatial pattern|   all   |    first    |    last   |
     |temporal period|
@@ -78,8 +77,8 @@ def period_index(all_indexes,period = 'first'):
 
 def join_xarr(lxarr, rxarr,lsuffix,rsuffix = "_all"):
     """
-    join two xarry into dataframes, first the index from ten-pattern,
-    second the index from all-pattern.
+    join two xarry into dataframes, with the first column being the index 
+    from first(last)-pattern, and the second the index from all-pattern.
     **Arguments**
         *lxarr* the index of ten period onto first or last pattern.
         *rxarr* the index of ten period onto all pattern
@@ -122,9 +121,10 @@ def pattern_compare(all_indexes):
     return [first_first_all, first_last_all],[last_first_all,last_last_all],\
         [first_first_all,last_last_all]
 
-
-
 def extreme(xarr,threshod = 2):
+    """
+    mask out non-extreme data
+    """
     return xarr.where((xarr>threshod)|(xarr<-1*threshod))
 
 def period_extreme(all_indexes,period = 'first'):

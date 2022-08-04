@@ -71,5 +71,8 @@ def pc_column(pcs,mode='NAO'):
     df.index.names = ['hlayers','ens','time','spap']
     return df
 
-
+def count_extreme(xarr):
+    """
+    count the number of extreme cases in xarr
+    """
 
