@@ -1,3 +1,6 @@
+"""
+source code for index statistics
+"""
 from pprint import pformat
 from pyrsistent import PSet
 import xarray as xr
