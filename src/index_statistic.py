@@ -74,5 +74,13 @@ def pc_column(pcs,mode='NAO'):
 def count_extreme(xarr):
     """
     count the number of extreme cases in xarr
+    **Arguments**
+        *xarr* the xarr where the non-extreme points are marked as np.nan
+    **Return**
+        number of extreme cases, with the coordinate of 'hlayer' and 'mode'
+        reserved.
     """
+    return xarr.count(dim = ('time','ens'))
+
+
 
