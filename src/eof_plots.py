@@ -241,9 +241,7 @@ def tenyr_scatter(first,last,hlayer = all):
     axes[0].set_title("NAO")
     axes[1].set_title("EA")
     plt.suptitle("first_first on first_all and last_last on last_all")
-    plt.show()
-
-
+    
 
 def tenyr_scatter_extreme(first,last,hlayer = all):
     """
