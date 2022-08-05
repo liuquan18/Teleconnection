@@ -328,7 +328,7 @@ def scatter_extreme(*args,mode = 'NAO', hlayer = 'all'):
     axes[0,1].set_title("dynamic")
     axes[0,2].set_title("last 10 period")
 
-def extreme_bar(extreme_counts,mode = 'NAO',ylim = 360):
+def extreme_bar(extreme_counts,mode = 'NAO',hlayer = 'all',ylim = 360):
     """
     plot the barplot of extreme counts. rows for 'pos' or 'neg'. cols for 'ind' or 'dep'
     **Arguments**
@@ -345,7 +345,10 @@ def extreme_bar(extreme_counts,mode = 'NAO',ylim = 360):
 
     for i, row in enumerate(axes):
         for j, col in enumerate(row): # ['ind' or 'dep']
-            data = extreme_counts[j].loc[extr_type[i],mode]
+            if hlayer == 'all':
+                data = sis.all_layer_counts(extreme_counts[j]).loc[extr_type[i],mode]
+            else:
+                data = extreme_counts[j].loc[extr_type[i],mode,hlayer]
             sns.barplot(data = data, x = 'period',y = 'extreme_counts',ax = col,
             hue = 'pattern', hue_order=['first','all','last'],palette = colors)
             if i ==0:

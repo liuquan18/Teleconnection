@@ -97,7 +97,16 @@ def extr_count_df(extreCounts,hlayer = 'all'):
     # final df
     final_df = first_df.join(last_df)
     final_df = pd.DataFrame(final_df.stack(),columns=['extreme_counts'])
-    final_df.index.names = ['extr_type','mode','pattern','period']
-    final_df = final_df.reset_index().set_index(['extr_type','mode'])
+    final_df.index.names = ['extr_type','hlayers','mode','pattern','period']
+    final_df = final_df.reset_index().set_index(['extr_type','mode','hlayers'])
 
     return final_df
+
+def all_layer_counts(extc):
+    """
+    sum the counts of all hlayers together.
+    """
+    extc = extc.reset_index()
+    extc_all = extc.groupby(['extr_type','mode','pattern','period'])[['extreme_counts']].sum()
+    extc_all = extc_all.reset_index().set_index(['extr_type','mode'])
+    return extc_all
