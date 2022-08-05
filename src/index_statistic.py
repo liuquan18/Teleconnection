@@ -71,15 +71,36 @@ def pc_column(pcs,mode='NAO'):
     df.index.names = ['hlayers','ens','time','spap']
     return df
 
-def count_nonzero(xarr):
+
+def extr_count_df(extreCounts,hlayer = 'all'):
     """
-    count the number of extreme cases in xarr
+    transform xarray to dataframe. two columns: first 10 and last 10 period.
+    new index level pattern: first, all and last.
     **Arguments**
-        *xarr* the xarr where the non-extreme points are marked as np.nan
+        *extreCounts* [fA,fF,fL,lA,lF,lL]
+        *hlayer* which vertical layer to be transform.
     **Return**
-        number of extreme cases, with the coordinate of 'hlayer' and 'mode'
-        reserved.
+        dataframe, with two columns and a new index level "pattern"
     """
-    return xarr.count(dim = ('time','ens'))
+    patterns = ['all','first','last','all','first','last']
+    dfs = []
+    for i, extre in enumerate(extreCounts):
+        column = patterns[i]
+        if hlayer == 'all':
+            df = extre.sum(dim = 'hlayers').to_dataframe(name = column)[[column]]
+        else:
+            df = extre.sel(hlayers = hlayer).to_dataframe(name = column)[[column]]
+        dfs.append(df)
 
+    # first 10 period
+    first_df = pd.concat(dfs[:3],axis = 1)
+    first_df = pd.DataFrame(first_df.stack(),columns = ['first10'])
 
+    # last 10 period
+    last_df = pd.concat(dfs[3:],axis = 1)
+    last_df = pd.DataFrame(last_df.stack(),columns=['last10'])
+
+    # final df
+    final_df = first_df.join(last_df)
+    final_df.index.names = ['extr_type','mode','pattern']
+    return final_df

@@ -2,6 +2,7 @@
 This is the source code for temporal index generator
 """
 
+from unittest.util import _count_diff_all_purpose
 import numpy as np
 import xarray as xr
 
@@ -52,7 +53,7 @@ def index_diff_pattern(xarr,independent = True, standard=True):
 
 def period_index(all_indexes,period = 'first'):
     """
-    get the first 10 or last 10 year index from the whole time series.
+    get the first 10 or last 10 year index from the whole time series of teleconnection.
     the index name can be seen from the table below:
     |spatial pattern|   all   |    first    |    last   |
     |temporal period|
@@ -123,14 +124,14 @@ def pattern_compare(all_indexes):
 
 def extreme(xarr,threshod = 2):
     """
-    mask out non-extreme data
+    mask out non-extreme data.
     **Arguments**
         *xarr* the xarr to be process
     **Return**
         new xarray with one extra dimension called 'extr_type'
     """
     pos_ex = xarr.where(xarr>threshod)
-    neg_ex = xarr.where(xarr<-1*thredshod)
+    neg_ex = xarr.where(xarr<-1*threshod)
     ex = xr.concat([pos_ex,neg_ex],dim = ['pos','neg'])
     ex = ex.rename({'concat_dim':'extr_type'})
     return ex
@@ -139,14 +140,57 @@ def period_extreme(all_indexes,period = 'first'):
     """
     The same as period_index, but now mask out the non-extreme elements.
     **Arguments**
-        *all_index* the three index of all years to the three patterns.
+        *all_index* the three index of all years from the three patterns.
                     should be order in [all_all, all_first, all_last]
         *period* the first 10 or last 10 years of index
     **Return**
         the three index for 10 period, only with the extreme elements.
         ordered in [_all,_first,_last]
     """
-    ten_all, ten_first, ten_last  = period_index(all_indexes)
-    ten_all, ten_first, ten_last = extreme(ten_all),extreme(ten_first),\
-        extreme(ten_last)
+    ten_all, ten_first, ten_last  = period_index(all_indexes,period = period)
+    ten_all, ten_first, ten_last = [extreme(ten_all),extreme(ten_first),
+        extreme(ten_last)]
     return ten_all, ten_first,ten_last
+
+def count_nonzero(xarr):
+    """
+    count the number of extreme cases in xarr
+    **Arguments**
+        *xarr* the xarr where the non-extreme points are marked as np.nan
+    **Return**
+        number of extreme cases, with the coordinate of 'hlayer' and 'mode'
+        reserved.
+    """
+    return xarr.count(dim = ('time','ens'))
+
+def extreme_count(all_indexes):
+    """
+    count the number of extreme cases in the period of first 10 years and 
+    last 10 years.
+    **Arguments**
+        *all_indexes* the three index of all years from the three patterns.
+                      should be order in [all_all, all_first, all_last]
+    **Return**
+        three for each period (six in total) extreme counts.
+    """
+    # getting the extreme indexes
+    fA, fF, fL = period_extreme(all_indexes,period = 'first')
+    lA, lF, lL = period_extreme(all_indexes, period = 'last')
+
+    # count the extreme cases
+    fA, fF, fL = [count_nonzero(fA),count_nonzero(fF),count_nonzero(fL)]
+    lA, lF, lL = [count_nonzero(lA),count_nonzero(lF),count_nonzero(lL)]
+    return lA,fF,fL,lA,lF,lL
+
+
+
+def main():
+    all_all_ind = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_all_ind.nc').pc
+    all_first_ind = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_first_ind.nc').pc
+    all_last_ind = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_ind.nc').pc
+
+    ind_fA,ind_fF,ind_fL,ind_lA,ind_lF,ind_lL = extreme_count([all_all_ind,all_first_ind,all_last_ind])
+
+
+if __name__ == "__main__":
+    main()
