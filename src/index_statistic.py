@@ -102,5 +102,8 @@ def extr_count_df(extreCounts,hlayer = 'all'):
 
     # final df
     final_df = first_df.join(last_df)
-    final_df.index.names = ['extr_type','mode','pattern']
+    final_df = pd.DataFrame(final_df.stack(),columns=['extreme_counts'])
+    final_df.index.names = ['extr_type','mode','pattern','period']
+    final_df = final_df.reset_index().set_index(['extr_type','mode'])
+
     return final_df

@@ -1,3 +1,4 @@
+import enum
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import AxesGrid
 import matplotlib.path as mpath
@@ -326,4 +327,40 @@ def scatter_extreme(*args,mode = 'NAO', hlayer = 'all'):
     axes[0,0].set_title("first 10 period")
     axes[0,1].set_title("dynamic")
     axes[0,2].set_title("last 10 period")
+
+def extreme_bar(extreme_counts,mode = 'NAO',ylim = 360):
+    """
+    plot the barplot of extreme counts. rows for 'pos' or 'neg'. cols for 'ind' or 'dep'
+    **Arguments**
+        *extreme_counts* the data for 'ind' and 'dep'.
+        *mode* 'NAO' or 'EA'
+    **Return**
+        plots
+    """
+    fig,axes = plt.subplots(2,2,figsize = (6,3),dpi = 150)
+    plt.subplots_adjust(hspace = 0)
+
+    colors = ['#1f77b4', '#2ca02c', '#d62728']
+    extr_type = ['pos','neg']
+
+    for i, row in enumerate(axes):
+        for j, col in enumerate(row): # ['ind' or 'dep']
+            data = extreme_counts[j].loc[extr_type[i],mode]
+            sns.barplot(data = data, x = 'period',y = 'extreme_counts',ax = col,
+            hue = 'pattern', hue_order=['first','all','last'],palette = colors)
+            if i ==0:
+                col.set_ylim(0,ylim)
+            if i ==1:
+                col.set_ylim(ylim,0)
+
+    axes[0,0].set_ylabel("positive")
+    axes[1,0].set_ylabel("negative")
+
+    axes[0,1].set_ylabel(None)
+    axes[1,1].set_ylabel(None)
+    axes[0,1].get_legend().remove()
+    axes[1,0].get_legend().remove()
+    axes[1,1].get_legend().remove()
+    axes[0,0].legend(loc = 'upper left')
+
 
