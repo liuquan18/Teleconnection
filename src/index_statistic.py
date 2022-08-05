@@ -83,14 +83,8 @@ def extr_count_df(extreCounts,hlayer = 'all'):
         dataframe, with two columns and a new index level "pattern"
     """
     patterns = ['all','first','last','all','first','last']
-    dfs = []
-    for i, extre in enumerate(extreCounts):
-        column = patterns[i]
-        if hlayer == 'all':
-            df = extre.sum(dim = 'hlayers').to_dataframe(name = column)[[column]]
-        else:
-            df = extre.sel(hlayers = hlayer).to_dataframe(name = column)[[column]]
-        dfs.append(df)
+    dfs = [extre.to_dataframe(name = patterns[i])[[patterns[i]]]
+    for i, extre in enumerate(extreCounts)]
 
     # first 10 period
     first_df = pd.concat(dfs[:3],axis = 1)
