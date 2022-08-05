@@ -1,5 +1,4 @@
 #%%
-from contextlib import AsyncExitStack
 import sys
 sys.path.append("..")
 import scripts.project_field as pjh
@@ -35,7 +34,7 @@ splitens = ssp.split_ens(allens)
 # demean ens-mean
 demean = splitens-splitens.mean(dim = 'ens')
 #select traposphere
-z_djf = demean.sel(hlayers = 50000)
+z_djf = demean.sel(hlayers = [50000,85000])
 
 #%% standardize.
 z_djf = z_djf.var156
@@ -48,7 +47,7 @@ z_djf = z_djf.transpose('com',...)
 #%% do eof
 # weights
 coslat = np.cos(np.deg2rad(z_djf.lat)).values.clip(0., 1.)
-wgts = np.sqrt(coslat)[..., np.newaxis]
+wgts = np.sqrt(coslat)[..., np.newaxis,np.newaxis]
 
 solver = Eof(z_djf.values, weights=wgts,center=True)
 nmode = 2
@@ -57,6 +56,7 @@ eof = solver.eofs(neofs=nmode)
 pc = solver.pcs(npcs = nmode)
 fra = solver.varianceFraction(neigs=nmode)
 
+#%%
 # to xarray
 eof_container = z_djf.isel(com = slice(0,nmode)).rename({'com':'mode'})
 eof_container['mode'] = ['NAO','EA']
