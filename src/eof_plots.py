@@ -378,6 +378,7 @@ def extreme_allh_line(extreme_count,mode = 'NAO'):
         *mode* the mode to be plotted.
     """
     fig, axes = plt.subplots(1,3,figsize = (8,3),dpi = 150)
+    plt.subplots_adjust(wspace = 0.3)
     colors = ['#1f77b4', '#2ca02c', '#d62728']
 
     # calculte the period diff
@@ -386,23 +387,30 @@ def extreme_allh_line(extreme_count,mode = 'NAO'):
     data = extreme_count.reset_index().set_index(['mode','period'])
     data['hlayers'] = (data['hlayers']/100).astype(np.int32)
 
-    firstPeriod = sns.lineplot(data = data.loc[mode,'first10'].reset_index(),
+    firstPeriod = sns.lineplot(data = data.loc[mode,'first10'].reset_index()\
+        .sort_values(by = ['extr_type','hlayers'],ascending = False),
     x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
-    ax = axes[0],hue_order=['first','all','last'],palette = colors,ci = None)
+    ax = axes[0],hue_order=['first','all','last'],palette = colors,ci = None,
+    sort= False,)
 
-    lastPeriod = sns.lineplot(data = data.loc[mode,'last10'].reset_index(),
+    lastPeriod = sns.lineplot(data = data.loc[mode,'last10'].reset_index()\
+        .sort_values(by = ['extr_type','hlayers'],ascending = False),
     x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
-    ax = axes[1],hue_order=['first','all','last'],palette = colors,ci = None)
+    ax = axes[1],hue_order=['first','all','last'],palette = colors,ci = None,
+    sort= False,)
 
-    difference = sns.lineplot(data = diff.xs(mode,level = 'mode').reset_index(),
+    difference = sns.lineplot(data = diff.xs(mode,level = 'mode').reset_index()\
+        .sort_values(by = ['extr_type','hlayers'],ascending = False),
     x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
-    ax = axes[2],hue_order=['first','all','last'],palette = colors,ci = None)
+    ax = axes[2],hue_order=['first','all','last'],palette = colors,ci = None,
+    sort= False,)
 
     axes[0].set_ylim(1000,200)
     axes[1].set_ylim(1000,200)
     axes[2].set_ylim(1000,200)
     axes[0].set_xlim(0,50)
     axes[1].set_xlim(0,50)
+    axes[2].set_xlim(-10,40)
 
 
 
