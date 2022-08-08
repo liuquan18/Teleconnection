@@ -69,4 +69,3 @@ all_all_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_a
 all_first_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_frist_dep.nc')
 all_last_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_dep.nc')
 
-print("hello world")
