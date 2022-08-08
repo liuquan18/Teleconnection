@@ -110,3 +110,16 @@ def all_layer_counts(extc):
     extc_all = extc.groupby(['extr_type','mode','pattern','period'])[['extreme_counts']].sum()
     extc_all = extc_all.reset_index().set_index(['extr_type','mode'])
     return extc_all
+
+def period_diff(extreme_count):
+    """
+    calculate the difference of the number of extreme events between the first 10 and
+    the last 10 years.
+    **Arguments**
+        *extreme_count* the dataframe where 'period' is one of the columns.
+    """
+    firstP = extreme_count[extreme_count['period']=='first10']
+    lastP = extreme_count[extreme_count['period']== 'last10']
+    diff = pd.DataFrame(lastP['extreme_counts']-firstP['extreme_counts'])
+    diff.columns = ['diff']
+    return diff
