@@ -212,7 +212,9 @@ def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
 
 def project_field(fieldx,eofx,dim = 'com'):
     """
-    project original field onto eofs to get the temporal index
+    project original field onto eofs to get the temporal index.
+    Different from python eofs package, here if there are three dimensions in sptial,
+    i.e, [lat,lon,height], the projected pc is calculated independently from each height.
     **Arguments:**
         *field*: the DataArray field to be projected
         *eof*: the eofs
@@ -275,7 +277,7 @@ def project_field(fieldx,eofx,dim = 'com'):
         projected_pcs = np.array(projected_pcs)
 
         PPC = xr.DataArray(projected_pcs,dims = [fieldx.dims[-1],
-                                                            fieldx.dims[0],eofx.dims[0]],
+                                                fieldx.dims[0],eofx.dims[0]], # [height,record,mode]
                             coords={fieldx.dims[-1]:fieldx[fieldx.dims[-1]],
                                     fieldx.dims[0] :fieldx[fieldx.dims[0]],
                                     eofx.dims[0]: eofx[eofx.dims[0]]})
@@ -335,7 +337,8 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
 
     # PC
     if fixed_pattern == 'all':  # a little different from the following two.
-        eof,pc,_ = doeof(stack_ens(xarr,withdim='time'),nmode = nmode,dim = 'com',standard=False) # the pc is not standard to
+        eof,pc,_ = doeof(stack_ens(xarr,withdim='time'),nmode = nmode,dim = 'com',standard=False)
+                                                                      # the pc is not standard to
                                                                       # be consistent with following.
         PC = fixed_pc(xarr,eof)
     elif fixed_pattern == 'first':
