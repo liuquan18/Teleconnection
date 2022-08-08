@@ -390,28 +390,28 @@ def extreme_allh_line(extreme_count,mode = 'NAO'):
 
     firstPeriod = sns.lineplot(data = data.loc[mode,'first10'].reset_index()\
         .reset_index().sort_values(by = ['hlayers'],ascending = True),
-    x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
+    y = 'extreme_counts',x = 'hlayers',hue = 'pattern',style = 'extr_type',
     ax = axes[0],hue_order=['first','all','last'],style_order = ['pos','neg'],palette = colors,
     ci = None,sort= False,)
 
     lastPeriod = sns.lineplot(data = data.loc[mode,'last10'].reset_index()\
         .reset_index().sort_values(by = ['hlayers'],ascending = True),
-    x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
+    y = 'extreme_counts',x = 'hlayers',hue = 'pattern',style = 'extr_type',
     ax = axes[1],hue_order=['first','all','last'],style_order = ['pos','neg'],palette = colors,
     ci = None, sort= False,)
 
     difference = sns.lineplot(data = diff.xs(mode,level = 'mode').reset_index()\
         .reset_index().sort_values(by = ['hlayers'],ascending = True),
-    x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
+    y = 'extreme_counts',x = 'hlayers',hue = 'pattern',style = 'extr_type',
     ax = axes[2],hue_order=['first','all','last'],style_order = ['pos','neg'],
     palette = colors,ci = None,sort= False,)
 
-    axes[0].set_ylim(1000,200)
-    axes[1].set_ylim(1000,200)
-    axes[2].set_ylim(1000,200)
-    axes[0].set_xlim(0,50)
-    axes[1].set_xlim(0,50)
-    axes[2].set_xlim(-10,40)
+    axes[0].set_xlim(1000,200)
+    axes[1].set_xlim(1000,200)
+    axes[2].set_xlim(1000,200)
+    axes[0].set_ylim(0,50)
+    axes[1].set_ylim(0,50)
+    axes[2].set_ylim(-10,40)
 
 
 
