@@ -367,3 +367,12 @@ def extreme_bar(extreme_counts,mode = 'NAO',hlayer = 'all',ylim = 360):
     axes[0,0].legend(loc = 'upper left')
 
 
+def extreme_allh_line(extreme_count):
+    """
+    plot the vertical profile of extreme counts. 
+    x-axis the counts, y-axis the height. different color the pattern,
+    solid or dashed for pos or negative. different panel for periods.
+    **Arguments**
+        *extreme_count* a dataframe produced by function sis.extr_count_df
+    """
+    fig, axes = plt.subplots()

@@ -65,7 +65,7 @@ pcx = xr.DataArray(pc,dims = ['com','mode'],coords = {'com':np.arange(len(z_djf.
 
 
 #%% show here eof
-eofplots = eofx.isel(mode=1).plot(subplot_kws={'projection':ccrs.Orthographic(central_longitude=-20, central_latitude=60)},
+eofplots = eofx.isel(mode=1,hlayers = 0).plot(subplot_kws={'projection':ccrs.Orthographic(central_longitude=-20, central_latitude=60)},
 transform = ccrs.PlateCarree())
 eofplots.axes.coastlines()
 eofplots.axes.gridlines()
@@ -90,6 +90,8 @@ plt.suptitle("pc from hand defined func projectField")
 
 #%%
 hpcs = ssp.project_field(z_djf,eofx)
+hpcs.isel(mode=1,hlayers = 1).plot()
+plt.suptitle("pc from hand defined func projectField")
 
 
 
