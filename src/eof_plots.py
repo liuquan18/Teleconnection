@@ -1,4 +1,5 @@
 import enum
+import pwd
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import AxesGrid
 import matplotlib.path as mpath
@@ -23,7 +24,7 @@ import pandas as pd
 
 
 import sys
-sys.path.append("..")
+sys.path.append("/work/mh0033/m300883/3rdPanel/")
 import src.spatial_pattern as ssp
 import src.index_statistic as sis
 
@@ -445,6 +446,4 @@ def vertical_profile(extreme_counts,mode = 'NAO'):
     all = all.unstack([3,2,1])
 
     return all
-
-
 
