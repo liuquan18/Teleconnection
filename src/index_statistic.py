@@ -1,8 +1,6 @@
 """
 source code for index statistics
 """
-from pprint import pformat
-from pyrsistent import PSet
 import xarray as xr
 import numpy as np
 import pandas as pd
