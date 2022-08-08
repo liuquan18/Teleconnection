@@ -427,4 +427,24 @@ def extreme_allh_line(extreme_count,mode = 'NAO'):
     axes[1].set_title(f"{mode} last10")
     axes[2].set_title(f"{mode} difference")
 
+def vertical_profile(extreme_counts,mode = 'NAO'):
+    """
+    using matplotlib to plot the vertical profile.
+    solve the problem of y-axis sort.
+    """
+
+    extreme_counts = extreme_counts.xs(mode,level = 'mode')
+    diff = sis.period_diff(extreme_counts) # get the data for thir panel
+
+    df_column_period = extreme_counts.reset_index()\
+        .set_index(['hlayers','pattern','extr_type','period'])\
+        .unstack(3)
+    df_column_period = df_column_period['extreme_counts']
+    all = df_column_period.join(diff)
+
+    all = all.unstack([3,2,1])
+
+    return all
+
+
 
