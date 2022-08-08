@@ -372,7 +372,8 @@ def extreme_allh_line(extreme_count,mode = 'NAO'):
     """
     plot the vertical profile of extreme counts. 
     x-axis the counts, y-axis the height. different color the pattern,
-    solid or dashed for pos or negative. different panel for periods.
+    solid or dashed for pos or negative. the first panel for first10, the
+    second for last10, the last for the difference.
     **Arguments**
         *extreme_count* a dataframe produced by function sis.extr_count_df
         *mode* the mode to be plotted.
