@@ -19,6 +19,7 @@ from cartopy.mpl.ticker import (LongitudeFormatter, LatitudeFormatter,
 import seaborn as sns
 import numpy as np
 import xarray as xr
+import pandas as pd
 
 
 import sys
@@ -367,12 +368,54 @@ def extreme_bar(extreme_counts,mode = 'NAO',hlayer = 'all',ylim = 360):
     axes[0,0].legend(loc = 'upper left')
 
 
-def extreme_allh_line(extreme_count):
+def extreme_allh_line(extreme_count,mode = 'NAO'):
     """
     plot the vertical profile of extreme counts. 
     x-axis the counts, y-axis the height. different color the pattern,
     solid or dashed for pos or negative. different panel for periods.
     **Arguments**
         *extreme_count* a dataframe produced by function sis.extr_count_df
+        *mode* the mode to be plotted.
     """
-    fig, axes = plt.subplots()
+    fig, axes = plt.subplots(1,3,figsize = (8,3),dpi = 150)
+    colors = ['#1f77b4', '#2ca02c', '#d62728']
+
+    # calculte the period diff
+    diff = sis.period_diff(extreme_count)
+
+    data = extreme_count.reset_index().set_index(['mode','period'])
+    data['hlayers'] = (data['hlayers']/100).astype(np.int32)
+
+    firstPeriod = sns.lineplot(data = data.loc[mode,'first10'].reset_index(),
+    x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
+    ax = axes[0],hue_order=['first','all','last'],palette = colors,ci = None)
+
+    lastPeriod = sns.lineplot(data = data.loc[mode,'last10'].reset_index(),
+    x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
+    ax = axes[1],hue_order=['first','all','last'],palette = colors,ci = None)
+
+    difference = sns.lineplot(data = diff.xs(mode,level = 'mode').reset_index(),
+    x = 'extreme_counts',y = 'hlayers',hue = 'pattern',style = 'extr_type',
+    ax = axes[2],hue_order=['first','all','last'],palette = colors,ci = None)
+
+    axes[0].set_ylim(1000,200)
+    axes[1].set_ylim(1000,200)
+    axes[2].set_ylim(1000,200)
+    axes[0].set_xlim(0,50)
+    axes[1].set_xlim(0,50)
+
+
+
+    axes[0].set_ylabel('gph/hpa')
+    axes[1].set_ylabel(None)
+    axes[2].set_ylabel(None)
+
+    axes[0].legend(loc = 'lower left',fontsize = 7)
+    axes[1].get_legend().remove()
+    axes[2].get_legend().remove()
+    
+    axes[0].set_title(f"{mode} first10")
+    axes[1].set_title(f"{mode} last10")
+    axes[2].set_title(f"{mode} difference")
+
+

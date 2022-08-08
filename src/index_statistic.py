@@ -118,8 +118,11 @@ def period_diff(extreme_count):
     **Arguments**
         *extreme_count* the dataframe where 'period' is one of the columns.
     """
+    extreme_count = extreme_count.reset_index()
+    extreme_count['hlayers'] = (extreme_count['hlayers']/100).astype(np.int32)
+    extreme_count = extreme_count.set_index(['extr_type','mode','hlayers','pattern'])
+
     firstP = extreme_count[extreme_count['period']=='first10']
     lastP = extreme_count[extreme_count['period']== 'last10']
     diff = pd.DataFrame(lastP['extreme_counts']-firstP['extreme_counts'])
-    diff.columns = ['diff']
     return diff
