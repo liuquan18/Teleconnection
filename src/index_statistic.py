@@ -114,17 +114,48 @@ def period_diff(extreme_count):
     calculate the difference of the number of extreme events between the first 10 and
     the last 10 years.
     **Arguments**
-        *extreme_count* the dataframe where 'period' is one of the columns.
+        *extreme_count* the dataframe of extreme counts, gotten from function 
+        'extr_count_df'
+    **Return**
+        *diff* diff dataframe, with four columns representing different patterns.
     """
 
-    extreme_count = extreme_count.reset_index()
-    extreme_count = extreme_count.set_index(['extr_type','mode','hlayers','pattern'])
+    # first pattern data 
+    fF = df_sel(extreme_count,{'period':'first10','pattern':'first'})
+    lF = df_sel(extreme_count,{'period':'first10','pattern':'last'})
 
-    firstP = extreme_count[extreme_count['period']=='first10']
-    lastP = extreme_count[extreme_count['period']== 'last10']
-    diff = pd.DataFrame(lastP['extreme_counts']-firstP['extreme_counts'])
-    diff.columns = ['diff']
+    # last pattern data
+    fL = df_sel(extreme_count,{'period':'first10','pattern':'last' })
+    lL = df_sel(extreme_count,{'period':'last10',  'pattern':'last'})
+
+    # all pattern data
+    fA = df_sel(extreme_count,{'period':'first10','pattern':'all'})
+    lA = df_sel(extreme_count,{'period':'last10', 'pattern':'all'})
+
+    # first pattern diff
+    firstDiff = lF[['extreme_counts']]-fF[['extreme_counts']]
+
+    # last pattern diff
+    lastDiff = lL[['extreme_counts']]-fL[['extreme_counts']]
+
+    # dynamic diff
+    dynamicDiff = lL[['extreme_counts']]-fF[['extreme_counts']]
+
+    # all diff
+    allDiff = lA[['extreme_counts']]-fA[['extreme_counts']]
+
+    # together
+    diff = firstDiff.join(lastDiff,lsuffix = '_first',rsuffix = '_last')
+    diff = diff.join(dynamicDiff)
+    diff = diff.join(allDiff,lsuffix = '_dynamic',rsuffix = '_all')
+
+
+    # column names
+    columns = pd.Index(['first','last','dynamic','all'],name = 'diff')
+    diff.columns = columns
     return diff
+
+
 
 def combine_diff(extreme_counts,mode = 'NAO'):
     """
