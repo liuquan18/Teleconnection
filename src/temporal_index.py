@@ -76,51 +76,6 @@ def period_index(all_indexes,period = 'first'):
         for all_index in all_indexes]
     return ten_all, ten_first, ten_last
 
-def join_xarr(lxarr, rxarr,lsuffix,rsuffix = "_all"):
-    """
-    join two xarry into dataframes, with the first column being the index 
-    from first(last)-pattern, and the second the index from all-pattern.
-    **Arguments**
-        *lxarr* the index of ten period onto first or last pattern.
-        *rxarr* the index of ten period onto all pattern
-        *lsuffix* "_first" or "_last"
-        *rsuffix* "_all"
-    **Return**
-        one dataframe with the first column as "pc_first" or "pc_last" (lsuffix).
-        the second column as "pc_all"
-    """
-    ten_ten_all = lxarr.to_dataframe().join(rxarr.to_dataframe(),
-    lsuffix = lsuffix, rsuffix = rsuffix)  # ten_ten, ten_all
-    return ten_ten_all
-
-def pattern_compare(all_indexes):
-    """
-    compare the index from first (last) pattern and all pattern. 
-    **Argument**
-        *all_indexes* index of projecting all the time series onto three patterns.
-        *period* "first","last","dynamic", corresponding to the comparation between
-            - first-first --- first-all, first-last --- first-all
-            - last-first  --- last-all,  last-last  --- last-all
-            - first-first --- first-all, last-last --- last-all
-            here the first 'first' represent period, the second 'first' represent pattern.
-    **Return**
-        dataframe with the first column being the index from first pattern ,the second
-        column being the index from all.
-    """
-    # getting the index for the two periods
-    first_all, first_first,first_last = period_index(all_indexes,period = 'first') # ten-->period
-    last_all, last_first, last_last = period_index(all_indexes,period = 'last')
-    
-    # first 10 periods
-    first_first_all = join_xarr(first_first,first_all,lsuffix='_first')
-    first_last_all  = join_xarr(first_last, first_all,lsuffix='_last')
-
-    # last 10 periods
-    last_first_all = join_xarr(last_first,last_all,lsuffix='_first')
-    last_last_all = join_xarr(last_last, last_all,lsuffix='_last')
-
-    return [first_first_all, first_last_all],[last_first_all,last_last_all],\
-        [first_first_all,last_last_all]
 
 def extreme(xarr,threshod = 2):
     """
