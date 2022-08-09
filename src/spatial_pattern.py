@@ -329,7 +329,7 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
     # the validtime period where totally ten years of data are fully avaiable.
     validtime = xarr.isel(time = slice(5,-5)).time
 
-    if return_full_eof:
+    if return_full_eof:  # changing patterns need all EOFs
         # EOF and FRA
         EOF,FRA = changing_eofs(xarr,validtime,nmode = nmode,window = window)
     else:
@@ -404,12 +404,11 @@ def changing_pc(xarr,validtime,EOF):
     **Return**
         changing pc, whose length is time-10.
     """
-    xarr = stack_ens(xarr,withdim='window_dim')
     PC = []
     for time in validtime:
         field = xarr.sel(time = time)
         pattern = EOF.sel(time = time)
-        pc = fixed_pc(field,pattern,dim = 'ens') # project all ens onto one eof.
+        pc = project_field(field,pattern,dim = 'ens') # project all ens onto one eof.
         PC.append(pc)
     PC = xr.concat(pc,dim = validtime)
     return PC
@@ -524,12 +523,13 @@ def main():
     # demean ens-mean
     demean = splitens-splitens.mean(dim = 'ens')
     #select traposphere
-    trop = demean.sel(hlayers = slice(20000,100000))
+    trop = demean.sel(hlayers = slice(85000,100000)).isel(time = slice(0,15))
 
 #     eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
 # window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
-    eof_sar,pc_sar,fra_sar = rolling_eof(trop.var156,nmode=2,fixed_pattern="all")
-
+    _,index,_ = season_eof(trop.var156,nmode=2,method = 'rolling_eof',window=10,
+            fixed_pattern=False,return_full_eof=True,independent = True,
+            standard = True)
 if __name__ == "__main__":
     main()
