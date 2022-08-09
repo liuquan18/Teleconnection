@@ -117,8 +117,6 @@ def period_diff(extreme_count):
         *extreme_count* the dataframe where 'period' is one of the columns.
     """
 
-    diff = sis.extrem
-
     extreme_count = extreme_count.reset_index()
     extreme_count = extreme_count.set_index(['extr_type','mode','hlayers','pattern'])
 
