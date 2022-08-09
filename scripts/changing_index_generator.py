@@ -55,6 +55,7 @@ ind_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_EOF.nc
 ind_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_index.nc")
 ind_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_fra.nc")
 
+#%%
 dep_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_EOF.nc")
 dep_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_index.nc")
 dep_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_fra.nc")

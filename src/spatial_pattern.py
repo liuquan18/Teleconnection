@@ -529,7 +529,7 @@ def main():
 # window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
     _,index,_ = season_eof(trop.var156,nmode=2,method = 'rolling_eof',window=10,
-            fixed_pattern=False,return_full_eof=True,independent = True,
+            fixed_pattern='all',return_full_eof=False,independent = True,
             standard = True)
 if __name__ == "__main__":
     main()
