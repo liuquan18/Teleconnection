@@ -51,6 +51,26 @@ def index_diff_pattern(xarr,independent = True, standard=True):
 
     return all_all, all_first, all_last
 
+def index_changing_pattern(xarr, independent = True, standard = True):
+    """
+    generate the index from the changing pattern.
+    projecting the data series (10 years and 100 ensembles) onto the corresponding 
+    spatial patterns, which varies as time goes by. such spatial patterns are generated
+    by so called 'rolling_eof'.
+    """
+    EOF,index,FRA = ssp.season_eof(xarr,nmode=2,method = 'rolling_eof',window=10,
+                fixed_pattern=False,return_full_eof=True,independent = independent,
+                standard = True)
+
+    if standard:
+        index_mean = index.mean(dim = 'time')
+        index_std = index.std(dim = 'time')
+        index = (index-index_mean)/index_std
+
+    return EOF,index,FRA
+
+
+
 def period_index(all_indexes,period = 'first'):
     """
     get the first 10 or last 10 year index from the whole time series of teleconnection.
@@ -115,7 +135,7 @@ def main():
     all_first_ind = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_first_ind.nc').pc
     all_last_ind = xr.open_dataset('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_ind.nc').pc
 
-    ind_fA,ind_fF,ind_fL,ind_lA,ind_lF,ind_lL = extreme_count([all_all_ind,all_first_ind,all_last_ind])
+    ind_fA,ind_fF,ind_fL,ind_lA,ind_lF,ind_lL = period_extreme([all_all_ind,all_first_ind,all_last_ind])
 
 
 if __name__ == "__main__":

@@ -37,9 +37,25 @@ trop = trop.var156
 # index from changing patterns
 #%%
 print("independent index")
-all_all_ind,all_first_ind,all_last_ind = sti.index_diff_pattern(trop,
+ind_EOF,ind_index,ind_fra= sti.index_changing_pattern(trop,
 independent=True,standard=True)
+#%%
 
+
+
+#%%
 print("dependent index")
-all_all_dep, all_first_dep,all_last_dep = sti.index_diff_pattern(trop,
-independent=False, standard=True)
+dep_EOF,dep_index,dep_fra = sti.index_changing_pattern(trop,
+independent=False,standard=True)
+#%%
+
+
+#%%
+ind_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_EOF.nc")
+ind_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_index.nc")
+ind_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_fra.nc")
+
+dep_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_EOF.nc")
+dep_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_index.nc")
+dep_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_fra.nc")
+# %%
