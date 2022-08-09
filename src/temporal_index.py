@@ -107,35 +107,6 @@ def period_extreme(all_indexes,period = 'first'):
         extreme(ten_last)]
     return ten_all, ten_first,ten_last
 
-def count_nonzero(xarr):
-    """
-    count the number of extreme cases in xarr
-    **Arguments**
-        *xarr* the xarr where the non-extreme points are marked as np.nan
-    **Return**
-        number of extreme cases, with the coordinate of 'hlayer' and 'mode'
-        reserved.
-    """
-    return xarr.count(dim = ('time','ens'))
-
-def extreme_count(all_indexes):
-    """
-    count the number of extreme cases in the period of first 10 years and 
-    last 10 years.
-    **Arguments**
-        *all_indexes* the three index of all years from the three patterns.
-                      should be order in [all_all, all_first, all_last]
-    **Return**
-        three for each period (six in total) extreme counts.
-    """
-    # getting the extreme indexes
-    fA, fF, fL = period_extreme(all_indexes,period = 'first')
-    lA, lF, lL = period_extreme(all_indexes, period = 'last')
-
-    # count the extreme cases
-    fA, fF, fL = [count_nonzero(fA),count_nonzero(fF),count_nonzero(fL)]
-    lA, lF, lL = [count_nonzero(lA),count_nonzero(lF),count_nonzero(lL)]
-    return lA,fF,fL,lA,lF,lL
 
 
 

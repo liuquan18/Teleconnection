@@ -8,6 +8,11 @@ from eofs.standard import Eof
 from tqdm.notebook import trange, tqdm
 import seaborn as sns
 
+
+import sys
+sys.path.append("..")
+import src.temporal_index as sti
+
 def df_sel(df,condition):
     """
     select dataframe rows depend on the condition of items in columns. {'column':'item'}
@@ -101,8 +106,8 @@ def pattern_compare(all_indexes):
         column being the index from all.
     """
     # getting the index for the two periods
-    first_all, first_first,first_last = period_index(all_indexes,period = 'first') # ten-->period
-    last_all, last_first, last_last = period_index(all_indexes,period = 'last')
+    first_all, first_first,first_last = sti.period_index(all_indexes,period = 'first') # ten-->period
+    last_all, last_first, last_last = sti.period_index(all_indexes,period = 'last')
     
     # first 10 periods
     first_first_all = join_xarr(first_first,first_all,lsuffix='_first')
@@ -155,6 +160,37 @@ def all_layer_counts(extc):
     extc_all = extc_all.reset_index().set_index(['extr_type','mode'])
     return extc_all
 
+def count_nonzero(xarr):
+    """
+    count the number of extreme cases in xarr
+    **Arguments**
+        *xarr* the xarr where the non-extreme points are marked as np.nan
+    **Return**
+        number of extreme cases, with the coordinate of 'hlayer' and 'mode'
+        reserved.
+    """
+    return xarr.count(dim = ('time','ens'))
+
+def extreme_count(all_indexes):
+    """
+    count the number of extreme cases in the period of first 10 years and 
+    last 10 years.
+    **Arguments**
+        *all_indexes* the three index of all years from the three patterns.
+                      should be order in [all_all, all_first, all_last]
+    **Return**
+        three for each period (six in total) extreme counts.
+    """
+    # getting the extreme indexes
+    fA, fF, fL = sti.period_extreme(all_indexes,period = 'first')
+    lA, lF, lL = sti.period_extreme(all_indexes, period = 'last')
+
+    # count the extreme cases
+    fA, fF, fL = [count_nonzero(fA),count_nonzero(fF),count_nonzero(fL)]
+    lA, lF, lL = [count_nonzero(lA),count_nonzero(lF),count_nonzero(lL)]
+    return lA,fF,fL,lA,lF,lL
+
+
 def period_diff(extreme_count):
     """
     calculate the difference of the number of extreme events between the first 10 and
@@ -200,7 +236,6 @@ def period_diff(extreme_count):
     columns = pd.Index(['first','last','dynamic','all'],name = 'diff')
     diff.columns = columns
     return diff
-
 
 
 def combine_diff(extreme_counts,mode = 'NAO'):
