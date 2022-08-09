@@ -480,38 +480,34 @@ def vertical_profile_diff(ind_extre,dep_extre):
     """
     vertical profle line plots, but for difference only.
     """
-    ind_nao = sis.combine_diff(ind_extre,mode = 'NAO')['diff']
-    ind_ea = sis.combine_diff(ind_extre, mode = 'EA')['diff']
+    ind_diff = sis.period_diff(ind_extre).unstack([0,1])
+    dep_diff = sis.period_diff(dep_extre).unstack([0,1])
 
-    dep_nao = sis.combine_diff(dep_extre,mode = 'NAO')['diff']
-    dep_ea = sis.combine_diff(dep_extre,mode = 'EA')['diff']
+    
 
     fig,axes = plt.subplots(2,2,figsize =(5.5,7),dpi = 150)
     plt.subplots_adjust(wspace=0.3,hspace=0.3)
 
-    colors = ['#1f77b4', '#2ca02c', '#d62728']
-    patterns = ['first','all','last']
+    colors = ['#1f77b4', '#2ca02c', '#d62728','#ff7f0e']
+    patterns = ['first','all','last','dynamic']
     modes = ['NAO','EA']
     inds = ['independent','dependent']
-    data = [ind_nao,dep_nao,ind_ea,dep_ea]
+    data = [ind_diff,dep_diff]
 
-    for i, ax in enumerate(axes.flat):
-        for l,p in enumerate(patterns):
-            data_mode = data[i][p].sort_index()
-            y = (data_mode.index.values/100).astype(int)
+    for i, row in enumerate(axes): # modes
+        for j, ax in enumerate(row):  # ind
+            for l,p in enumerate(patterns):
+                data_mode = data[j].xs((p,modes[i]),level = ['diff','mode'],axis = 1)\
+                    .sort_index()
+                y = (data_mode.index.values/100).astype(int)
 
-            ax.plot(data_mode['pos'], y, color = colors[l])
-            ax.plot(data_mode['neg'], y, color = colors[l],dashes = [3,3])
+                ax.plot(data_mode['pos'], y, color = colors[l])
+                ax.plot(data_mode['neg'], y, color = colors[l],dashes = [3,3])
 
-            ax.set_ylim(1000,200)
-            ax.set_xlim(-10,40)
+                ax.set_ylim(1000,200)
+                ax.set_xlim(-10,40)
+                ax.set_title(f"{modes[i]} {inds[j]}")
 
-
-
-    # titel
-    for i in range(2):
-        for j in range(2):
-            axes[i,j].set_title(f"{modes[i]} {inds[j]}")
             if j == 0:
                 axes[i,j].set_ylabel("gph/hpa")
             if i == 1:
@@ -522,8 +518,14 @@ def vertical_profile_diff(ind_extre,dep_extre):
     custom_lines = [Line2D([0],[0],color = colors[0]),
                     Line2D([0],[0],color = colors[1]),
                     Line2D([0],[0],color = colors[2]),
+                    Line2D([0],[0],color = colors[3]),
+                    Line2D([0],[0],color = None,alpha = 0),
                     Line2D([0],[0],color = 'k'),
                     Line2D([0],[0],dashes = [3,3],color = 'k')]
-    type_legend = axes[0,0].legend(custom_lines,['first','all','last','pos','neg'],
-    loc = 'lower right',fontsize = 7)
+    type_legend = axes[0,0].legend(custom_lines,['first','all','last','dynamic','','pos','neg'],
+    loc = 'lower right',fontsize = 6)
     axes[0,0].add_artist(type_legend)
+
+    type_legend = axes[1,0].legend(custom_lines,['first','all','last','dynamic','','pos','neg'],
+    loc = 'lower right',fontsize = 6)
+    axes[1,0].add_artist(type_legend)

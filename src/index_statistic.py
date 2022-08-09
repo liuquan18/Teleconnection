@@ -122,11 +122,11 @@ def period_diff(extreme_count):
 
     # first pattern data 
     fF = df_sel(extreme_count,{'period':'first10','pattern':'first'})
-    lF = df_sel(extreme_count,{'period':'first10','pattern':'last'})
+    lF = df_sel(extreme_count,{'period':'last10', 'pattern':'first'})
 
     # last pattern data
     fL = df_sel(extreme_count,{'period':'first10','pattern':'last' })
-    lL = df_sel(extreme_count,{'period':'last10',  'pattern':'last'})
+    lL = df_sel(extreme_count,{'period':'last10', 'pattern':'last'})
 
     # all pattern data
     fA = df_sel(extreme_count,{'period':'first10','pattern':'all'})
