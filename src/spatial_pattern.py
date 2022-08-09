@@ -410,7 +410,7 @@ def changing_pc(xarr,validtime,EOF):
         pattern = EOF.sel(time = time)
         pc = project_field(field,pattern,dim = 'ens') # project all ens onto one eof.
         PC.append(pc)
-    PC = xr.concat(pc,dim = validtime)
+    PC = xr.concat(PC,dim = validtime)
     return PC
     
 def independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
