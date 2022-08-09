@@ -126,3 +126,25 @@ def period_diff(extreme_count):
     diff.columns = ['diff']
     return diff
 
+def combine_diff(extreme_counts,mode = 'NAO'):
+    """
+    combine the first10, last 10 and the difference between those two into one
+    dataframe.
+    the column should be ['first10','last10','diff']
+    **Arguments**
+        *extreme_count* the dataframe of extreme counts. from function 'extr_count_df'.
+    **Return**
+        *all* the combined and unstacked dataframe.
+    """
+    diff = period_diff(extreme_counts) # get the data for thir panel
+    diff = diff.xs(mode, level = 'mode')
+    extreme_counts = extreme_counts.xs(mode,level = 'mode')
+
+    # combine diff and 
+    df_column_period = extreme_counts.reset_index()\
+        .set_index(['hlayers','pattern','extr_type','period'])\
+        .unstack(3)
+    df_column_period = df_column_period['extreme_counts']
+    all = df_column_period.join(diff)
+    all = all.unstack([1,2])
+    return all

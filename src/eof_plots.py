@@ -1,11 +1,10 @@
-import enum
-import pwd
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import AxesGrid
 import matplotlib.path as mpath
 from matplotlib.colorbar import Colorbar
 import matplotlib.ticker as mticker
 import matplotlib.patches as mpatches
+from matplotlib.lines import Line2D
 
 
 import cartopy.crs as ccrs
@@ -391,28 +390,28 @@ def extreme_allh_line(extreme_count,mode = 'NAO'):
 
     firstPeriod = sns.lineplot(data = data.loc[mode,'first10'].reset_index()\
         .reset_index().sort_values(by = ['hlayers'],ascending = True),
-    y = 'extreme_counts',x = 'hlayers',hue = 'pattern',style = 'extr_type',
-    ax = axes[0],hue_order=['first','all','last'],style_order = ['pos','neg'],palette = colors,
-    ci = None,sort= False,)
+        y = 'extreme_counts',x = 'hlayers',hue = 'pattern',style = 'extr_type',
+        ax = axes[0],hue_order=['first','all','last'],style_order = ['pos','neg'],
+        palette = colors,ci = None,sort= False,)
 
     lastPeriod = sns.lineplot(data = data.loc[mode,'last10'].reset_index()\
         .reset_index().sort_values(by = ['hlayers'],ascending = True),
-    y = 'extreme_counts',x = 'hlayers',hue = 'pattern',style = 'extr_type',
-    ax = axes[1],hue_order=['first','all','last'],style_order = ['pos','neg'],palette = colors,
-    ci = None, sort= False,)
+        y = 'extreme_counts',x = 'hlayers',hue = 'pattern',style = 'extr_type',
+        ax = axes[1],hue_order=['first','all','last'],style_order = ['pos','neg'],
+        palette = colors,ci = None, sort= False,)
 
     difference = sns.lineplot(data = diff.xs(mode,level = 'mode').reset_index()\
         .reset_index().sort_values(by = ['hlayers'],ascending = True),
-    y = 'extreme_counts',x = 'hlayers',hue = 'pattern',style = 'extr_type',
-    ax = axes[2],hue_order=['first','all','last'],style_order = ['pos','neg'],
-    palette = colors,ci = None,sort= False,)
+        x = 'diff',y = 'hlayers',hue = 'pattern',style = 'extr_type',
+        ax = axes[2],hue_order=['first','all','last'],style_order = ['pos','neg'],
+        palette = colors,ci = None,sort= False,)
 
-    axes[0].set_xlim(1000,200)
-    axes[1].set_xlim(1000,200)
-    axes[2].set_xlim(1000,200)
-    axes[0].set_ylim(0,50)
-    axes[1].set_ylim(0,50)
-    axes[2].set_ylim(-10,40)
+    # axes[0].set_xlim(1000,200)
+    # axes[1].set_xlim(1000,200)
+    # axes[2].set_xlim(1000,200)
+    # axes[0].set_ylim(0,50)
+    # axes[1].set_ylim(0,50)
+    # axes[2].set_ylim(-10,40)
 
 
 
@@ -434,16 +433,97 @@ def vertical_profile(extreme_counts,mode = 'NAO'):
     solve the problem of y-axis sort.
     """
 
-    extreme_counts = extreme_counts.xs(mode,level = 'mode')
-    diff = sis.period_diff(extreme_counts) # get the data for thir panel
+    # combine and unstack
+    all = sis.combine_diff(extreme_counts,mode = mode)
 
-    df_column_period = extreme_counts.reset_index()\
-        .set_index(['hlayers','pattern','extr_type','period'])\
-        .unstack(3)
-    df_column_period = df_column_period['extreme_counts']
-    all = df_column_period.join(diff)
+    # plot  
+    fig, axes = plt.subplots(1,3,figsize = (8,3),dpi = 150)
+    plt.subplots_adjust(wspace = 0.3)
 
-    all = all.unstack([3,2,1])
+    colors = ['#1f77b4', '#2ca02c', '#d62728']
+    patterns = ['first','all','last']
+    periods =['first10','last10','diff']
 
-    return all
+    for i, ax in enumerate(axes):  # periods
+        for j,p in enumerate(patterns):  #patterns
+            data =  all[(periods[i],p)].sort_index()
+            y = (data.index.values/100).astype(int)
 
+            ax.plot(data['pos'], y, color = colors[j])
+            ax.plot(data['neg'], y, color = colors[j],dashes = [3,3])
+
+            ax.set_ylim(1000,200)
+            if i<2:
+                ax.set_xlim(0,50)
+            elif i ==2:
+                ax.set_xlim(-10,40)
+
+            ax.set_title(f"{mode} {periods[i]}")
+
+            ax.set_xlabel("extreme counts")
+            if i == 0:
+                ax.set_ylabel("gph/hpa")
+
+    # legend
+
+
+    custom_lines = [Line2D([0],[0],color = colors[0]),
+                    Line2D([0],[0],color = colors[1]),
+                    Line2D([0],[0],color = colors[2]),
+                    Line2D([0],[0],color = 'k'),
+                    Line2D([0],[0],dashes = [3,3],color = 'k')]
+    type_legend = axes[-1].legend(custom_lines,['first','all','last','pos','neg'],
+    loc = 'lower right',fontsize = 7)
+    axes[-1].add_artist(type_legend)
+
+def vertical_profile_diff(ind_extre,dep_extre):
+    """
+    vertical profle line plots, but for difference only.
+    """
+    ind_nao = sis.combine_diff(ind_extre,mode = 'NAO')['diff']
+    ind_ea = sis.combine_diff(ind_extre, mode = 'EA')['diff']
+
+    dep_nao = sis.combine_diff(dep_extre,mode = 'NAO')['diff']
+    dep_ea = sis.combine_diff(dep_extre,mode = 'EA')['diff']
+
+    fig,axes = plt.subplots(2,2,figsize =(5.5,7),dpi = 150)
+    plt.subplots_adjust(wspace=0.3,hspace=0.3)
+
+    colors = ['#1f77b4', '#2ca02c', '#d62728']
+    patterns = ['first','all','last']
+    modes = ['NAO','EA']
+    inds = ['independent','dependent']
+    data = [ind_nao,dep_nao,ind_ea,dep_ea]
+
+    for i, ax in enumerate(axes.flat):
+        for l,p in enumerate(patterns):
+            data_mode = data[i][p].sort_index()
+            y = (data_mode.index.values/100).astype(int)
+
+            ax.plot(data_mode['pos'], y, color = colors[l])
+            ax.plot(data_mode['neg'], y, color = colors[l],dashes = [3,3])
+
+            ax.set_ylim(1000,200)
+            ax.set_xlim(-10,40)
+
+
+
+    # titel
+    for i in range(2):
+        for j in range(2):
+            axes[i,j].set_title(f"{modes[i]} {inds[j]}")
+            if j == 0:
+                axes[i,j].set_ylabel("gph/hpa")
+            if i == 1:
+                axes[i,j].set_xlabel("extreme counts")
+
+
+    # legend
+    custom_lines = [Line2D([0],[0],color = colors[0]),
+                    Line2D([0],[0],color = colors[1]),
+                    Line2D([0],[0],color = colors[2]),
+                    Line2D([0],[0],color = 'k'),
+                    Line2D([0],[0],dashes = [3,3],color = 'k')]
+    type_legend = axes[0,0].legend(custom_lines,['first','all','last','pos','neg'],
+    loc = 'lower right',fontsize = 7)
+    axes[0,0].add_artist(type_legend)
