@@ -326,8 +326,8 @@ def scatter_extreme(*args,mode = 'NAO', hlayer = 'all'):
         ax.set_xlim(-4,-2)
         ax.set_ylim(-4,-2)
     axes[0,0].set_title("first 10 period")
-    axes[0,1].set_title("dynamic")
-    axes[0,2].set_title("last 10 period")
+    axes[0,1].set_title("last 10 period")
+    axes[0,2].set_title("dynamic")
 
 def extreme_bar(extreme_counts,mode = 'NAO',hlayer = 'all',ylim = 360):
     """
