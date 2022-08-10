@@ -212,7 +212,9 @@ def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
 
 def project_field(fieldx,eofx,dim = 'com'):
     """
-    project original field onto eofs to get the temporal index
+    project original field onto eofs to get the temporal index.
+    Different from python eofs package, here if there are three dimensions in sptial,
+    i.e, [lat,lon,height], the projected pc is calculated independently from each height.
     **Arguments:**
         *field*: the DataArray field to be projected
         *eof*: the eofs
@@ -275,7 +277,7 @@ def project_field(fieldx,eofx,dim = 'com'):
         projected_pcs = np.array(projected_pcs)
 
         PPC = xr.DataArray(projected_pcs,dims = [fieldx.dims[-1],
-                                                            fieldx.dims[0],eofx.dims[0]],
+                                                fieldx.dims[0],eofx.dims[0]], # [height,record,mode]
                             coords={fieldx.dims[-1]:fieldx[fieldx.dims[-1]],
                                     fieldx.dims[0] :fieldx[fieldx.dims[0]],
                                     eofx.dims[0]: eofx[eofx.dims[0]]})
@@ -327,7 +329,7 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
     # the validtime period where totally ten years of data are fully avaiable.
     validtime = xarr.isel(time = slice(5,-5)).time
 
-    if return_full_eof:
+    if return_full_eof:  # changing patterns need all EOFs
         # EOF and FRA
         EOF,FRA = changing_eofs(xarr,validtime,nmode = nmode,window = window)
     else:
@@ -335,7 +337,8 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
 
     # PC
     if fixed_pattern == 'all':  # a little different from the following two.
-        eof,pc,_ = doeof(stack_ens(xarr,withdim='time'),nmode = nmode,dim = 'com',standard=False) # the pc is not standard to
+        eof,pc,_ = doeof(stack_ens(xarr,withdim='time'),nmode = nmode,dim = 'com',standard=False)
+                                                                      # the pc is not standard to
                                                                       # be consistent with following.
         PC = fixed_pc(xarr,eof)
     elif fixed_pattern == 'first':
@@ -401,14 +404,13 @@ def changing_pc(xarr,validtime,EOF):
     **Return**
         changing pc, whose length is time-10.
     """
-    xarr = stack_ens(xarr,withdim='window_dim')
     PC = []
     for time in validtime:
         field = xarr.sel(time = time)
         pattern = EOF.sel(time = time)
-        pc = fixed_pc(field,pattern,dim = 'ens') # project all ens onto one eof.
+        pc = project_field(field,pattern,dim = 'ens') # project all ens onto one eof.
         PC.append(pc)
-    PC = xr.concat(pc,dim = validtime)
+    PC = xr.concat(PC,dim = validtime)
     return PC
     
 def independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
@@ -521,12 +523,13 @@ def main():
     # demean ens-mean
     demean = splitens-splitens.mean(dim = 'ens')
     #select traposphere
-    trop = demean.sel(hlayers = slice(20000,100000))
+    trop = demean.sel(hlayers = slice(85000,100000)).isel(time = slice(0,15))
 
 #     eof_sar,pc_sar,fra_sar = season_eof(ex,nmode=2,method ="rolling_eof",
 # window=10,fixed_pattern='all',return_full_eof= False,independent = True,standard=True)
 
-    eof_sar,pc_sar,fra_sar = season_eof(trop.var156,nmode=2,fixed_pattern="all")
-
+    _,index,_ = season_eof(trop.var156,nmode=2,method = 'rolling_eof',window=10,
+            fixed_pattern='all',return_full_eof=False,independent = True,
+            standard = True)
 if __name__ == "__main__":
     main()

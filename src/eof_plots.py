@@ -4,6 +4,7 @@ import matplotlib.path as mpath
 from matplotlib.colorbar import Colorbar
 import matplotlib.ticker as mticker
 import matplotlib.patches as mpatches
+from matplotlib.lines import Line2D
 
 
 import cartopy.crs as ccrs
@@ -18,10 +19,11 @@ from cartopy.mpl.ticker import (LongitudeFormatter, LatitudeFormatter,
 import seaborn as sns
 import numpy as np
 import xarray as xr
+import pandas as pd
 
 
 import sys
-sys.path.append("..")
+sys.path.append("/work/mh0033/m300883/3rdPanel/")
 import src.spatial_pattern as ssp
 import src.index_statistic as sis
 
@@ -214,7 +216,7 @@ def tenyr_hist(data,hlayer = 50000,bins = 50):
     plt.legend(handles=[blue_patch,red_patch],loc = 'upper left')
 
 
-def tenyr_scatter(first,last,hlayer = all):
+def tenyr_scatter(first,last,hlayer = 'all'):
     """
     make scaterplots of first_on_first v.s first_on_all and last_on_last v.s last_on_all.
     """
@@ -241,11 +243,9 @@ def tenyr_scatter(first,last,hlayer = all):
     axes[0].set_title("NAO")
     axes[1].set_title("EA")
     plt.suptitle("first_first on first_all and last_last on last_all")
-    plt.show()
 
 
-
-def tenyr_scatter_extreme(first,last,hlayer = all):
+def tenyr_scatter_extreme(first,last,hlayer = 'all'):
     """
     make scaterplots of two first_on_first_first_on_all and last_on_last_last_on_all.
     """
@@ -287,3 +287,186 @@ def tenyr_scatter_extreme(first,last,hlayer = all):
     axes[0,1].set_title("EA")
 
 
+def scatter_extreme(*args,mode = 'NAO', hlayer = 'all'):
+    """
+    plot extreme scatter of one mode at all three periods (first10, last10, dynamic)
+    **Arguments**
+        *dfs* the three rows of dataframes to plot.
+               for each period, dataframes of projection on first and last10 should be 
+               included. e.g. [first_first_all, last_first_all]
+    """
+    nperiods = len(args)
+    fig, axes = plt.subplots(2,nperiods,figsize = (8,5),dpi = 150) # rows for pos-neg, 
+                                                                   # columns for periods.
+    plt.subplots_adjust(hspace = 0.4,wspace = 0.4)
+    for row in axes: # first row for positive extreme, second row for negative extreme
+        for i, period in enumerate(args):
+            if hlayer == 'all':
+                firstPattern, lastPattern = [period_ten.loc[:,mode,:,:]
+                for period_ten in period]
+            else:
+                firstPattern, lastPattern = [period_ten.loc[hlayer,mode,:,:]
+                for period_ten in period]
+            
+            scatterfirst = sns.scatterplot(data = firstPattern,x = 'pc_all',y = 'pc_first',
+            ax = row[i],label = 'first_pattern')
+            scatterlast = sns.scatterplot(data = lastPattern,x = 'pc_all',y = 'pc_last',
+            ax = row[i], label = 'last_pattern',color = 'r',alpha=0.5)
+
+            line = row[i].plot(np.arange(-5,5,1),np.arange(-5,5,1),
+            linestyle = 'dotted',color = 'k')
+
+            row[i].legend(loc = 'upper left',fontsize = 7)
+            row[i].set_ylabel("index")
+            row[i].set_xlabel("index_all")
+    for ax in axes[0]:
+        ax.set_xlim(2,4)
+        ax.set_ylim(2,4)
+    for ax in axes[1]:
+        ax.set_xlim(-4,-2)
+        ax.set_ylim(-4,-2)
+    axes[0,0].set_title("first 10 period")
+    axes[0,1].set_title("last 10 period")
+    axes[0,2].set_title("dynamic")
+
+def extreme_bar(extreme_counts,mode = 'NAO',hlayer = 'all',ylim = 360):
+    """
+    plot the barplot of extreme counts. rows for 'pos' or 'neg'. cols for 'ind' or 'dep'
+    **Arguments**
+        *extreme_counts* the data for 'ind' and 'dep'.
+        *mode* 'NAO' or 'EA'
+    **Return**
+        plots
+    """
+    fig,axes = plt.subplots(2,2,figsize = (6,3),dpi = 150)
+    plt.subplots_adjust(hspace = 0)
+
+    colors = ['#1f77b4', '#2ca02c', '#d62728']
+    extr_type = ['pos','neg']
+
+    for i, row in enumerate(axes):
+        for j, col in enumerate(row): # ['ind' or 'dep']
+            if hlayer == 'all':
+                data = sis.all_layer_counts(extreme_counts[j]).loc[extr_type[i],mode]
+            else:
+                data = extreme_counts[j].loc[extr_type[i],mode,hlayer]
+            sns.barplot(data = data, x = 'period',y = 'extreme_counts',ax = col,
+            hue = 'pattern', hue_order=['first','all','last'],palette = colors)
+            if i ==0:
+                col.set_ylim(0,ylim)
+            if i ==1:
+                col.set_ylim(ylim,0)
+
+    axes[0,0].set_ylabel("positive")
+    axes[1,0].set_ylabel("negative")
+
+    axes[0,1].set_ylabel(None)
+    axes[1,1].set_ylabel(None)
+    axes[0,1].get_legend().remove()
+    axes[1,0].get_legend().remove()
+    axes[1,1].get_legend().remove()
+    axes[0,0].legend(loc = 'upper left')
+
+
+def vertical_profile(extreme_counts,mode = 'NAO'):
+    """
+    using matplotlib to plot the vertical profile.
+    solve the problem of y-axis sort.
+    """
+
+    # combine and unstack
+    all = sis.combine_diff(extreme_counts,mode = mode)
+
+    # plot  
+    fig, axes = plt.subplots(1,3,figsize = (8,3),dpi = 150)
+    plt.subplots_adjust(wspace = 0.3)
+
+    colors = ['#1f77b4', '#2ca02c', '#d62728']
+    patterns = ['first','all','last']
+    periods =['first10','last10','diff']
+
+    for i, ax in enumerate(axes):  # periods
+        for j,p in enumerate(patterns):  #patterns
+            data =  all[(periods[i],p)].sort_index()
+            y = (data.index.values/100).astype(int)
+
+            ax.plot(data['pos'], y, color = colors[j])
+            ax.plot(data['neg'], y, color = colors[j],dashes = [3,3])
+
+            ax.set_ylim(1000,200)
+            if i<2:
+                ax.set_xlim(0,50)
+            elif i ==2:
+                ax.set_xlim(-10,40)
+
+            ax.set_title(f"{mode} {periods[i]}")
+
+            ax.set_xlabel("extreme counts")
+            if i == 0:
+                ax.set_ylabel("gph/hpa")
+
+    # legend
+
+
+    custom_lines = [Line2D([0],[0],color = colors[0]),
+                    Line2D([0],[0],color = colors[1]),
+                    Line2D([0],[0],color = colors[2]),
+                    Line2D([0],[0],color = 'k'),
+                    Line2D([0],[0],dashes = [3,3],color = 'k')]
+    type_legend = axes[-1].legend(custom_lines,['first','all','last','pos','neg'],
+    loc = 'lower right',fontsize = 7)
+    axes[-1].add_artist(type_legend)
+
+def vertical_profile_diff(ind_extre,dep_extre):
+    """
+    vertical profle line plots, but for difference only.
+    """
+    ind_diff = sis.period_diff(ind_extre).unstack([0,1])
+    dep_diff = sis.period_diff(dep_extre).unstack([0,1])
+
+    
+
+    fig,axes = plt.subplots(2,2,figsize =(5.5,7),dpi = 150)
+    plt.subplots_adjust(wspace=0.3,hspace=0.3)
+
+    colors = ['#1f77b4', '#2ca02c', '#d62728','#ff7f0e']
+    patterns = ['first','all','last','dynamic']
+    modes = ['NAO','EA']
+    inds = ['independent','dependent']
+    data = [ind_diff,dep_diff]
+
+    for i, row in enumerate(axes): # modes
+        for j, ax in enumerate(row):  # ind
+            for l,p in enumerate(patterns):
+                data_mode = data[j].xs((p,modes[i]),level = ['diff','mode'],axis = 1)\
+                    .sort_index()
+                y = (data_mode.index.values/100).astype(int)
+
+                ax.plot(data_mode['pos'], y, color = colors[l])
+                ax.plot(data_mode['neg'], y, color = colors[l],dashes = [3,3])
+
+                ax.set_ylim(1000,200)
+                ax.set_xlim(-10,40)
+                ax.set_title(f"{modes[i]} {inds[j]}")
+
+            if j == 0:
+                axes[i,j].set_ylabel("gph/hpa")
+            if i == 1:
+                axes[i,j].set_xlabel("extreme counts")
+
+
+    # legend
+    custom_lines = [Line2D([0],[0],color = colors[0]),
+                    Line2D([0],[0],color = colors[1]),
+                    Line2D([0],[0],color = colors[2]),
+                    Line2D([0],[0],color = colors[3]),
+                    Line2D([0],[0],color = None,alpha = 0),
+                    Line2D([0],[0],color = 'k'),
+                    Line2D([0],[0],dashes = [3,3],color = 'k')]
+    type_legend = axes[0,0].legend(custom_lines,['first','all','last','dynamic','','pos','neg'],
+    loc = 'lower right',fontsize = 6)
+    axes[0,0].add_artist(type_legend)
+
+    type_legend = axes[1,0].legend(custom_lines,['first','all','last','dynamic','','pos','neg'],
+    loc = 'lower right',fontsize = 6)
+    axes[1,0].add_artist(type_legend)
