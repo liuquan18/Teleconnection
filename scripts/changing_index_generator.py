@@ -38,7 +38,7 @@ trop = trop.var156
 #%%
 print("independent index")
 ind_EOF,ind_index,ind_fra= sti.index_changing_pattern(trop,
-independent=True,standard=True)
+independent=True,standard=False)
 #%%
 
 
@@ -46,17 +46,17 @@ independent=True,standard=True)
 #%%
 print("dependent index")
 dep_EOF,dep_index,dep_fra = sti.index_changing_pattern(trop,
-independent=False,standard=True)
+independent=False,standard=False)
 #%%
 
 
 #%%
-ind_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_EOF.nc")
-ind_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_index.nc")
-ind_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_fra.nc")
+ind_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_EOF_nonstd.nc")
+ind_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_index_nonstd.nc")
+ind_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_fra_nonstd.nc")
 
 #%%
-dep_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_EOF.nc")
-dep_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_index.nc")
-dep_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_fra.nc")
+dep_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_EOF_nonstd.nc")
+dep_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_index_nonstd.nc")
+dep_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_fra_nonstd.nc")
 # %%
