@@ -123,8 +123,8 @@ def period_extreme(all_indexes,period = 'first10'):
         ordered in [_all,_first,_last]
     """
     ten_indexes  = period_index(all_indexes,period = period)
-    ten_all, ten_first, ten_last = [extreme(ten_index) for ten_index in ten_indexes]
-    return ten_all, ten_first,ten_last
+    ten_extremes = [extreme(ten_index) for ten_index in ten_indexes]
+    return ten_extremes
 
 def pattern_extreme(xarr,threshod =2):
     """
