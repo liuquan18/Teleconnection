@@ -49,8 +49,28 @@ allDiff = lAec[['extreme_counts']]-fAec[['extreme_counts']]
 # %%
 
 """
+#%%% index y
+fAi,fFi,fLi = sti.period_extreme([all_all_ind,all_first_ind,all_last_ind],
+period = 'first10')
+#%%%
+lAi,lFi,lLi = sti.period_extreme([all_all_ind,all_first_ind,all_last_ind],
+period = 'last10')
+
+#%% count y
+fAc = sis.count_nonzero(fAi)
+lAc = sis.count_nonzero(lAi)
+#%%
 
 
 
 #%%
-diff = sis.period_diff()
+
+#%%
+
+#%%
+firstc,lastc = sis.extreme_count([all_all_ind,all_first_ind,all_last_ind])
+#%%
+
+countdf = sis.extr_count_df(firstc,lastc)
+
+#%%

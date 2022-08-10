@@ -121,36 +121,6 @@ def pattern_compare(all_indexes):
         [first_first_all,last_last_all]
 
 
-def extr_count_df(extreCounts,hlayer = 'all'):
-    """
-    transform xarray to dataframe. two columns: first 10 and last 10 period.
-    new index level pattern: first, all and last.
-    **Arguments**
-        *extreCounts* [fA,fF,fL,lA,lF,lL]
-        *hlayer* which vertical layer to be transform.
-    **Return**
-        dataframe, with two columns and a new index level "pattern"
-    """
-    patterns = ['all','first','last','all','first','last']
-    dfs = [extre.to_dataframe(name = patterns[i])[[patterns[i]]]
-    for i, extre in enumerate(extreCounts)]
-
-    # first 10 period
-    first_df = pd.concat(dfs[:3],axis = 1)
-    first_df = pd.DataFrame(first_df.stack(),columns = ['first10'])
-
-    # last 10 period
-    last_df = pd.concat(dfs[3:],axis = 1)
-    last_df = pd.DataFrame(last_df.stack(),columns=['last10'])
-
-    # final df
-    final_df = first_df.join(last_df)
-    final_df = pd.DataFrame(final_df.stack(),columns=['extreme_counts'])
-    final_df.index.names = ['extr_type','hlayers','mode','pattern','period']
-    final_df = final_df.reset_index().set_index(['extr_type','mode','hlayers'])
-
-    return final_df
-
 def all_layer_counts(extc):
     """
     sum the counts of all hlayers together.
@@ -180,15 +150,50 @@ def extreme_count(all_indexes):
                       should be order in [all_all, all_first, all_last]
     **Return**
         three for each period (six in total) extreme counts.
+        *first10_ec* the extreme count of first 10 period.
+        *last10_ec* the extreme count of last 10 period.
     """
     # getting the extreme indexes
-    fA, fF, fL = sti.period_extreme(all_indexes,period = 'first10')
-    lA, lF, lL = sti.period_extreme(all_indexes, period = 'last10')
+    first10_extremes = sti.period_extreme(all_indexes,period = 'first10') # first 10 period
+    last10_extremes = sti.period_extreme(all_indexes, period = 'last10') # last 10 period
 
     # count the extreme cases
-    fA, fF, fL = [count_nonzero(fA),count_nonzero(fF),count_nonzero(fL)]
-    lA, lF, lL = [count_nonzero(lA),count_nonzero(lF),count_nonzero(lL)]
-    return lA,fF,fL,lA,lF,lL
+    first10_ec = [count_nonzero(first10_e) for first10_e in first10_extremes]
+    last10_ec = [count_nonzero(last10_e) for last10_e in last10_extremes]
+
+    return first10_ec,last10_ec
+
+
+def extr_count_df(first_extreCounts,last_extreme_Counts,hlayer = 'all'):
+    """
+    transform xarray to dataframe. two columns: first 10 and last 10 period.
+    new index level pattern: first, all and last.
+    **Arguments**
+        *extreCounts* [fA,fF,fL,lA,lF,lL]
+        *hlayer* which vertical layer to be transform.
+    **Return**
+        dataframe, with two columns and a new index level "pattern"
+    """
+    # first 10 period
+    patterns = ['all','first','last']
+    first_df = [first_exCount.to_dataframe(name = patterns[i])[[patterns[i]]]
+    for i, first_exCount in enumerate(first_extreCounts)]
+    first_df = pd.concat(first_df,axis = 1)
+    first_df = pd.DataFrame(first_df.stack(),columns = ['first10'])
+
+    # last 10 period
+    last_df = [last_exCount.to_dataframe(name = patterns[i])[[patterns[i]]]
+    for i, last_exCount in enumerate(last_extreme_Counts)]
+    last_df = pd.concat(last_df,axis = 1)
+    last_df = pd.DataFrame(last_df.stack(),columns=['last10'])
+
+    # final df
+    final_df = first_df.join(last_df)
+    final_df = pd.DataFrame(final_df.stack(),columns=['extreme_counts'])
+    final_df.index.names = ['extr_type','hlayers','mode','pattern','period']
+    final_df = final_df.reset_index().set_index(['extr_type','mode','hlayers'])
+
+    return final_df
 
 
 def period_diff(extreme_count):
