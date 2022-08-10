@@ -122,10 +122,25 @@ def period_extreme(all_indexes,period = 'first10'):
         the three index for 10 period, only with the extreme elements.
         ordered in [_all,_first,_last]
     """
-    ten_all, ten_first, ten_last  = period_index(all_indexes,period = period)
-    ten_all, ten_first, ten_last = [extreme(ten_all),extreme(ten_first),
-        extreme(ten_last)]
+    ten_indexes  = period_index(all_indexes,period = period)
+    ten_all, ten_first, ten_last = [extreme(ten_index) for ten_index in ten_indexes]
     return ten_all, ten_first,ten_last
+
+def pattern_extreme(xarr,threshod =2):
+    """
+    
+    """
+
+
+def pattern_change_extreme(all_indexes, period = 'first10'):
+    """
+    get the index where the value is above 2std, and is below (frist) or above (last)
+    the all pattern.
+    The extreme cases may increase anyway, in which some part of it is increased only
+    becase of pattern change. By comparing with all pattern, we seperate the change of 
+    extreme cases only induced by pattern change.
+    """
+    ten_indexes = period_index(all_indexes,period = period)
 
 
 
