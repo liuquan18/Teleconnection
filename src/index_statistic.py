@@ -106,8 +106,8 @@ def pattern_compare(all_indexes):
         column being the index from all.
     """
     # getting the index for the two periods
-    first_all, first_first,first_last = sti.period_index(all_indexes,period = 'first') # ten-->period
-    last_all, last_first, last_last = sti.period_index(all_indexes,period = 'last')
+    first_all, first_first,first_last = sti.period_index(all_indexes,period = 'first10') # ten-->period
+    last_all, last_first, last_last = sti.period_index(all_indexes,period = 'last10')
     
     # first 10 periods
     first_first_all = join_xarr(first_first,first_all,lsuffix='_first')
@@ -182,8 +182,8 @@ def extreme_count(all_indexes):
         three for each period (six in total) extreme counts.
     """
     # getting the extreme indexes
-    fA, fF, fL = sti.period_extreme(all_indexes,period = 'first')
-    lA, lF, lL = sti.period_extreme(all_indexes, period = 'last')
+    fA, fF, fL = sti.period_extreme(all_indexes,period = 'first10')
+    lA, lF, lL = sti.period_extreme(all_indexes, period = 'last10')
 
     # count the extreme cases
     fA, fF, fL = [count_nonzero(fA),count_nonzero(fF),count_nonzero(fL)]
