@@ -71,7 +71,7 @@ def index_changing_pattern(xarr, independent = True, standard = True):
 
 
 
-def period_index(all_indexes,period = 'first'):
+def period_index(all_indexes,period = 'first10'):
     """
     get the first 10 or last 10 year index from the whole time series of teleconnection.
     the index name can be seen from the table below:
@@ -88,10 +88,10 @@ def period_index(all_indexes,period = 'first'):
         the three index for first or last 10 years. ordered in 
         [_all,_first,_last]
     """
-    if period=='first':
+    if period=='first10':
         ten_all, ten_first, ten_last = [all_index.isel(time = slice(0,10))
         for all_index in all_indexes]
-    if period =='last':
+    if period =='last10':
         ten_all, ten_first, ten_last = [all_index.isel(time = slice(-10,None))
         for all_index in all_indexes]
     return ten_all, ten_first, ten_last
@@ -111,7 +111,7 @@ def extreme(xarr,threshod = 2):
     ex = ex.rename({'concat_dim':'extr_type'})
     return ex
 
-def period_extreme(all_indexes,period = 'first'):
+def period_extreme(all_indexes,period = 'first10'):
     """
     The same as period_index, but now mask out the non-extreme elements.
     **Arguments**
