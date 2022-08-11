@@ -2,7 +2,7 @@
 import sys
 sys.path.append("..")
 import scripts.project_field as pjh
-import src.spatial_pattern as ssp
+import src.Teleconnection.spatial_pattern as ssp
 
 import importlib
 importlib.reload(pjh) # after changed the source code
@@ -16,7 +16,6 @@ pressure surface over the European/Atlantic sector during winter time.
 """
 #%%
 import cartopy.crs as ccrs
-from netCDF4 import Dataset
 import matplotlib.pyplot as plt
 import numpy as np
 
