@@ -164,7 +164,7 @@ def extreme_count(all_indexes):
     return first10_ec,last10_ec
 
 
-def extr_count_df(first_extreCounts,last_extreme_Counts,hlayer = 'all'):
+def extr_count_df(first_extreCounts,last_extreme_Counts):
     """
     transform xarray to dataframe. two columns: first 10 and last 10 period.
     new index level pattern: first, all and last.
@@ -243,25 +243,30 @@ def period_diff(extreme_count):
     return diff
 
 
-def combine_diff(extreme_counts,mode = 'NAO'):
+def combine_diff(extreme_counts,mode):
     """
     combine the first10, last 10 and the difference between those two into one
     dataframe.
-    the column should be ['first10','last10','diff']
     **Arguments**
         *extreme_count* the dataframe of extreme counts. from function 'extr_count_df'.
     **Return**
-        *all* the combined and unstacked dataframe.
+        *all* list of dataframes [first10,last10,diff]
     """
     diff = period_diff(extreme_counts) # get the data for thir panel
     diff = diff.xs(mode, level = 'mode')
     extreme_counts = extreme_counts.xs(mode,level = 'mode')
 
-    # combine diff and 
-    df_column_period = extreme_counts.reset_index()\
-        .set_index(['hlayers','pattern','extr_type','period'])\
-        .unstack(3)
-    df_column_period = df_column_period['extreme_counts']
-    all = df_column_period.join(diff)
-    all = all.unstack([1,2])
+    # unstack diff
+    diff = diff.unstack(0)
+
+    # unstack extreme counts
+    extreme_counts = extreme_counts.reset_index()\
+    .set_index(['hlayers','pattern','extr_type','period'])\
+        .unstack([1,2,3])
+
+    # split to first10 and last 10
+    first10 = extreme_counts.xs('first10',level = 'period',axis=1)['extreme_counts']
+    last10 = extreme_counts.xs('last10',level = 'period',axis=1)['extreme_counts']
+
+    all = [first10,last10,diff]
     return all

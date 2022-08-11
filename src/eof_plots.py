@@ -381,17 +381,19 @@ def vertical_profile(extreme_counts,mode = 'NAO'):
     fig, axes = plt.subplots(1,3,figsize = (8,3),dpi = 150)
     plt.subplots_adjust(wspace = 0.3)
 
-    colors = ['#1f77b4', '#2ca02c', '#d62728']
+    colors = ['#1f77b4', '#2ca02c', '#d62728','#ff7f0e']
     patterns = ['first','all','last']
     periods =['first10','last10','diff']
 
     for i, ax in enumerate(axes):  # periods
-        for j,p in enumerate(patterns):  #patterns
-            data =  all[(periods[i],p)].sort_index()
-            y = (data.index.values/100).astype(int)
+        period_data = all[i]
 
-            ax.plot(data['pos'], y, color = colors[j])
-            ax.plot(data['neg'], y, color = colors[j],dashes = [3,3])
+        for j, pattern in enumerate(period_data.columns.levels[0]):
+            pattern_data = period_data[pattern].sort_index()
+            y = (pattern_data.index.values/100).astype(int)
+
+            ax.plot(pattern_data['pos'], y, color = colors[j])
+            ax.plot(pattern_data['neg'], y, color = colors[j],dashes = [3,3])
 
             ax.set_ylim(1000,200)
             if i<2:
@@ -406,15 +408,15 @@ def vertical_profile(extreme_counts,mode = 'NAO'):
                 ax.set_ylabel("gph/hpa")
 
     # legend
-
-
     custom_lines = [Line2D([0],[0],color = colors[0]),
                     Line2D([0],[0],color = colors[1]),
                     Line2D([0],[0],color = colors[2]),
+                    Line2D([0],[0],color = colors[3]),
+                    Line2D([0],[0],color = None,alpha = 0),
                     Line2D([0],[0],color = 'k'),
                     Line2D([0],[0],dashes = [3,3],color = 'k')]
-    type_legend = axes[-1].legend(custom_lines,['first','all','last','pos','neg'],
-    loc = 'lower right',fontsize = 7)
+    type_legend = axes[-1].legend(custom_lines,['first','all','last','dynamic','','pos','neg'],
+    loc = 'lower right',fontsize = 6)
     axes[-1].add_artist(type_legend)
 
 def vertical_profile_diff(ind_extre,dep_extre):
@@ -423,9 +425,7 @@ def vertical_profile_diff(ind_extre,dep_extre):
     """
     ind_diff = sis.period_diff(ind_extre).unstack([0,1])
     dep_diff = sis.period_diff(dep_extre).unstack([0,1])
-
     
-
     fig,axes = plt.subplots(2,2,figsize =(5.5,7),dpi = 150)
     plt.subplots_adjust(wspace=0.3,hspace=0.3)
 

@@ -74,3 +74,12 @@ firstc,lastc = sis.extreme_count([all_all_ind,all_first_ind,all_last_ind])
 countdf = sis.extr_count_df(firstc,lastc)
 
 #%%
+
+diff = sis.period_diff(countdf)
+# %%
+# %%
+diff = diff.unstack([0,1])
+# %%
+countdf = countdf.reset_index().set_index(['hlayers','pattern','extr_type','period'])\
+    
+# %%
