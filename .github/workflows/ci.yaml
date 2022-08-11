@@ -20,8 +20,7 @@ jobs:
           conda list
       - name: Install package
         run: |
-          python3 -m pip install .
-          pip install -e .
+          python3 -m pip install -e .
       - name: Test with pytest
         run: pytest .
 
