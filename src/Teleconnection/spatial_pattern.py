@@ -510,7 +510,6 @@ return_full_eof=False,independent = True,standard = True):
 
     return eof,pc,fra
 
-
 def main():
     """
     for debug

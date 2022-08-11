@@ -1,0 +1,12 @@
+name: thirdPanel
+dependencies:
+    - python>=3.9
+    - pytest
+    - sphinx
+    - xarray 
+    - numpy 
+    - pandas
+    - matplotlib
+    - cartopy
+    - tqdm
+    - seaborn    
