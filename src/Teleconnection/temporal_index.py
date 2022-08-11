@@ -92,13 +92,14 @@ def period_index(all_indexes,period):
     return ten_indexes
 
 
-def extreme(xarr,threshod = 2):
+def extreme(xarr,threshod = 2,pattern_com = True):
     """
     mask out non-extreme data.
+    label non-extreme data as np.nan.
     **Arguments**
         *xarr* the xarr to be process
     **Return**
-        new xarray with one extra dimension called 'extr_type'
+        *ex* extreme xarray with one extra dimension called 'extr_type'
     """
     pos_ex = xarr.where(xarr>threshod)
     neg_ex = xarr.where(xarr<-1*threshod)
@@ -123,6 +124,9 @@ def period_extreme(all_indexes,period):
 
 def pattern_extreme(xarr,threshod =2):
     """
+    mask out non-extreme and similiar to 'all-pattern' data as np.nan.
+    The extreme case here is not only defined as those above (below) 2,
+    but also above (below) the corresponding index from all-pattern.
     
     """
 
