@@ -1,7 +1,7 @@
 Functions
 =========
 
-.. automodule:: mypackage
+.. automodule:: src.Teleconnection
 
 .. autosummary::
    :toctree: _autosummary

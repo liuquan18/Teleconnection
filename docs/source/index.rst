@@ -3,13 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to mypackage's documentation!
+Welcome to thirdPanel's documentation!
 =====================================
 
 .. toctree::
    :maxdepth: 2
 
-   functions
+   spatial_pattern
+   temporal_index
+   pattern_statistic
+   index_statistic
+   eof_plots
 
 
 Indices and tables
