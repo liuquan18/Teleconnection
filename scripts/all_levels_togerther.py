@@ -6,8 +6,6 @@ import xarray as xr
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 #%%
-import sys
-sys.path.append("..")
 import src.Teleconnection.spatial_pattern as sp
 import src.Teleconnection.eof_plots as ept
 

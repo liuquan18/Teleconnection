@@ -7,12 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 #%%
-import sys
-sys.path.append("..")
 import src.Teleconnection.spatial_pattern as sp
-
-import importlib
-importlib.reload(sp) # after changed the source code
 
 # %%
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time_fldmean.nc")
