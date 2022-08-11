@@ -21,16 +21,8 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 
-
-import sys
-sys.path.append("/work/mh0033/m300883/3rdPanel/")
-import src.spatial_pattern as ssp
-import src.index_statistic as sis
-
-import importlib
-importlib.reload(ssp) # after changed the source code
-importlib.reload(sis)
-
+import src.Teleconnection.spatial_pattern as ssp
+import src.Teleconnection.index_statistic as sis
 
 
 def exp_time_height(exp_plot):

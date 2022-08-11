@@ -5,21 +5,12 @@ import numpy as np
 import pandas as pd
 # %%
 
-#%%
-import sys
-sys.path.append("..")
-import src.spatial_pattern as ssp
-import src.pattern_statistic as sps
-import src.index_statistic as sis
-import src.eof_plots as sept
-import src.temporal_index as sti
+import src.Teleconnection.spatial_pattern as ssp
+import src.Teleconnection.pattern_statistic as sps
+import src.Teleconnection.index_statistic as sis
+import src.Teleconnection.eof_plots as sept
+import src.Teleconnection.temporal_index as sti
 
-import importlib
-importlib.reload(ssp) # after changed the source code
-importlib.reload(sps)
-importlib.reload(sis)
-importlib.reload(sept)
-importlib.reload(sti)
 # %%
 
 # Data load and pre-process

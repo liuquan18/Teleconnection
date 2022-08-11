@@ -1,3 +1,3 @@
-from src.Teleconnection import spatial_pattern
-c = spatial_pattern.add(1,2)
+import src.Teleconnection.spatial_pattern as sps
+c = sps.add(1,2)
 print(c)

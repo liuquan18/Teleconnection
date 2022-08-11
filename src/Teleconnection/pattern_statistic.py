@@ -1,11 +1,5 @@
-from pprint import pformat
-from pyrsistent import PSet
-import xarray as xr
 import numpy as np
 import pandas as pd
-from eofs.standard import Eof
-from tqdm.notebook import trange, tqdm
-import seaborn as sn
 
 def select_co2(xarr):
     """

@@ -2,16 +2,11 @@
 This is the source code for temporal index generator
 """
 
-from unittest.util import _count_diff_all_purpose
 import numpy as np
 import xarray as xr
 
-import sys
-sys.path.append("..")
-import src.spatial_pattern as ssp
+import src.Teleconnection.spatial_pattern as ssp
 
-import importlib
-importlib.reload(ssp) # after changed the source code
 
 def index_diff_pattern(xarr,independent = True, standard=True):
     """

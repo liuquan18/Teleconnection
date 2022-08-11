@@ -8,12 +8,9 @@ import cartopy.crs as ccrs
 #%%
 import sys
 sys.path.append("..")
-import src.spatial_pattern as sp
-import src.eof_plots as ept
+import src.Teleconnection.spatial_pattern as sp
+import src.Teleconnection.eof_plots as ept
 
-import importlib
-importlib.reload(sp) # after changed the source code
-importlib.reload(ept)
 
 # %%
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")

@@ -9,7 +9,7 @@ import seaborn as sns
 #%%
 import sys
 sys.path.append("..")
-import src.spatial_pattern as sp
+import src.Teleconnection.spatial_pattern as sp
 
 import importlib
 importlib.reload(sp) # after changed the source code

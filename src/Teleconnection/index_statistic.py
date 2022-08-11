@@ -8,10 +8,7 @@ from eofs.standard import Eof
 from tqdm.notebook import trange, tqdm
 import seaborn as sns
 
-
-import sys
-sys.path.append("..")
-import src.temporal_index as sti
+import src.Teleconnection.temporal_index as sti
 
 def df_sel(df,condition):
     """
