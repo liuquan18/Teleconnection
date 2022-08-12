@@ -68,7 +68,7 @@ def index_changing_pattern(xarr, independent = True, standard = True):
 
 def period_index(all_indexes,period):
     """
-    get the first 10 or last 10 year index from the whole time series of teleconnection.
+    select the first10 or last10 index from the whole time series of teleconnction index.
     the index name can be seen from the table below:
     |spatial pattern|   all   |    first    |    last   |
     |temporal period|
@@ -92,7 +92,7 @@ def period_index(all_indexes,period):
     return ten_indexes
 
 
-def extreme(xarr,threshod = 2,pattern_com = True):
+def extreme(xarr,threshod = 2):
     """
     mask out non-extreme data.
     label non-extreme data as np.nan.

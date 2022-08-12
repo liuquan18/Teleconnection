@@ -14,7 +14,6 @@ import src.Teleconnection.temporal_index as sti
 import importlib
 importlib.reload(ssp)
 
-#%%
 # Data load and pre-process
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
 ## split ens
@@ -24,7 +23,6 @@ demean = splitens-splitens.mean(dim = 'ens')
 ##select traposphere
 trop = demean.sel(hlayers = slice(20000,100000))
 trop = trop.var156
-#%%
 
 # index from changing patterns
 ## independent
@@ -36,18 +34,18 @@ independent=True,standard=False)
 print("dependent index")
 dep_EOF,dep_index,dep_fra = sti.index_changing_pattern(trop,
 independent=False,standard=False)
-#%%
 
+# index from all-pattern (for standardization)
 ## independent all-all
 ind_all_EOF,ind_all_index,ind_all_FRA = ssp.season_eof(trop, nmode=2,window=10,
     fixed_pattern="all",independent=True)  
 
-#%%
 ## non-independent all-all
 dep_all_EOF,dep_all_index,dep_all_FRA = ssp.season_eof(trop, nmode=2,window=10,
     fixed_pattern="all",independent=False)  
 
-#%%
+
+# save
 #%%
 ind_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_EOF_nonstd.nc")
 ind_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/ind_index_nonstd.nc")
