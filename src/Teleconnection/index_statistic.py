@@ -118,6 +118,7 @@ def pattern_compare(all_indexes):
         [first_first_all,last_last_all]
 
 
+#################### extreme counts #########################
 def all_layer_counts(extc):
     """
     sum the counts of all hlayers together.
@@ -267,3 +268,5 @@ def combine_diff(extreme_counts,mode):
 
     all = [first10,last10,diff]
     return all
+
+################## composite analysis ##############################

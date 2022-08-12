@@ -6,7 +6,7 @@ dependencies:
     - python>=3.9
     - pytest
     - sphinx
-    - xarray 
+    - xarray[complete]
     - numpy 
     - pandas
     - matplotlib
@@ -14,3 +14,7 @@ dependencies:
     - tqdm
     - seaborn
     - eofs    
+    - dask 
+    - netCDF4 
+    - bottleneck
+
