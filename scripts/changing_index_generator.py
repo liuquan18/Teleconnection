@@ -58,3 +58,12 @@ dep_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_EOF_no
 dep_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_index_nonstd.nc")
 dep_fra.to_netcdf("/work/mh0033/m300883/3rdPanel/data/changingPattern/dep_fra_nonstd.nc")
 # %%
+
+ind_all_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind_EOF_nonstd.nc")
+ind_all_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind_index_nonstd.nc")
+ind_all_FRA.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind_fra_nonstd.nc")
+
+dep_all_EOF.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep_EOF_nonstd.nc")
+dep_all_index.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep_index_nonstd.nc")
+dep_all_FRA.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep_fra_nonstd.nc")
+# %%
