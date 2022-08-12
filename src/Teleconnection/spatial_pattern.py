@@ -345,7 +345,7 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
         # only the EOF of the first10 is needed.
         EOF,FRA = changing_eofs(xarr, validtime[0],nmode = nmode,window=window)
         PC = fixed_pc(xarr,EOF)  
-        
+
     elif fixed_pattern == 'last':
         EOF,FRA = changing_eofs(xarr, validtime[-1],nmode = nmode,window=window)
         PC = fixed_pc(xarr,EOF)
@@ -445,7 +445,7 @@ def independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
     fras = xr.concat(fras,dim = xarr.hlayers) 
     return eofs,pcs,fras   
 
-def alllevel_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
+def dependent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof):
     """
     do eof independently over all layers.
     **Arguments**
@@ -477,7 +477,7 @@ return_full_eof=False, independent = True):
     if independent==True:
         eof, pc, fra = independent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof)
     else:
-        eof, pc, fra = alllevel_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof)
+        eof, pc, fra = dependent_eof(xarr,nmode,method,window,fixed_pattern,return_full_eof)
 
     return eof,pc,fra
 
