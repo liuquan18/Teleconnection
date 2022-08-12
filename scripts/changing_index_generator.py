@@ -11,6 +11,10 @@ import src.Teleconnection.eof_plots as sept
 import src.Teleconnection.temporal_index as sti
 
 #%%
+import importlib
+importlib.reload(ssp)
+
+#%%
 # Data load and pre-process
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
 ## split ens
@@ -38,6 +42,7 @@ independent=False,standard=False)
 ind_all_EOF,ind_all_index,ind_all_FRA = ssp.season_eof(trop, nmode=2,window=10,
     fixed_pattern="all",independent=True)  
 
+#%%
 ## non-independent all-all
 dep_all_EOF,dep_all_index,dep_all_FRA = ssp.season_eof(trop, nmode=2,window=10,
     fixed_pattern="all",independent=False)  
