@@ -122,25 +122,6 @@ def period_extreme(all_indexes,period):
     ten_extremes = [extreme(ten_index) for ten_index in ten_indexes]
     return ten_extremes
 
-def pattern_extreme(xarr,threshod =2):
-    """
-    mask out non-extreme and similiar to 'all-pattern' data as np.nan.
-    The extreme case here is not only defined as those above (below) 2,
-    but also above (below) the corresponding index from all-pattern.
-    
-    """
-
-
-def pattern_change_extreme(all_indexes, period = 'first10'):
-    """
-    get the index where the value is above 2std, and is below (frist) or above (last)
-    the all pattern.
-    The extreme cases may increase anyway, in which some part of it is increased only
-    becase of pattern change. By comparing with all pattern, we seperate the change of 
-    extreme cases only induced by pattern change.
-    """
-    ten_indexes = period_index(all_indexes,period = period)
-
 
 
 
