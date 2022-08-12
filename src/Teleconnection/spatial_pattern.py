@@ -512,9 +512,6 @@ return_full_eof=False,independent = True,standard = True):
 
     return eof,pc,fra
 
-def add(a,b):
-    return a+b+1
-
 
 def main():
     """
