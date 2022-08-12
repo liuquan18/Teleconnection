@@ -329,24 +329,26 @@ def rolling_eof(xarr,nmode = 2,window = 10,fixed_pattern = True,return_full_eof 
     # the validtime period where totally ten years of data are fully avaiable.
     validtime = xarr.isel(time = slice(5,-5)).time
 
-    if return_full_eof:  # changing patterns need all EOFs
-        # EOF and FRA
-        EOF,FRA = changing_eofs(xarr,validtime,nmode = nmode,window = window)
-    else:
-        EOF,FRA = changing_eofs(xarr, validtime[[0,-1]],nmode = nmode,window=window)
-
-    # PC
+    # if do the all-all decompose
     if fixed_pattern == 'all':  # a little different from the following two.
-        eof,pc,_ = doeof(stack_ens(xarr,withdim='time'),nmode = nmode,dim = 'com',standard=False)
-                                                                      # the pc is not standard to
-                                                                      # be consistent with following.
+        EOF,pc,FRA = doeof(stack_ens(xarr,withdim='time'),nmode = nmode,dim = 'com',standard=False)
+        # here the pc is not directly used since the eof is multiplied by the std of pc, then if we
+        # do the project-field, the resulted projectd-pc is not the same as the pc from the solver. 
+        # in order to make it the same  order as the following, we do project-field to get the index.
         PC = fixed_pc(xarr,eof)
-    elif fixed_pattern == 'first':
-        PC = fixed_pc(xarr,EOF.isel(time = 0))  # the first eof as spatial pattern
-    elif fixed_pattern == 'last':
-        PC = fixed_pc(xarr,EOF.isel(time = -1)) # the last eof as spatial pattern
+
     elif fixed_pattern == False:
+        EOF,FRA = changing_eofs(xarr,validtime,nmode = nmode,window = window)
         PC = changing_pc(xarr,validtime,EOF)
+
+    elif fixed_pattern == 'first':
+        # only the EOF of the first10 is needed.
+        EOF,FRA = changing_eofs(xarr, validtime[0],nmode = nmode,window=window)
+        PC = fixed_pc(xarr,EOF)  
+        
+    elif fixed_pattern == 'last':
+        EOF,FRA = changing_eofs(xarr, validtime[-1],nmode = nmode,window=window)
+        PC = fixed_pc(xarr,EOF)
 
     return EOF,PC,FRA
 
