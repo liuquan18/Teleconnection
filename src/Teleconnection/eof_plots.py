@@ -56,8 +56,6 @@ def exp_time_height(exp_plot):
 
     axes[0].set_title("NAO explained variance")
     axes[1].set_title("EA explaeined variance")
-# plt.savefig('/work/mh0033/m300883/output_plots/gr19/exp_var_allhieght.png')
-    plt.show()
 
 def axbuild(ax):
     
@@ -80,7 +78,10 @@ def axbuild(ax):
     ax.set_boundary(circle, transform=ax.transAxes)
     return ax
 
-def visu_eofspa(eofs,plev = [50000,85000]):
+def visu_eofspa(eofs,plev = [50000,85000],levels = np.arange(-1,1.1,0.2)):
+    """
+    two heights, both NAO and EA
+    """
     fig,axes = plt.subplots(2,2,figsize = (8,8),
                         subplot_kw={'projection':
                                     ccrs.LambertAzimuthalEqualArea(
@@ -96,7 +97,7 @@ def visu_eofspa(eofs,plev = [50000,85000]):
         for j, col in enumerate(row):  # mode
             data = eofs.sel(hlayers = plev[i], mode = mode[j]).values
             im = col.contourf(eofs.lon,eofs.lat,data,
-                        levels = np.arange(-1,1.1,0.2),
+                        levels = levels,
                         extend = 'both',
                         transform = ccrs.PlateCarree(),
                         cmap = 'RdBu_r'
@@ -109,8 +110,10 @@ def visu_eofspa(eofs,plev = [50000,85000]):
     plt.show()
 
 
-def visu_eofspa_all(eofs,mode = 'EA'):
-
+def visu_eofspa_all(eofs,mode = 'EA',levels = np.arange(-1,1.1,0.2)):
+    """
+    one mode, all heights
+    """
     cols = len(eofs.hlayers)//3+1
     fig,axes = plt.subplots(3,cols,figsize = (3*3,3*cols),
                         subplot_kw={'projection':
@@ -123,7 +126,7 @@ def visu_eofspa_all(eofs,mode = 'EA'):
         if i < len(eofs.hlayers):
             data = eofs.sel(mode=mode).isel(hlayers = i).values
             im = ax.contourf(eofs.lon,eofs.lat,data,
-                            levels = np.arange(-1,1.1,0.2),
+                            levels = levels,
                             extend = 'both',
                             transform = ccrs.PlateCarree(),
                             cmap = 'RdBu_r'        
@@ -132,10 +135,13 @@ def visu_eofspa_all(eofs,mode = 'EA'):
     cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
     fig.colorbar(im, cax=cbar_ax,label = 'eofs')
 
-    plt.show()
-def visu_eof_single(eof):
+    
+def visu_eof_single(eof,levels = np.arange(-1,1.1,0.2)):
+    """
+    one height,both NAO and EA
+    """
     EOFmaps = eof.plot.contourf('lon','lat',col = 'mode',
-                                        levels = np.arange(-1,1.1,0.2),
+                                        levels = levels,
                                         extend = 'both',
                                         subplot_kws=dict(projection = ccrs.LambertAzimuthalEqualArea(central_longitude=0.0,
                                                                                                     central_latitude=90.0),
@@ -156,7 +162,9 @@ def visu_eof_single(eof):
     plt.show()
 
 def visu_spatial_type(eofs,plev,mode = 'EA'):
-
+    """
+    oen mode, three patterns
+    """
     all_eof,first_eof,last_eof = [eof.sel(hlayers = plev) for eof in eofs]
     eof = xr.concat([first_eof,all_eof,last_eof],dim = 'type',coords='minimal',compat='override')
     eof['type'] = ['first','all','last']
@@ -181,6 +189,38 @@ def visu_spatial_type(eofs,plev,mode = 'EA'):
 
     EOFmaps.cbar.set_label("gph/m")
     plt.suptitle(f"plev = {plev}")
+    plt.show()
+
+def visu_composite_spa(composite,plev = [50000],levels = np.arange(-1,1.1,0.2)):
+    """
+    two heights, both NAO and EA
+    """
+    fig,axes = plt.subplots(2,2,figsize = (8,8),
+                        subplot_kw={'projection':
+                                    ccrs.LambertAzimuthalEqualArea(
+                                        central_longitude=0.0,
+                                        central_latitude=90.0)
+                                    })                     
+    for ax in axes.flat:
+        axbuild(ax)
+    
+    mode = ['NAO','EA']
+    extr_type = ['pos','neg']
+        
+    for i,row in enumerate(axes): # extr_type
+        for j, col in enumerate(row):  # mode
+            data = composite.sel(hlayers = plev,extr_type = extr_type[i], mode = mode[j]).values
+            im = col.contourf(composite.lon,composite.lat,data,
+                        levels = levels,
+                        extend = 'both',
+                        transform = ccrs.PlateCarree(),
+                        cmap = 'RdBu_r'
+                        )
+            col.set_title(f'extreme:{extr_type[i]} mode:{mode[j]}')
+    fig.subplots_adjust(hspace = 0.05,wspace = 0.05,right = 0.8)
+    cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
+    fig.colorbar(im, cax=cbar_ax,label = 'eofs')
+
     plt.show()
 
 

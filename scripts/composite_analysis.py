@@ -9,12 +9,16 @@ import seaborn as sns
 import src.Teleconnection.index_statistic as sis
 import src.Teleconnection.temporal_index as sti
 import src.Teleconnection.spatial_pattern as ssp
+import src.Teleconnection.eof_plots as sept
+import src.Teleconnection.pattern_statistic as sps
 
 #%%
 import importlib
 importlib.reload(sis)
 importlib.reload(sti)
 importlib.reload(ssp)
+importlib.reload(sept)
+importlib.reload(sps)
 
 #%%
 # load data
@@ -42,10 +46,11 @@ trop = trop.var156
 trop_std = ssp.standardize(trop)
 # transpose to the same order
 
+#%%
 # standardization
 mean_ind = all_all_ind.mean(dim = 'time')
 std_ind = all_all_ind.std(dim = 'time')
-ind_std = (changing_ind - mean_ind)/std_ind
+ind_std = (all_all_ind - mean_ind)/std_ind
 
 mean_dep = all_all_dep.mean(dim = 'time')
 std_dep = all_all_dep.std(dim = 'time')
@@ -55,4 +60,9 @@ dep_std = (changing_dep - mean_dep)/std_dep
 #%% composite
 ind = sis.composite(ind_std,trop_std)
 dep = sis.composite(dep_std,trop_std)
+# %%
+
+# %%
+lon_height_EA_neg = sps.lon_height(ind.sel(extr_type = 'neg'),mode = 'EA')
+lon_height_EA_pos = sps.lon_height(ind.sel(extr_type = 'pos'),mode = 'EA')
 # %%
