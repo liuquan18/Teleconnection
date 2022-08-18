@@ -502,3 +502,38 @@ def vertical_profile_diff(ind_extre,dep_extre):
     type_legend = axes[1,0].legend(custom_lines,['first','all','last','dynamic','','pos','neg'],
     loc = 'lower right',fontsize = 6)
     axes[1,0].add_artist(type_legend)
+
+def scatter_pattern_counts(ind_pattern,dep_pattern,mode):
+    """
+    scatter plot, extreme events increments v.s pattern difference
+    **Arguments**
+        *ind_pattern* the dataframe, with columns of extreme-event-number change 
+        (compare to extreme counts with first pattern) and pattern difference from 
+        first pattern.
+        *dep_pattern* the same, but for dependent eof analysis.
+        *mode* NAO or EA
+    **Return**
+        axes
+    """
+    fig,axes = plt.subplots(1,2,figsize = (7,4),dpi = 150)
+
+    sns.scatterplot(data = ind_pattern.xs((slice(70000,100000),mode),
+    level = ('hlayers','mode')),y = 'pos',x = 'pattern_diff',ax = axes[0],label = 'positive')
+
+    sns.scatterplot(data = ind_pattern.xs((slice(70000,100000),mode),
+    level = ('hlayers','mode')),y = 'neg',x = 'pattern_diff',ax = axes[0],label = 'negative')
+
+    sns.scatterplot(data = dep_pattern.xs((slice(70000,100000),mode),
+    level = ('hlayers','mode')),y = 'pos',x = 'pattern_diff',ax = axes[1],label = 'positive')
+
+    sns.scatterplot(data = dep_pattern.xs((slice(70000,100000),mode),
+    level = ('hlayers','mode')),y = 'neg',x = 'pattern_diff',ax = axes[1],label = 'negative')
+
+    for ax in axes:
+        ax.set_xlim(0,0.1)
+        ax.set_ylim(-1,15)
+        ax.set_xlabel("pattern difference")
+        ax.set_ylabel("extreme count increment difference")
+        ax.legend(loc = 'upper left')
+    axes[0].set_title("independent")
+    axes[1].set_title("dependent")

@@ -270,6 +270,34 @@ def combine_diff(extreme_counts,mode):
     all = [first10,last10,diff]
     return all
 
+def extc_diff_first(extc):
+    """
+    different of rise of extreme events from the first pattern.
+    **Argument**
+        *extc* the increment of extrc cases.
+    **Return**
+        *diff* the difference between lastpattern/allpattern and firstpattern as dataframe
+    """
+    AF = extc['all']-extc['first']
+    LF = extc['last']-extc['first']
+
+    # dataframe
+    diff = pd.DataFrame([AF,LF])
+    diff = diff.T
+    diff.columns = ['AF','LF']
+
+    # put 'AF' and 'LF' as index
+    diff = pd.DataFrame(diff.stack(),columns=['extr_diff'])
+
+    # put 'pos' and 'neg' as columns
+    diff = diff.unstack(0)['extr_diff']
+    diff = diff.reset_index().rename(columns={'level_2':'diff_pattern'})
+    diff = diff.set_index(['diff_pattern','hlayers','mode'])
+    return diff
+
+
+
+
 ################## composite analysis ##############################
 def _composite(extreme_index,data):
     """
