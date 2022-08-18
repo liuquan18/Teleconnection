@@ -2,16 +2,11 @@
 This is the source code for temporal index generator
 """
 
-from unittest.util import _count_diff_all_purpose
 import numpy as np
 import xarray as xr
 
-import sys
-sys.path.append("..")
-import src.spatial_pattern as ssp
+import src.Teleconnection.spatial_pattern as ssp
 
-import importlib
-importlib.reload(ssp) # after changed the source code
 
 def index_diff_pattern(xarr,independent = True, standard=True):
     """
@@ -71,9 +66,9 @@ def index_changing_pattern(xarr, independent = True, standard = True):
 
 
 
-def period_index(all_indexes,period = 'first10'):
+def period_index(all_indexes,period):
     """
-    get the first 10 or last 10 year index from the whole time series of teleconnection.
+    select the first10 or last10 index from the whole time series of teleconnction index.
     the index name can be seen from the table below:
     |spatial pattern|   all   |    first    |    last   |
     |temporal period|
@@ -88,22 +83,23 @@ def period_index(all_indexes,period = 'first10'):
         the three index for first or last 10 years. ordered in 
         [_all,_first,_last]
     """
-    if period=='first10':
-        ten_all, ten_first, ten_last = [all_index.isel(time = slice(0,10))
+    if period == 'first10':
+        ten_indexes = [all_index.isel(time = slice(0,10))
         for all_index in all_indexes]
-    if period =='last10':
-        ten_all, ten_first, ten_last = [all_index.isel(time = slice(-10,None))
+    if period == 'last10':
+        ten_indexes = [all_index.isel(time = slice(-10,None))
         for all_index in all_indexes]
-    return ten_all, ten_first, ten_last
+    return ten_indexes
 
 
 def extreme(xarr,threshod = 2):
     """
     mask out non-extreme data.
+    label non-extreme data as np.nan.
     **Arguments**
         *xarr* the xarr to be process
     **Return**
-        new xarray with one extra dimension called 'extr_type'
+        *ex* extreme xarray with one extra dimension called 'extr_type'
     """
     pos_ex = xarr.where(xarr>threshod)
     neg_ex = xarr.where(xarr<-1*threshod)
@@ -111,7 +107,7 @@ def extreme(xarr,threshod = 2):
     ex = ex.rename({'concat_dim':'extr_type'})
     return ex
 
-def period_extreme(all_indexes,period = 'first10'):
+def period_extreme(all_indexes,period):
     """
     The same as period_index, but now mask out the non-extreme elements.
     **Arguments**
@@ -123,24 +119,8 @@ def period_extreme(all_indexes,period = 'first10'):
         ordered in [_all,_first,_last]
     """
     ten_indexes  = period_index(all_indexes,period = period)
-    ten_all, ten_first, ten_last = [extreme(ten_index) for ten_index in ten_indexes]
-    return ten_all, ten_first,ten_last
-
-def pattern_extreme(xarr,threshod =2):
-    """
-    
-    """
-
-
-def pattern_change_extreme(all_indexes, period = 'first10'):
-    """
-    get the index where the value is above 2std, and is below (frist) or above (last)
-    the all pattern.
-    The extreme cases may increase anyway, in which some part of it is increased only
-    becase of pattern change. By comparing with all pattern, we seperate the change of 
-    extreme cases only induced by pattern change.
-    """
-    ten_indexes = period_index(all_indexes,period = period)
+    ten_extremes = [extreme(ten_index) for ten_index in ten_indexes]
+    return ten_extremes
 
 
 

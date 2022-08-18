@@ -1,6 +1,7 @@
 """
 source code for index statistics
 """
+from inspect import stack
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -8,10 +9,7 @@ from eofs.standard import Eof
 from tqdm.notebook import trange, tqdm
 import seaborn as sns
 
-
-import sys
-sys.path.append("..")
-import src.temporal_index as sti
+import src.Teleconnection.temporal_index as sti
 
 def df_sel(df,condition):
     """
@@ -121,36 +119,7 @@ def pattern_compare(all_indexes):
         [first_first_all,last_last_all]
 
 
-def extr_count_df(extreCounts,hlayer = 'all'):
-    """
-    transform xarray to dataframe. two columns: first 10 and last 10 period.
-    new index level pattern: first, all and last.
-    **Arguments**
-        *extreCounts* [fA,fF,fL,lA,lF,lL]
-        *hlayer* which vertical layer to be transform.
-    **Return**
-        dataframe, with two columns and a new index level "pattern"
-    """
-    patterns = ['all','first','last','all','first','last']
-    dfs = [extre.to_dataframe(name = patterns[i])[[patterns[i]]]
-    for i, extre in enumerate(extreCounts)]
-
-    # first 10 period
-    first_df = pd.concat(dfs[:3],axis = 1)
-    first_df = pd.DataFrame(first_df.stack(),columns = ['first10'])
-
-    # last 10 period
-    last_df = pd.concat(dfs[3:],axis = 1)
-    last_df = pd.DataFrame(last_df.stack(),columns=['last10'])
-
-    # final df
-    final_df = first_df.join(last_df)
-    final_df = pd.DataFrame(final_df.stack(),columns=['extreme_counts'])
-    final_df.index.names = ['extr_type','hlayers','mode','pattern','period']
-    final_df = final_df.reset_index().set_index(['extr_type','mode','hlayers'])
-
-    return final_df
-
+#################### extreme counts #########################
 def all_layer_counts(extc):
     """
     sum the counts of all hlayers together.
@@ -180,15 +149,50 @@ def extreme_count(all_indexes):
                       should be order in [all_all, all_first, all_last]
     **Return**
         three for each period (six in total) extreme counts.
+        *first10_ec* the extreme count of first 10 period.
+        *last10_ec* the extreme count of last 10 period.
     """
     # getting the extreme indexes
-    fA, fF, fL = sti.period_extreme(all_indexes,period = 'first10')
-    lA, lF, lL = sti.period_extreme(all_indexes, period = 'last10')
+    first10_extremes = sti.period_extreme(all_indexes,period = 'first10') # first 10 period
+    last10_extremes = sti.period_extreme(all_indexes, period = 'last10') # last 10 period
 
     # count the extreme cases
-    fA, fF, fL = [count_nonzero(fA),count_nonzero(fF),count_nonzero(fL)]
-    lA, lF, lL = [count_nonzero(lA),count_nonzero(lF),count_nonzero(lL)]
-    return lA,fF,fL,lA,lF,lL
+    first10_ec = [count_nonzero(first10_e) for first10_e in first10_extremes]
+    last10_ec = [count_nonzero(last10_e) for last10_e in last10_extremes]
+
+    return first10_ec,last10_ec
+
+
+def extr_count_df(first_extreCounts,last_extreme_Counts):
+    """
+    transform xarray to dataframe. two columns: first 10 and last 10 period.
+    new index level pattern: first, all and last.
+    **Arguments**
+        *extreCounts* [fA,fF,fL,lA,lF,lL]
+        *hlayer* which vertical layer to be transform.
+    **Return**
+        dataframe, with two columns and a new index level "pattern"
+    """
+    # first 10 period
+    patterns = ['all','first','last']
+    first_df = [first_exCount.to_dataframe(name = patterns[i])[[patterns[i]]]
+    for i, first_exCount in enumerate(first_extreCounts)]
+    first_df = pd.concat(first_df,axis = 1)
+    first_df = pd.DataFrame(first_df.stack(),columns = ['first10'])
+
+    # last 10 period
+    last_df = [last_exCount.to_dataframe(name = patterns[i])[[patterns[i]]]
+    for i, last_exCount in enumerate(last_extreme_Counts)]
+    last_df = pd.concat(last_df,axis = 1)
+    last_df = pd.DataFrame(last_df.stack(),columns=['last10'])
+
+    # final df
+    final_df = first_df.join(last_df)
+    final_df = pd.DataFrame(final_df.stack(),columns=['extreme_counts'])
+    final_df.index.names = ['extr_type','hlayers','mode','pattern','period']
+    final_df = final_df.reset_index().set_index(['extr_type','mode','hlayers'])
+
+    return final_df
 
 
 def period_diff(extreme_count):
@@ -238,25 +242,88 @@ def period_diff(extreme_count):
     return diff
 
 
-def combine_diff(extreme_counts,mode = 'NAO'):
+def combine_diff(extreme_counts,mode):
     """
     combine the first10, last 10 and the difference between those two into one
     dataframe.
-    the column should be ['first10','last10','diff']
     **Arguments**
         *extreme_count* the dataframe of extreme counts. from function 'extr_count_df'.
     **Return**
-        *all* the combined and unstacked dataframe.
+        *all* list of dataframes [first10,last10,diff]
     """
     diff = period_diff(extreme_counts) # get the data for thir panel
     diff = diff.xs(mode, level = 'mode')
     extreme_counts = extreme_counts.xs(mode,level = 'mode')
 
-    # combine diff and 
-    df_column_period = extreme_counts.reset_index()\
-        .set_index(['hlayers','pattern','extr_type','period'])\
-        .unstack(3)
-    df_column_period = df_column_period['extreme_counts']
-    all = df_column_period.join(diff)
-    all = all.unstack([1,2])
+    # unstack diff
+    diff = diff.unstack(0)
+
+    # unstack extreme counts
+    extreme_counts = extreme_counts.reset_index()\
+    .set_index(['hlayers','pattern','extr_type','period'])\
+        .unstack([1,2,3])
+
+    # split to first10 and last 10
+    first10 = extreme_counts.xs('first10',level = 'period',axis=1)['extreme_counts']
+    last10 = extreme_counts.xs('last10',level = 'period',axis=1)['extreme_counts']
+
+    all = [first10,last10,diff]
     return all
+
+################## composite analysis ##############################
+def _composite(extreme_index,data):
+    """
+    output the composite mean field of extreme pos (neg) index
+        - determine the coordinate.
+        - select the data
+        - calculate the mean.
+    **Arguments**
+        *index* the extrme index from func 'extreme',from which the coordinates of 
+        extreme neg or pos cases are determined.
+        *data* the field that are going to be selected and averaged.
+    **Return**
+        *comp_mean* the mean field of the given condition.
+    """
+
+    coords = extreme_index.dropna(dim = 'com')
+    composite = data.where(coords)
+    composite_map = composite.mean(dim = 'com')
+
+    return composite_map
+
+def composite(index,data,period = 'all'):
+    """
+    composite mean maps of extreme cases.
+    given the index and the data, determine the time and ens coordinates 
+    where extreme cases happen from the index, and select the data with 
+    those indexes, average the selected fields.
+    **Arguments**
+        *index* the index of NAO and EA
+        *data* the original geopotential data.
+        *period* 'first10','last10','all'
+    **Return**
+        *compostie* the composite mean of the extreme cases.
+    """
+    if period == 'all':
+        index = index
+    elif period == 'first10':
+        index = index.isel(time = slice(0,10)) # the index actually started from 1856,so wrong here.
+    elif period == 'last10':
+        index = index.isel(time = slice(-10,None))
+    data  = data.sel(time = index.time)
+
+    # get the extreme index, reduce over 'time' and 'ens' dims.
+    extr_index = sti.extreme(index)\
+        .stack(temp = ('extr_type','mode'),com = ('time','ens'))
+    data = data.stack(com = ('time','ens'))
+
+    composite = extr_index.groupby('temp').map(_composite,data = data)
+    return composite.unstack()
+
+
+
+
+    
+
+
+

@@ -21,16 +21,8 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 
-
-import sys
-sys.path.append("/work/mh0033/m300883/3rdPanel/")
-import src.spatial_pattern as ssp
-import src.index_statistic as sis
-
-import importlib
-importlib.reload(ssp) # after changed the source code
-importlib.reload(sis)
-
+import src.Teleconnection.spatial_pattern as ssp
+import src.Teleconnection.index_statistic as sis
 
 
 def exp_time_height(exp_plot):
@@ -64,8 +56,6 @@ def exp_time_height(exp_plot):
 
     axes[0].set_title("NAO explained variance")
     axes[1].set_title("EA explaeined variance")
-# plt.savefig('/work/mh0033/m300883/output_plots/gr19/exp_var_allhieght.png')
-    plt.show()
 
 def axbuild(ax):
     
@@ -88,7 +78,10 @@ def axbuild(ax):
     ax.set_boundary(circle, transform=ax.transAxes)
     return ax
 
-def visu_eofspa(eofs,plev = [50000,85000]):
+def visu_eofspa(eofs,plev = [50000,85000],levels = np.arange(-1,1.1,0.2)):
+    """
+    two heights, both NAO and EA
+    """
     fig,axes = plt.subplots(2,2,figsize = (8,8),
                         subplot_kw={'projection':
                                     ccrs.LambertAzimuthalEqualArea(
@@ -104,7 +97,7 @@ def visu_eofspa(eofs,plev = [50000,85000]):
         for j, col in enumerate(row):  # mode
             data = eofs.sel(hlayers = plev[i], mode = mode[j]).values
             im = col.contourf(eofs.lon,eofs.lat,data,
-                        levels = np.arange(-1,1.1,0.2),
+                        levels = levels,
                         extend = 'both',
                         transform = ccrs.PlateCarree(),
                         cmap = 'RdBu_r'
@@ -117,8 +110,10 @@ def visu_eofspa(eofs,plev = [50000,85000]):
     plt.show()
 
 
-def visu_eofspa_all(eofs,mode = 'EA'):
-
+def visu_eofspa_all(eofs,mode = 'EA',levels = np.arange(-1,1.1,0.2)):
+    """
+    one mode, all heights
+    """
     cols = len(eofs.hlayers)//3+1
     fig,axes = plt.subplots(3,cols,figsize = (3*3,3*cols),
                         subplot_kw={'projection':
@@ -131,7 +126,7 @@ def visu_eofspa_all(eofs,mode = 'EA'):
         if i < len(eofs.hlayers):
             data = eofs.sel(mode=mode).isel(hlayers = i).values
             im = ax.contourf(eofs.lon,eofs.lat,data,
-                            levels = np.arange(-1,1.1,0.2),
+                            levels = levels,
                             extend = 'both',
                             transform = ccrs.PlateCarree(),
                             cmap = 'RdBu_r'        
@@ -140,10 +135,13 @@ def visu_eofspa_all(eofs,mode = 'EA'):
     cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
     fig.colorbar(im, cax=cbar_ax,label = 'eofs')
 
-    plt.show()
-def visu_eof_single(eof):
+    
+def visu_eof_single(eof,levels = np.arange(-1,1.1,0.2)):
+    """
+    one height,both NAO and EA
+    """
     EOFmaps = eof.plot.contourf('lon','lat',col = 'mode',
-                                        levels = np.arange(-1,1.1,0.2),
+                                        levels = levels,
                                         extend = 'both',
                                         subplot_kws=dict(projection = ccrs.LambertAzimuthalEqualArea(central_longitude=0.0,
                                                                                                     central_latitude=90.0),
@@ -164,7 +162,9 @@ def visu_eof_single(eof):
     plt.show()
 
 def visu_spatial_type(eofs,plev,mode = 'EA'):
-
+    """
+    oen mode, three patterns
+    """
     all_eof,first_eof,last_eof = [eof.sel(hlayers = plev) for eof in eofs]
     eof = xr.concat([first_eof,all_eof,last_eof],dim = 'type',coords='minimal',compat='override')
     eof['type'] = ['first','all','last']
@@ -189,6 +189,38 @@ def visu_spatial_type(eofs,plev,mode = 'EA'):
 
     EOFmaps.cbar.set_label("gph/m")
     plt.suptitle(f"plev = {plev}")
+    plt.show()
+
+def visu_composite_spa(composite,plev = [50000],levels = np.arange(-1,1.1,0.2)):
+    """
+    two heights, both NAO and EA
+    """
+    fig,axes = plt.subplots(2,2,figsize = (8,8),
+                        subplot_kw={'projection':
+                                    ccrs.LambertAzimuthalEqualArea(
+                                        central_longitude=0.0,
+                                        central_latitude=90.0)
+                                    })                     
+    for ax in axes.flat:
+        axbuild(ax)
+    
+    mode = ['NAO','EA']
+    extr_type = ['pos','neg']
+        
+    for i,row in enumerate(axes): # extr_type
+        for j, col in enumerate(row):  # mode
+            data = composite.sel(hlayers = plev,extr_type = extr_type[i], mode = mode[j]).values
+            im = col.contourf(composite.lon,composite.lat,data,
+                        levels = levels,
+                        extend = 'both',
+                        transform = ccrs.PlateCarree(),
+                        cmap = 'RdBu_r'
+                        )
+            col.set_title(f'extreme:{extr_type[i]} mode:{mode[j]}')
+    fig.subplots_adjust(hspace = 0.05,wspace = 0.05,right = 0.8)
+    cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
+    fig.colorbar(im, cax=cbar_ax,label = 'eofs')
+
     plt.show()
 
 
@@ -381,17 +413,19 @@ def vertical_profile(extreme_counts,mode = 'NAO'):
     fig, axes = plt.subplots(1,3,figsize = (8,3),dpi = 150)
     plt.subplots_adjust(wspace = 0.3)
 
-    colors = ['#1f77b4', '#2ca02c', '#d62728']
+    colors = ['#1f77b4', '#2ca02c', '#d62728','#ff7f0e']
     patterns = ['first','all','last']
     periods =['first10','last10','diff']
 
     for i, ax in enumerate(axes):  # periods
-        for j,p in enumerate(patterns):  #patterns
-            data =  all[(periods[i],p)].sort_index()
-            y = (data.index.values/100).astype(int)
+        period_data = all[i]
 
-            ax.plot(data['pos'], y, color = colors[j])
-            ax.plot(data['neg'], y, color = colors[j],dashes = [3,3])
+        for j, pattern in enumerate(period_data.columns.levels[0]):
+            pattern_data = period_data[pattern].sort_index()
+            y = (pattern_data.index.values/100).astype(int)
+
+            ax.plot(pattern_data['pos'], y, color = colors[j])
+            ax.plot(pattern_data['neg'], y, color = colors[j],dashes = [3,3])
 
             ax.set_ylim(1000,200)
             if i<2:
@@ -406,15 +440,15 @@ def vertical_profile(extreme_counts,mode = 'NAO'):
                 ax.set_ylabel("gph/hpa")
 
     # legend
-
-
     custom_lines = [Line2D([0],[0],color = colors[0]),
                     Line2D([0],[0],color = colors[1]),
                     Line2D([0],[0],color = colors[2]),
+                    Line2D([0],[0],color = colors[3]),
+                    Line2D([0],[0],color = None,alpha = 0),
                     Line2D([0],[0],color = 'k'),
                     Line2D([0],[0],dashes = [3,3],color = 'k')]
-    type_legend = axes[-1].legend(custom_lines,['first','all','last','pos','neg'],
-    loc = 'lower right',fontsize = 7)
+    type_legend = axes[-1].legend(custom_lines,['first','all','last','dynamic','','pos','neg'],
+    loc = 'lower right',fontsize = 6)
     axes[-1].add_artist(type_legend)
 
 def vertical_profile_diff(ind_extre,dep_extre):
@@ -423,9 +457,7 @@ def vertical_profile_diff(ind_extre,dep_extre):
     """
     ind_diff = sis.period_diff(ind_extre).unstack([0,1])
     dep_diff = sis.period_diff(dep_extre).unstack([0,1])
-
     
-
     fig,axes = plt.subplots(2,2,figsize =(5.5,7),dpi = 150)
     plt.subplots_adjust(wspace=0.3,hspace=0.3)
 

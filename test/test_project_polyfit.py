@@ -1,6 +1,5 @@
 #%%
 import cartopy.crs as ccrs
-from netCDF4 import Dataset
 import matplotlib.pyplot as plt
 import numpy as np
 

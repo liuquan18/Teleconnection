@@ -8,13 +8,10 @@ import seaborn as sns
 
 
 #%%
-import sys
-sys.path.append("..")
-import src.pattern_statistic as ps
-import src.spatial_pattern as sp
 
-import importlib
-importlib.reload(ps) # after changed the source code
+import src.Teleconnection.pattern_statistic as ps
+import src.Teleconnection.spatial_pattern as sp
+
 
 #%% Load seasonal PCs
 
