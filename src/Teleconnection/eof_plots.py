@@ -102,7 +102,7 @@ def visu_eofspa(eofs,plev = [50000,85000],levels = np.arange(-1,1.1,0.2)):
                         transform = ccrs.PlateCarree(),
                         cmap = 'RdBu_r'
                         )
-            col.set_title(f'plev:{plev[i]} mode:{mode[j]}')
+            col.set_title('plev:{:3.0f} hpa mode:{}'.format(plev[i]/100,mode[j]))
     fig.subplots_adjust(hspace = 0.05,wspace = 0.05,right = 0.8)
     cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
     fig.colorbar(im, cax=cbar_ax,label = 'eofs')
@@ -191,7 +191,7 @@ def visu_spatial_type(eofs,plev,mode = 'EA'):
     plt.suptitle(f"plev = {plev}")
     plt.show()
 
-def visu_composite_spa(composite,plev = [50000],levels = np.arange(-1,1.1,0.2)):
+def visu_composite_spa(composite,plev = 50000,levels = np.arange(-2,2.1,0.4)):
     """
     two heights, both NAO and EA
     """
