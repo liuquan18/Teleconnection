@@ -159,7 +159,7 @@ def visu_eof_single(eof,levels = np.arange(-1,1.1,0.2)):
     fig.set_figwidth(13.5)
 
     EOFmaps.cbar.set_label("gph/m")
-    plt.show()
+
 
 def visu_spatial_type(eofs,plev,mode = 'EA'):
     """
@@ -458,14 +458,14 @@ def vertical_profile_diff(ind_extre,dep_extre):
     ind_diff = sis.period_diff(ind_extre).unstack([0,1])
     dep_diff = sis.period_diff(dep_extre).unstack([0,1])
     
-    fig,axes = plt.subplots(2,2,figsize =(5.5,7),dpi = 150)
+    fig,axes = plt.subplots(2,3,figsize =(7,7),dpi = 150)
     plt.subplots_adjust(wspace=0.3,hspace=0.3)
 
     colors = ['#1f77b4', '#2ca02c', '#d62728','#ff7f0e']
     patterns = ['first','all','last','dynamic']
     modes = ['NAO','EA']
-    inds = ['independent','dependent']
-    data = [ind_diff,dep_diff]
+    inds = ['independent','dependent','difference']
+    data = [ind_diff,dep_diff,ind_diff-dep_diff]
 
     for i, row in enumerate(axes): # modes
         for j, ax in enumerate(row):  # ind
@@ -478,7 +478,7 @@ def vertical_profile_diff(ind_extre,dep_extre):
                 ax.plot(data_mode['neg'], y, color = colors[l],dashes = [3,3])
 
                 ax.set_ylim(1000,200)
-                ax.set_xlim(-10,40)
+                ax.set_xlim(-15,40)
                 ax.set_title(f"{modes[i]} {inds[j]}")
 
             if j == 0:

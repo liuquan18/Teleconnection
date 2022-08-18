@@ -18,10 +18,10 @@ import src.Teleconnection.spatial_pattern as sp
 # stanadarad-independent-rolling-fixed all
 pc_sira=xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_all/pc.nc")
 
-# stanadarad-independent-rolling-fixed all
+# stanadarad-independent-rolling-fixed first
 pc_sirf=xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_first/pc.nc")
 
-# stanadarad-independent-rolling-fixed all
+# stanadarad-independent-rolling-fixed last
 pc_sirl=xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/EOF_result/std_ind_rolling_last/pc.nc")
 
 

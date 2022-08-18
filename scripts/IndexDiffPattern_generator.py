@@ -22,7 +22,6 @@ import pylab
 import src.Teleconnection.spatial_pattern as ssp
 import src.Teleconnection.pattern_statistic as sps
 import src.Teleconnection.index_statistic as sis
-import src.Teleconnection.eof_plots as sept
 import src.Teleconnection.temporal_index as sti
 
 # Data load and pre-process
