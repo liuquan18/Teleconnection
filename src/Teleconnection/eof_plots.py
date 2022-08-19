@@ -515,22 +515,25 @@ def scatter_pattern_counts(ind_pattern,dep_pattern,mode):
     **Return**
         axes
     """
-    fig,axes = plt.subplots(1,2,figsize = (7,4),dpi = 150)
+    fig,axes = plt.subplots(1,2,figsize = (7,4),dpi = 300)
 
-    sns.scatterplot(data = ind_pattern.xs((slice(70000,100000),mode),
-    level = ('hlayers','mode')),y = 'pos',x = 'pattern_diff',ax = axes[0],label = 'positive')
+    ind = ind_pattern.xs((slice(70000,100000),mode),level = ('hlayers','mode'))
 
-    sns.scatterplot(data = ind_pattern.xs((slice(70000,100000),mode),
-    level = ('hlayers','mode')),y = 'neg',x = 'pattern_diff',ax = axes[0],label = 'negative')
+    dep = dep_pattern.xs((slice(70000,100000),mode),level = ('hlayers','mode'))
 
-    sns.scatterplot(data = dep_pattern.xs((slice(70000,100000),mode),
-    level = ('hlayers','mode')),y = 'pos',x = 'pattern_diff',ax = axes[1],label = 'positive')
+    sns.regplot(data = ind,y = 'pos',x = 'pattern_diff',ax = axes[0],label = 'positive')
 
-    sns.scatterplot(data = dep_pattern.xs((slice(70000,100000),mode),
-    level = ('hlayers','mode')),y = 'neg',x = 'pattern_diff',ax = axes[1],label = 'negative')
+    sns.regplot(data = ind,y = 'neg',x = 'pattern_diff',ax = axes[0],label = 'negative',
+    robust=True)
+
+    sns.regplot(data = dep,y = 'pos',x = 'pattern_diff',ax = axes[1],label = 'positive')
+
+    sns.regplot(data = dep,y = 'neg',x = 'pattern_diff',ax = axes[1],label = 'negative')
+
+
 
     for ax in axes:
-        ax.set_xlim(0,0.1)
+        ax.set_xlim(0,0.13)
         ax.set_ylim(-1,15)
         ax.set_xlabel("pattern difference")
         ax.set_ylabel("extreme count increment difference")

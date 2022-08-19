@@ -2,6 +2,7 @@
 import xarray as xr
 import pandas as pd
 import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
 # %%
 import src.Teleconnection.spatial_pattern as ssp
