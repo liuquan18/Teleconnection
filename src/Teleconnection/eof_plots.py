@@ -515,7 +515,7 @@ def scatter_pattern_counts(ind_pattern,dep_pattern,mode):
     **Return**
         axes
     """
-    fig,axes = plt.subplots(1,2,figsize = (7,4),dpi = 300)
+    fig,axes = plt.subplots(1,2,figsize = (7,4),dpi = 500)
 
     ind = ind_pattern.xs((slice(70000,100000),mode),level = ('hlayers','mode'))
 
