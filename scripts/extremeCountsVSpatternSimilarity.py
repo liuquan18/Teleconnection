@@ -4,7 +4,7 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
-# %%
+
 import src.Teleconnection.spatial_pattern as ssp
 import src.Teleconnection.pattern_statistic as sps
 import src.Teleconnection.index_statistic as sis
@@ -31,11 +31,10 @@ indL = indChangingEof.isel(time = -1)
 depF = depChangingEof.isel(time = 0)
 depL = depChangingEof.isel(time = -1)
 
-## all pattern
+# all pattern
 indA = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/allPattern/ind_EOF_nonstd.nc").eof
 depA = xr.open_dataset("/work/mh0033/m300883/3rdPanel/data/allPattern/dep_EOF_nonstd.nc").eof
 
-#%%
 # extreme counts
 ind_extc = pd.read_csv("/work/mh0033/m300883/3rdPanel/data/extreme_counts/ind_extc.csv")
 dep_extc = pd.read_csv("/work/mh0033/m300883/3rdPanel/data/extreme_counts/dep_extc.csv")
@@ -48,8 +47,7 @@ ind_diff = sis.extc_diff_first(ind_rise)
 dep_diff = sis.extc_diff_first(dep_rise)
 
 
-# correlation of EOFs
-#%%
+# correlation from first eof
 AF = xr.corr(indA,indF,dim = ['lat','lon'])
 LF = xr.corr(indL,indF,dim = ['lat','lon'])
 
@@ -57,14 +55,15 @@ corr = xr.concat([AF,LF],dim = ['AF','LF'])
 corr = corr.rename({'concat_dim':'diff_pattern'})
 corr = corr.to_dataframe()[['eof']]
 
-# %%
+# put counts rise and pattern chagne together
 ind_pattern_inf = ind_diff.join(corr)
 ind_pattern_inf['pattern_diff'] = 1-ind_pattern_inf['eof']
 
 dep_pattern_inf = dep_diff.join(corr)
 dep_pattern_inf['pattern_diff'] = 1-dep_pattern_inf['eof']
-# %%
 
+
+# scatter plot of count rise v.s pattern change
 # %%
 sept.scatter_pattern_counts(ind_pattern_inf,dep_pattern_inf,mode = 'EA')
 sept.scatter_pattern_counts(ind_pattern_inf,dep_pattern_inf,mode = 'NAO')
