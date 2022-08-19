@@ -371,16 +371,25 @@ def changing_eofs(xarr,validtime,nmode,window ):
     eofs = list()
     fras = list()
 
-    for time in tqdm(validtime):
-        tenyear_xarr = field.sel(time = time)
-        eof,_,fra = doeof(tenyear_xarr,nmode=nmode,dim = 'com')  # the pc here is neither 
-                                                             # fixed nor non-fixed pattern.
-        eofs.append(eof)
-        fras.append(fra)
+    # for list of validtime (dynamic):
+    try:
+        for time in tqdm(validtime):
+            tenyear_xarr = field.sel(time = time)
+            eof,_,fra = doeof(tenyear_xarr,nmode=nmode,dim = 'com')  # the pc here is neither 
+                                                                # fixed nor non-fixed pattern.
+            eofs.append(eof)
+            fras.append(fra)
 
-    EOF = xr.concat(eofs,dim = validtime)
-    FRA = xr.concat(fras,dim = validtime)
+        EOF = xr.concat(eofs,dim = validtime)
+        FRA = xr.concat(fras,dim = validtime)
+
+    # for one time step (first,last, all)
+    except TypeError:
+        tenyear_xarr = field.sel(time = validtime)
+        EOF,_,FRA = doeof(tenyear_xarr,nmode=nmode,dim='com')
+
     return EOF, FRA
+
 
 
 def fixed_pc(xarr,pattern,dim = 'com'):
