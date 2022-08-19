@@ -371,8 +371,8 @@ def changing_eofs(xarr,validtime,nmode,window ):
     eofs = list()
     fras = list()
 
-    # for list of validtime (dynamic):
-    try:
+    # changing eofs (dynamic):
+    if len(validtime)>1:
         for time in tqdm(validtime):
             tenyear_xarr = field.sel(time = time)
             eof,_,fra = doeof(tenyear_xarr,nmode=nmode,dim = 'com')  # the pc here is neither 
@@ -383,8 +383,8 @@ def changing_eofs(xarr,validtime,nmode,window ):
         EOF = xr.concat(eofs,dim = validtime)
         FRA = xr.concat(fras,dim = validtime)
 
-    # for one time step (first,last, all)
-    except TypeError:
+    # for one pattern (first,all,last) and all time step
+    elif len(validtime)==1:
         tenyear_xarr = field.sel(time = validtime)
         EOF,_,FRA = doeof(tenyear_xarr,nmode=nmode,dim='com')
 
