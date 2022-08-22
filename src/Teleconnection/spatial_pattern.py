@@ -146,7 +146,11 @@ def sqrtcoslat (xarr):
     return wgts
 
 
-def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
+def doeof(
+    seasondata:xr.DataArray,
+    nmode: int = 2,
+    dim: str = 'com',
+    standard: bool = True):
     """
     do eof to seasonal data along a combined dim, which is gotten from the above function 
     'stack_ens'
@@ -210,7 +214,9 @@ def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
     return eofx,pcx,frax
 
 
-def project_field(fieldx,eofx,dim = 'com'):
+def project_field(
+    fieldx,eofx,dim = 'com'
+    ):
     """
     project original field onto eofs to get the temporal index.
     Different from python eofs package, here if there are three dimensions in sptial,
