@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import src.Teleconnection.spatial_pattern as ssp
 import src.Teleconnection.pattern_statistic as sps
 import src.Teleconnection.index_statistic as sis
-import src.Teleconnection.eof_plots as sept
+import plots.eof_plots as sept
 import src.Teleconnection.temporal_index as sti
 #%%
 import importlib

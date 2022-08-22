@@ -9,7 +9,7 @@ import seaborn as sns
 import src.Teleconnection.index_statistic as sis
 import src.Teleconnection.temporal_index as sti
 import src.Teleconnection.spatial_pattern as ssp
-import src.Teleconnection.eof_plots as sept
+import plots.eof_plots as sept
 import src.Teleconnection.pattern_statistic as sps
 
 #%%
