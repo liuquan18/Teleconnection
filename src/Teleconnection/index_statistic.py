@@ -295,11 +295,80 @@ def extc_diff_first(extc):
     diff = diff.set_index(['diff_pattern','hlayers','mode'])
     return diff
 
+def uncenter_corr(
+    a: np.array,
+    b: np.array
+)-> np.float32:
+    """
+    the uncentered correlation of two lists
+    """
+    return np.dot(a,b)/np.dot(b,b)
 
+
+def xr_corr(
+    spa_A: xr.DataArray,
+    spa_B: xr.DataArray,
+    dims: str,
+    center: bool = True
+)-> xr.DataArray:
+    """
+    calculate the spatial corrlation of two dataArray.
+    calculated use both uncenter and centered pattern correlations to 
+    assess the spatial similarity with and without accounting for the
+    magnitude of the patterns respectively.
+    **Arguments**
+        *spa_A* the data A.
+        *spa_B* the data B.
+        *dims* along which to calculate correlation.
+        *center* center or uncenter.
+    **Return**
+        *Corr* the correlation data Array.
+    """
+    if center:
+        Corr = xr.corr(spa_A,spa_B,dim = dims)
+    else:
+        spa_A = spa_A.stack(com = dims)
+        spa_B = spa_B.stack(com = dims)
+        Corr = xr.apply_ufunc(  uncenter_corr,
+                                spa_A,
+                                spa_B,
+                                vectorize=True,
+                                dask='parallelized',
+                                input_core_dims=[['com'],['com']],
+        
+        )
+    return Corr
+
+def spatial_corr(
+    All: xr.DataArray,
+    First: xr.DataArray,
+    Last: xr.DataArray,
+    center: bool = True
+)-> pd.DataFrame:
+    """
+    similarity of all to first and last to first.
+    calculate the spatial similarity of all to first and last to first 
+    with (center=False) and without (center = True) accounting for the
+    magnitude of the pattern.
+    **Arguments**
+        *spa_A* the data A.
+        *spa_B* the data B.
+        *dims* along which to calculate correlation.
+        *center* center or uncenter.
+    **Return**
+        *Corr* the correlation dataframe.
+    """
+    AF = xr_corr(All,First,dims = ['lat','lon'],center=center)
+    LF = xr_corr(Last,First, dims = ['lat','lon'],center=center)
+
+    index = xr.DataArray(['AF','LF'],dims = 'diff_pattern')
+    corr = xr.concat([AF,LF],dim = index)
+    corr = corr.to_dataframe()[['eof']]
+    return corr
 
 
 ################## composite analysis ##############################
-def _composite(extreme_index,data):
+def _composite(extreme_index,data,reduction='mean'):
     """
     output the composite mean field of extreme pos (neg) index
         - determine the coordinate.
@@ -315,11 +384,18 @@ def _composite(extreme_index,data):
 
     coords = extreme_index.dropna(dim = 'com')
     composite = data.where(coords)
-    composite_map = composite.mean(dim = 'com')
+    if reduction == 'mean':
+        composite = composite.mean(dim = 'com')
+    elif reduction == 'counts':
+        composite = composite.count(dim = 'com')
 
-    return composite_map
+    return composite
 
-def composite(index,data,period = 'all'):
+def composite(
+    index:xr.DataArray,
+    data:xr.DataArray,
+    reduction: str='mean',
+    period: str= 'all'):
     """
     composite mean maps of extreme cases.
     given the index and the data, determine the time and ens coordinates 
@@ -328,6 +404,7 @@ def composite(index,data,period = 'all'):
     **Arguments**
         *index* the index of NAO and EA
         *data* the original geopotential data.
+        *reduction* mean or count
         *period* 'first10','last10','all'
     **Return**
         *compostie* the composite mean of the extreme cases.
@@ -345,7 +422,7 @@ def composite(index,data,period = 'all'):
         .stack(temp = ('extr_type','mode'),com = ('time','ens'))
     data = data.stack(com = ('time','ens'))
 
-    composite = extr_index.groupby('temp').map(_composite,data = data)
+    composite = extr_index.groupby('temp').map(_composite,data = data,reduction = reduction)
     return composite.unstack()
 
 

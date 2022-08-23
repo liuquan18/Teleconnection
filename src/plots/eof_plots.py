@@ -82,7 +82,7 @@ def visu_eofspa(eofs,plev = [50000,85000],levels = np.arange(-1,1.1,0.2)):
     """
     two heights, both NAO and EA
     """
-    fig,axes = plt.subplots(2,2,figsize = (8,8),
+    fig,axes = plt.subplots(2,2,figsize = (8,8),dpi = 500,
                         subplot_kw={'projection':
                                     ccrs.LambertAzimuthalEqualArea(
                                         central_longitude=0.0,
@@ -195,7 +195,7 @@ def visu_composite_spa(composite,plev = 50000,levels = np.arange(-2,2.1,0.4)):
     """
     two heights, both NAO and EA
     """
-    fig,axes = plt.subplots(2,2,figsize = (8,8),
+    fig,axes = plt.subplots(2,2,figsize = (8,8),dpi = 500,
                         subplot_kw={'projection':
                                     ccrs.LambertAzimuthalEqualArea(
                                         central_longitude=0.0,
@@ -503,7 +503,7 @@ def vertical_profile_diff(ind_extre,dep_extre):
     loc = 'lower right',fontsize = 6)
     axes[1,0].add_artist(type_legend)
 
-def scatter_pattern_counts(ind_pattern,dep_pattern,mode):
+def scatter_pattern_counts(ind_pattern,dep_pattern,mode,fit_reg = True):
     """
     scatter plot, extreme events increments v.s pattern difference
     **Arguments**
@@ -521,20 +521,24 @@ def scatter_pattern_counts(ind_pattern,dep_pattern,mode):
 
     dep = dep_pattern.xs((slice(70000,100000),mode),level = ('hlayers','mode'))
 
-    sns.regplot(data = ind,y = 'pos',x = 'pattern_diff',ax = axes[0],label = 'positive')
+    sns.regplot(data = ind,y = 'pos',x = 'pattern_diff',ax = axes[0],
+    label = 'positive',fit_reg = fit_reg)
 
-    sns.regplot(data = ind,y = 'neg',x = 'pattern_diff',ax = axes[0],label = 'negative',
-    robust=True)
+    sns.regplot(data = ind,y = 'neg',x = 'pattern_diff',ax = axes[0],
+    label = 'negative',
+    robust=True,fit_reg = fit_reg)
 
-    sns.regplot(data = dep,y = 'pos',x = 'pattern_diff',ax = axes[1],label = 'positive')
+    sns.regplot(data = dep,y = 'pos',x = 'pattern_diff',ax = axes[1],
+    label = 'positive',fit_reg = fit_reg)
 
-    sns.regplot(data = dep,y = 'neg',x = 'pattern_diff',ax = axes[1],label = 'negative')
+    sns.regplot(data = dep,y = 'neg',x = 'pattern_diff',ax = axes[1],
+    label = 'negative',fit_reg = fit_reg)
 
 
 
     for ax in axes:
-        ax.set_xlim(0,0.13)
-        ax.set_ylim(-1,15)
+        ax.set_xlim(0,0.22)
+        ax.set_ylim(-1,20)
         ax.set_xlabel("pattern difference")
         ax.set_ylabel("extreme count increment difference")
         ax.legend(loc = 'upper left')
