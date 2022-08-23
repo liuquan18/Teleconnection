@@ -64,6 +64,8 @@ dep_counts_all = scp.composite(dep_std,trop_std,reduction='count')
 
 ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
 ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
+spcp.vertical_profile(ind_counts_all)
+
 
 #%%
 # frist10

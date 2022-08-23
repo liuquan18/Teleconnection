@@ -28,7 +28,7 @@ def vertical_profile(counts,mode = 'NAO'):
     y = (counts['hlayers']/100).astype(int)
 
     # plot  
-    fig, ax = plt.subplots(figsize = (6,6),dpi = 150)
+    fig, ax = plt.subplots(figsize = (4,4),dpi = 150)
     plt.subplots_adjust(wspace = 0.3)
 
     modes = counts.mode
