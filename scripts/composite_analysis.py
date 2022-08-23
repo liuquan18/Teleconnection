@@ -57,27 +57,35 @@ trop = trop.var156
 trop_std = ssp.standardize(trop)
 # transpose to the same order
 
-#%% all
-# composite counts
+#%%
+# all
 ind_counts_all = scp.composite(ind_std,trop_std,reduction='count')
 dep_counts_all = scp.composite(dep_std,trop_std,reduction='count')
 
 ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
 ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
-#%% frist10
+
+#%%
+# frist10
 ind_counts_first = scp.composite(ind_std,trop_std,reduction='count',period='first10')
 dep_counts_first = scp.composite(dep_std,trop_std,reduction='count',period='first10')
 
 ind_mean_first = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'first10')
 ind_mean_first = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'first10')
-
-
-#%% last10
+#%%
+# last10
 ind_counts_last = scp.composite(ind_std,trop_std,reduction='count',period='last10')
 dep_counts_last = scp.composite(dep_std,trop_std,reduction='count',period='last10')
 
 ind_mean_last = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'last10')
 ind_mean_last = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'last10')
+
+#%% together
+period = xr.DataArray(['first10','last10'],dims = ['period'])
+counts_period = xr.concat([ind_counts_first,ind_counts_last],dim = period)
+mean_period = xr.concat([ind_mean_first,ind_mean_last],dim = period)
+
+
 
 
 #%% composite mean
