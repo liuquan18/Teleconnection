@@ -66,6 +66,13 @@ ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
 ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
 spcp.vertical_profile(ind_counts_all)
 
+#%%
+sept.visu_composite_spa(ind_mean_all,plev = 20000)
+sept.visu_composite_spa(ind_mean_all,plev = 100000)
+#%%
+sept.visu_composite_spa(ind_mean_all,plev = 20000)
+sept.visu_composite_spa(ind_mean_all,plev = 100000)
+
 
 #%%
 # frist10
@@ -73,14 +80,36 @@ ind_counts_first = scp.composite(ind_std,trop_std,reduction='count',period='firs
 dep_counts_first = scp.composite(dep_std,trop_std,reduction='count',period='first10')
 
 ind_mean_first = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'first10')
-ind_mean_first = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'first10')
+dep_mean_first = scp.composite(dep_std,trop_std,reduction = 'mean',period = 'first10')
+
+#%%
+sept.visu_composite_spa(ind_mean_first,plev = 20000)
+sept.visu_composite_spa(ind_mean_first,plev = 100000)
+
+#%%
+sept.visu_composite_spa(dep_mean_first,plev = 20000)
+sept.visu_composite_spa(dep_mean_first,plev = 100000)
+
+
 #%%
 # last10
 ind_counts_last = scp.composite(ind_std,trop_std,reduction='count',period='last10')
 dep_counts_last = scp.composite(dep_std,trop_std,reduction='count',period='last10')
 
 ind_mean_last = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'last10')
-ind_mean_last = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'last10')
+dep_mean_last = scp.composite(dep_std,trop_std,reduction = 'mean',period = 'last10')
+
+#%%
+sept.visu_composite_spa(ind_mean_last,plev = 20000)
+sept.visu_composite_spa(ind_mean_last,plev = 100000)
+
+#%%
+sept.visu_composite_spa(dep_mean_last,plev = 20000)
+sept.visu_composite_spa(dep_mean_last,plev = 100000)
+
+
+
+
 
 #%% together
 period = xr.DataArray(['first10','last10'],dims = ['period'])
