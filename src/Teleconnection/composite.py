@@ -29,16 +29,18 @@ def _composite(index,data,reduction='mean'):
     """
     the composite mean or count of data, determined by the extreme state
     of index.
-        - get the extreme index
-        - determine the coordinate.
-        - select the data
-        - calculate the mean.
+        - stack to one series.
+        - for pos and neg:
+            - get the extreme index 
+            - select the data
+            - calculate the mean or counts.
+        - concat pos and neg.
     **Arguments**
         *index* the from which the coordinates of 
         extreme neg or pos cases are determined.
         *data* the field that are going to be selected and averaged.
     **Return**
-        *comp_mean* the mean field of the given condition.
+        *extreme_composite* the mean field or counts of extreme cases.
     """
     data = data.stack(com = ('time','ens'))
     index = index.stack(com = ('time','ens'))
@@ -82,27 +84,10 @@ def composite(
     elif period == 'last10':
         index = index.isel(time = slice(-10,None))
     data  = data.sel(time = index.time)
+    index = index.stack(tmp = ('mode','hlayers')) # for groupby
 
-    extreme_type = xr.DataArray(['pos','neg'],dims = ['extr_type'])
-    # postive extreme
-    pos_index = extreme(index,extreme_type='pos')
-    pos_index = pos_index.stack(tmp = ('mode','hlayers')) # a combined dim to keep after groupby
-    pos_composite = pos_index.groupby('tmp').map(
-        _composite,data = data, reduction = reduction)
+    composite = index.groupby('tmp').map(_composite,data = data,reduction = reduction)
     
-    # negtive extreme
-    neg_index = extreme(index,extreme_type='neg')
-    neg_index = neg_index.stack(tmp = ('mode','hlayers'))
-    neg_composite = neg_index.groupby('tmp').map(
-        _composite,data = data,reduction = reduction
-    )
-
-    # get the extreme index, reduce over 'time' and 'ens' dims.
-    extr_index = extreme(index)\
-        .stack(temp = ('extr_type','mode'),com = ('time','ens'))
-    data = data.stack(com = ('time','ens'))
-
-    composite = extr_index.groupby('temp').map(_composite,data = data,reduction = reduction)
     return composite.unstack()
 
 

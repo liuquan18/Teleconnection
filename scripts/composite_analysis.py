@@ -56,8 +56,8 @@ trop_std = ssp.standardize(trop)
 # transpose to the same order
 
 #%% composite counts
-ind_counts = sis.composite(ind_std,trop_std,reduction='count')
-dep_counts = sis.composite(dep_std,trop_std,reduction='count')
+ind_counts_all = scp.composite(ind_std,trop_std,reduction='count')
+dep_counts_all = scp.composite(dep_std,trop_std,reduction='count')
 
 #%%
 
