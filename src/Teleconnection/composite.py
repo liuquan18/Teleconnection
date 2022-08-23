@@ -42,6 +42,7 @@ def _composite(index,data,reduction='mean'):
     **Return**
         *extreme_composite* the mean field or counts of extreme cases.
     """
+    data = data.sel(hlayers = index.hlayers)
     data = data.stack(com = ('time','ens'))
     index = index.stack(com = ('time','ens'))
 
@@ -84,11 +85,17 @@ def composite(
     elif period == 'last10':
         index = index.isel(time = slice(-10,None))
     data  = data.sel(time = index.time)
-    index = index.stack(tmp = ('mode','hlayers')) # for groupby
+    # index = index.stack(tmp = ('mode','hlayers')) # for groupby
 
-    composite = index.groupby('tmp').map(_composite,data = data,reduction = reduction)
+    # composite = index.groupby('tmp').map(_composite,data = data,reduction = reduction)
+    Composite = []
+    for mode in index.mode:
+        _index = index.sel(mode = mode)
+        composite = _index.groupby('hlayers').apply(_composite,data = data,reduction=reduction)
+        Composite.append(composite)
+    Composite = xr.concat(Composite,dim = index.mode)
 
-    return composite.unstack()
+    return Composite
 
 
 
