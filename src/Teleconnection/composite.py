@@ -5,6 +5,7 @@ import numpy as np
 
 def extreme(
     xarr: xr.DataArray,
+    extreme_type: str,
     threshold: int=2,
 )-> xr.DataArray:
     """
@@ -12,38 +13,49 @@ def extreme(
     detect the extreme cases identified from the threshold.
     **Arguments**
         *xarr* the index to be checked.
+        *extrem_type*: 'pos' or 'neg
         *threshold* the threshold to identify extreme cases.
     **Return**
         *extreme* the extreme dataArray with neg and pos.
     """
-    pos_ex = xarr.where(xarr>threshold,drop=True)
-    neg_ex = xarr.where(xarr<-1*threshold,drop=True)
-    ex = xr.concat([pos_ex,neg_ex],dim = ['pos','neg'])
-    ex = ex.rename({'concat_dim':'extr_type'})
-    return ex
+    if extreme_type=='pos':
+        extreme = xarr.where(xarr>threshold,drop=True)
+    elif extreme_type == 'neg':
+        extreme = xarr.where(xarr<-1*threshold,drop=True)
+    
+    return extreme
 
-def _composite(extreme_index,data,reduction='mean'):
+def _composite(index,data,reduction='mean'):
     """
-    output the composite mean field of extreme pos (neg) index
+    the composite mean or count of data, determined by the extreme state
+    of index.
+        - get the extreme index
         - determine the coordinate.
         - select the data
         - calculate the mean.
     **Arguments**
-        *index* the extrme index from func 'extreme',from which the coordinates of 
+        *index* the from which the coordinates of 
         extreme neg or pos cases are determined.
         *data* the field that are going to be selected and averaged.
     **Return**
         *comp_mean* the mean field of the given condition.
     """
+    data = data.stack(com = ('time','ens'))
+    index = index.stack(com = ('time','ens'))
 
-    coords = extreme_index.dropna(dim = 'com')
-    composite = data.where(coords)
-    if reduction == 'mean':
-        composite = composite.mean(dim = 'com')
-    elif reduction == 'counts':
-        composite = composite.count(dim = 'com')
+    extreme_composite = []
+    extreme_type = xr.DataArray(['pos','neg'],dims = ['extr_type'])
+    for extr_type in extreme_type.values:
+        extr_index = extreme(index,extreme_type=extr_type)
+        extr_data = data.where(extr_index)
+        if reduction == 'mean':
+            composite = extr_data.mean(dim = 'com')
+        elif reduction == 'count':
+            composite = extr_index.count(dim = 'com')
+        extreme_composite.append(composite)
+    extreme_composite = xr.concat(extreme_composite,dim=extreme_type)
 
-    return composite
+    return extreme_composite
 
 def composite(
     index:xr.DataArray,
@@ -51,7 +63,7 @@ def composite(
     reduction: str='mean',
     period: str= 'all'):
     """
-    composite mean maps of extreme cases.
+    composite mean maps of extreme cases or counts of extreme cases.
     given the index and the data, determine the time and ens coordinates 
     where extreme cases happen from the index, and select the data with 
     those indexes, average the selected fields.
@@ -70,6 +82,20 @@ def composite(
     elif period == 'last10':
         index = index.isel(time = slice(-10,None))
     data  = data.sel(time = index.time)
+
+    extreme_type = xr.DataArray(['pos','neg'],dims = ['extr_type'])
+    # postive extreme
+    pos_index = extreme(index,extreme_type='pos')
+    pos_index = pos_index.stack(tmp = ('mode','hlayers')) # a combined dim to keep after groupby
+    pos_composite = pos_index.groupby('tmp').map(
+        _composite,data = data, reduction = reduction)
+    
+    # negtive extreme
+    neg_index = extreme(index,extreme_type='neg')
+    neg_index = neg_index.stack(tmp = ('mode','hlayers'))
+    neg_composite = neg_index.groupby('tmp').map(
+        _composite,data = data,reduction = reduction
+    )
 
     # get the extreme index, reduce over 'time' and 'ens' dims.
     extr_index = extreme(index)\
