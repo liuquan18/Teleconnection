@@ -12,6 +12,7 @@ import src.Teleconnection.spatial_pattern as ssp
 import plots.eof_plots as sept
 import src.Teleconnection.pattern_statistic as sps
 import src.Teleconnection.composite as scp
+import src.plots.composite_plots as spcp
 #%%
 import importlib
 importlib.reload(sis)
@@ -20,6 +21,7 @@ importlib.reload(ssp)
 importlib.reload(sept)
 importlib.reload(sps)
 importlib.reload(scp)
+importlib.reload(spcp)
 
 #%%
 # load data
@@ -58,10 +60,16 @@ trop_std = ssp.standardize(trop)
 #%% composite counts
 ind_counts_all = scp.composite(ind_std,trop_std,reduction='count')
 dep_counts_all = scp.composite(dep_std,trop_std,reduction='count')
-
 #%%
 
+ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
+ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
+#%%
+ind_counts_first = scp.composite(ind_std,trop_std,reduction='count')
+dep_counts_first = scp.composite(dep_std,trop_std,reduction='count')
 
+ind_mean_first = scp.composite(ind_std,trop_std,reduction = 'mean')
+ind_mean_first = scp.composite(ind_std,trop_std,reduction = 'mean')
 
 #%% composite mean
 ind = sis.composite(ind_std,trop_std)

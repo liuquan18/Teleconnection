@@ -87,7 +87,7 @@ def composite(
     index = index.stack(tmp = ('mode','hlayers')) # for groupby
 
     composite = index.groupby('tmp').map(_composite,data = data,reduction = reduction)
-    
+
     return composite.unstack()
 
 
