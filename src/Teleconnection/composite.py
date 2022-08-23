@@ -1,6 +1,27 @@
+import xarray as xr
+import pandas as pd
+import numpy as np
 
 
-################## composite analysis ##############################
+def extreme(
+    xarr: xr.DataArray,
+    threshold: int=2,
+)-> xr.DataArray:
+    """
+    select only the extreme cases from the index.
+    detect the extreme cases identified from the threshold.
+    **Arguments**
+        *xarr* the index to be checked.
+        *threshold* the threshold to identify extreme cases.
+    **Return**
+        *extreme* the extreme dataArray with neg and pos.
+    """
+    pos_ex = xarr.where(xarr>threshold,drop=True)
+    neg_ex = xarr.where(xarr<-1*threshold,drop=True)
+    ex = xr.concat([pos_ex,neg_ex],dim = ['pos','neg'])
+    ex = ex.rename({'concat_dim':'extr_type'})
+    return ex
+
 def _composite(extreme_index,data,reduction='mean'):
     """
     output the composite mean field of extreme pos (neg) index
@@ -51,7 +72,7 @@ def composite(
     data  = data.sel(time = index.time)
 
     # get the extreme index, reduce over 'time' and 'ens' dims.
-    extr_index = sti.extreme(index)\
+    extr_index = extreme(index)\
         .stack(temp = ('extr_type','mode'),com = ('time','ens'))
     data = data.stack(com = ('time','ens'))
 

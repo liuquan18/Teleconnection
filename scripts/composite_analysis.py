@@ -11,7 +11,7 @@ import src.Teleconnection.temporal_index as sti
 import src.Teleconnection.spatial_pattern as ssp
 import plots.eof_plots as sept
 import src.Teleconnection.pattern_statistic as sps
-
+import src.Teleconnection.composite as scp
 #%%
 import importlib
 importlib.reload(sis)
@@ -19,6 +19,7 @@ importlib.reload(sti)
 importlib.reload(ssp)
 importlib.reload(sept)
 importlib.reload(sps)
+importlib.reload(scp)
 
 #%%
 # load data
