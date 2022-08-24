@@ -63,15 +63,15 @@ ind_counts_all = scp.composite(ind_std,trop_std,reduction='count')
 dep_counts_all = scp.composite(dep_std,trop_std,reduction='count')
 
 ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
-ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
+dep_mean_all = scp.composite(dep_std,trop_std,reduction = 'mean')
 spcp.vertical_profile(ind_counts_all)
 
 #%%
 sept.visu_composite_spa(ind_mean_all,plev = 20000)
 sept.visu_composite_spa(ind_mean_all,plev = 100000)
 #%%
-sept.visu_composite_spa(ind_mean_all,plev = 20000)
-sept.visu_composite_spa(ind_mean_all,plev = 100000)
+sept.visu_composite_spa(dep_mean_all,plev = 20000)
+sept.visu_composite_spa(dep_mean_all,plev = 100000)
 
 
 #%%
@@ -107,9 +107,47 @@ sept.visu_composite_spa(ind_mean_last,plev = 100000)
 sept.visu_composite_spa(dep_mean_last,plev = 20000)
 sept.visu_composite_spa(dep_mean_last,plev = 100000)
 
+#%% all pos neg diff
+all_diff_pn_ind = ind_mean_all.sel(extr_type = 'pos')+ind_mean_all.sel(extr_type = 'neg')
+all_diff_pn_dep = dep_mean_all.sel(extr_type = 'pos')+dep_mean_all.sel(extr_type = 'neg')
+#%%
+sept.visu_eofspa(all_diff_pn_ind,
+plev = [20000,100000],levels = np.arange(-0.5,0.51,0.1))
+#%%
+sept.visu_eofspa(all_diff_pn_dep,
+plev = [20000,100000],levels = np.arange(-0.5,0.51,0.1))
+#%% diff 
+# ind
+first_diff_pn_ind = ind_mean_first.sel(extr_type = 'pos')+ind_mean_first.sel(extr_type = 'neg')
+last_diff_pn_ind = ind_mean_last.sel(extr_type = 'pos')+ind_mean_last.sel(extr_type = 'neg')
+diff_pn_ind = last_diff_pn_ind - first_diff_pn_ind
 
+#dep
+first_diff_pn_dep = dep_mean_first.sel(extr_type = 'pos')+dep_mean_first.sel(extr_type = 'neg')
+last_diff_pn_dep = dep_mean_last.sel(extr_type = 'pos')+dep_mean_last.sel(extr_type = 'neg')
+diff_pn_dep = last_diff_pn_dep - first_diff_pn_dep
 
+#%%
+sept.visu_eofspa(first_diff_pn_ind,
+plev = [20000,100000],levels = np.arange(-1,1.1,0.2))
 
+sept.visu_eofspa(last_diff_pn_ind,
+plev = [20000,100000],levels = np.arange(-1,1.1,0.2))
+
+sept.visu_eofspa(diff_pn_ind,
+plev = [20000,100000],levels = np.arange(-1,1.1,0.2))
+
+#%%
+sept.visu_eofspa(first_diff_pn_dep,
+plev = [20000,100000],levels = np.arange(-1,1.1,0.2))
+
+sept.visu_eofspa(last_diff_pn_dep,
+plev = [20000,100000],levels = np.arange(-1,1.1,0.2))
+
+sept.visu_eofspa(diff_pn_dep,
+plev = [20000,100000],levels = np.arange(-1,1.1,0.2))
+
+#%%
 
 #%% together
 period = xr.DataArray(['first10','last10'],dims = ['period'])
