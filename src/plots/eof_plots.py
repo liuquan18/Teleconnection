@@ -544,3 +544,41 @@ def scatter_pattern_counts(ind_pattern,dep_pattern,mode,fit_reg = True):
         ax.legend(loc = 'upper left')
     axes[0].set_title("independent")
     axes[1].set_title("dependent")
+
+
+def vertical_profile_slides(extreme_counts,mode = 'NAO'):
+    """
+    using matplotlib to plot the vertical profile.
+    solve the problem of y-axis sort.
+    """
+
+    # select one single pattern for each subplot.
+    all = sis.combine_diff(extreme_counts,mode = mode)
+    first = all[0].xs('first',level = 'pattern',axis = 1)
+    last = all[1].xs('last',level = 'pattern',axis = 1)
+    dynamic = all[2].xs('dynamic',level = 'diff',axis = 1)
+    data_single = pd.concat([first,last,dynamic],keys = ['first','last','dynamic'],axis = 1)
+
+    # plot  
+    fig, axes = plt.subplots(1,3,figsize = (8,3),dpi = 300)
+    plt.subplots_adjust(wspace = 0.3)
+
+    patterns = ['first','last','dynamic']
+    periods =['first10','last10','diff']
+
+    for i, ax in enumerate(axes):  # periods
+        period_data = data_single[patterns[i]]
+        y = (period_data.index.values/100).astype(int)
+        
+        ax.plot(period_data['pos'], y, c = 'k',ls = 'solid',label = 'pos')
+        ax.plot(period_data['neg'], y, c = 'k',ls = 'dashed',label = 'neg')
+
+        ax.set_ylim(1000,200)
+        ax.set_xlim(-5,50)
+
+        ax.set_title(f"{mode} {periods[i]}")
+
+        ax.set_xlabel("extreme counts")
+        if i == 0:
+            ax.set_ylabel("gph/hpa")
+    axes[0].legend(loc = 'lower right')
