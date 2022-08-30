@@ -30,5 +30,5 @@ all_all_dep = all_all_dep.transpose('time','ens','mode','hlayers')
 mean_dep = all_all_dep.mean(dim = 'time')
 std_dep = all_all_dep.std(dim = 'time')
 dep_std = (changing_dep - mean_dep)/std_dep
-
+index = dep_std.sel(hlayers = 100000)
 # %%
