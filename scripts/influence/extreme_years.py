@@ -11,7 +11,7 @@ import src.Teleconnection.temporal_index as sti
 import src.Teleconnection.spatial_pattern as ssp
 import plots.eof_plots as sept
 import src.Teleconnection.pattern_statistic as sps
-import src.Teleconnection.composite as scp
+import composite.composite as scp
 import src.plots.composite_plots as spcp
 
 #%%

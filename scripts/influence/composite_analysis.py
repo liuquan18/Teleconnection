@@ -6,12 +6,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-import src.Teleconnection.composite as stc
+import src.composite.composite as scom
 
 #%%
 import importlib
 
-importlib.reload(stc)
+importlib.reload(scom)
 # %%
 # Data
 var = "precip"
@@ -19,7 +19,7 @@ var = "precip"
 fname='/work/mh0033/m300883/3rdPanel/data/influence/'+var+'/'+'onepct_1850-1999_ens_1-100.'+var+'.nc'
 file = xr.open_dataset(fname)
 fdata = file[var]
-# %%
+
 # demean (ens-mean)
 demean = fdata-fdata.mean(dim = 'ens')
 # %%

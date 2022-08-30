@@ -43,11 +43,7 @@ def composite(index,data,reduction='mean'):
     **Return**
         *extreme_composite* the mean field or counts of extreme cases.
     """
-    try: # for spatial 3D data
-        data = data.sel(hlayers = index.hlayers)
-    except KeyError:
-        data = data
-        
+    data = data.sel(hlayers = index.hlayers)
     data = data.stack(com = ('time','ens'))
     index = index.stack(com = ('time','ens'))
 
@@ -95,7 +91,7 @@ def hlayer_composite(
     Composite = []
     for mode in index.mode:
         _index = index.sel(mode = mode)
-        composite = _index.groupby('hlayers').apply(composite,data = data,reduction=reduction)
+        composite = _index.groupby('hlayers').apply(_composite,data = data,reduction=reduction)
         Composite.append(composite)
     Composite = xr.concat(Composite,dim = index.mode)
 

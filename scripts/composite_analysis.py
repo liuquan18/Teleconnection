@@ -11,7 +11,7 @@ import src.Teleconnection.temporal_index as sti
 import src.Teleconnection.spatial_pattern as ssp
 import plots.eof_plots as sept
 import src.Teleconnection.pattern_statistic as sps
-import src.Teleconnection.composite as scp
+import composite.composite as scp
 import src.plots.composite_plots as spcp
 #%%
 import importlib
@@ -59,11 +59,11 @@ trop_std = ssp.standardize(trop)
 
 #%%
 # all
-ind_counts_all = scp.composite(ind_std,trop_std,reduction='count')
-dep_counts_all = scp.composite(dep_std,trop_std,reduction='count')
+ind_counts_all = scp.hlayer_composite(ind_std,trop_std,reduction='count')
+dep_counts_all = scp.hlayer_composite(dep_std,trop_std,reduction='count')
 
-ind_mean_all = scp.composite(ind_std,trop_std,reduction = 'mean')
-dep_mean_all = scp.composite(dep_std,trop_std,reduction = 'mean')
+ind_mean_all = scp.hlayer_composite(ind_std,trop_std,reduction = 'mean')
+dep_mean_all = scp.hlayer_composite(dep_std,trop_std,reduction = 'mean')
 spcp.vertical_profile(ind_counts_all)
 
 #%%
@@ -93,11 +93,11 @@ sept.visu_composite_spa(dep_mean_first,plev = 100000)
 
 #%%
 # last10
-ind_counts_last = scp.composite(ind_std,trop_std,reduction='count',period='last10')
-dep_counts_last = scp.composite(dep_std,trop_std,reduction='count',period='last10')
+ind_counts_last = scp.hlayer_composite(ind_std,trop_std,reduction='count',period='last10')
+dep_counts_last = scp.hlayer_composite(dep_std,trop_std,reduction='count',period='last10')
 
-ind_mean_last = scp.composite(ind_std,trop_std,reduction = 'mean',period = 'last10')
-dep_mean_last = scp.composite(dep_std,trop_std,reduction = 'mean',period = 'last10')
+ind_mean_last = scp.hlayer_composite(ind_std,trop_std,reduction = 'mean',period = 'last10')
+dep_mean_last = scp.hlayer_composite(dep_std,trop_std,reduction = 'mean',period = 'last10')
 
 #%%
 sept.visu_composite_spa(ind_mean_last,plev = 20000)
@@ -158,8 +158,8 @@ mean_period = xr.concat([ind_mean_first,ind_mean_last],dim = period)
 
 
 #%% composite mean
-ind = sis.composite(ind_std,trop_std)
-dep = sis.composite(dep_std,trop_std)
+ind = sis.hlayer_composite(ind_std,trop_std)
+dep = sis.hlayer_composite(dep_std,trop_std)
 # %%
 sept.visu_composite_spa(ind,plev = 20000,levels=np.arange(-2,2.1,0.4))
 sept.visu_composite_spa(ind,plev = 100000,levels=np.arange(-2,2.1,0.4))
