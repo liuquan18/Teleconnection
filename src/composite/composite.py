@@ -44,7 +44,6 @@ def _composite(index, data, reduction="mean"):
     **Return**
         *extreme_composite* the mean field or counts of extreme cases.
     """
-    index = index.unstack()
     try:
         if ("hlayers" in index.dims) & ("hlayers" in data.dims):
             data = data.sel(hlayers=index.hlayers)
@@ -101,12 +100,16 @@ def composite(
 
     Composite = []
     for mode in index.mode:
-        _index = index.sel(mode = mode)
-        composite = _index.groupby('hlayers').apply(_composite,data = data,reduction=reduction)
+        _index = index.sel(mode=mode)
+        if "hlayers" in _index.dims:
+            composite = _index.groupby("hlayers").apply(
+                _composite, data=data, reduction=reduction
+            )
+        else:
+            composite = _composite(index, data, reduction)
         Composite.append(composite)
-    Composite = xr.concat(Composite,dim = index.mode)
+    Composite = xr.concat(Composite, dim=index.mode)
 
     return Composite
-
 
     return Composite.unstack()
