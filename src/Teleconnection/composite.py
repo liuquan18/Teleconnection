@@ -98,7 +98,7 @@ def composite(
     data = data,reduction=reduction)
     return composite
 
-def hlayer_composite(
+def composite(
     index:xr.DataArray,
     data:xr.DataArray,
     reduction: str='mean',

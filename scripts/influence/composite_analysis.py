@@ -1,16 +1,17 @@
 #%%
 # import
+from os import sched_param
 import xarray as xr
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-import src.composite.composite as scom
+import src.composite.composite as scp
 
 #%%
 import importlib
-importlib.reload(scom)
+importlib.reload(scp)
 # %%
 # Data
 var = "precip"
@@ -32,3 +33,4 @@ std_dep = all_all_dep.std(dim = 'time')
 dep_std = (changing_dep - mean_dep)/std_dep
 index = dep_std.sel(hlayers = 100000)
 # %%
+varcomp = scp.composite(index = index,data = demean,,)

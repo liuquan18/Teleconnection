@@ -26,8 +26,9 @@ def extreme(
     return extreme
 
 
-def composite(index, data, reduction="mean"):
+def _composite(index, data, reduction="mean"):
     """
+    composite mean data of 3D data (lat,lon,time)
     the composite mean or count of data, determined by the extreme state
     of index.
         - stack to one series.
@@ -43,6 +44,7 @@ def composite(index, data, reduction="mean"):
     **Return**
         *extreme_composite* the mean field or counts of extreme cases.
     """
+    index = index.unstack()
     try:
         if ("hlayers" in index.dims) & ("hlayers" in data.dims):
             data = data.sel(hlayers=index.hlayers)
@@ -67,10 +69,9 @@ def composite(index, data, reduction="mean"):
     return extreme_composite
 
 
-def hlayers_composite(
+def composite(
     index: xr.DataArray,
     data: xr.DataArray,
-    dim: str = ("mode", "hlayers"),
     reduction: str = "mean",
     period: str = "all",
 ):
@@ -96,16 +97,16 @@ def hlayers_composite(
         )  # the index actually started from 1856,so wrong here.
     elif period == "last10":
         index = index.isel(time=slice(-10, None))
-    data = data.sel(time= data.time.dt.year.isin(index.time.dt.year))  
+    data = data.sel(time=data.time.dt.year.isin(index.time.dt.year))
 
     Composite = []
-    try: # for mode and 'hlayers'
-        _index = index.stack(com=dim)
-        composite = _index.groupby("com").apply(
-            composite, data=data, reduction=reduction
-        )
-    except TypeError: # for mode only
-        _index = index
-        composite = _index.groupby(dim).apply(composite, data=data, reduction=reduction)
+    for mode in index.mode:
+        _index = index.sel(mode = mode)
+        composite = _index.groupby('hlayers').apply(_composite,data = data,reduction=reduction)
+        Composite.append(composite)
+    Composite = xr.concat(Composite,dim = index.mode)
 
-    return composite
+    return Composite
+
+
+    return Composite.unstack()
