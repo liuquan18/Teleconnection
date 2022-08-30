@@ -7,5 +7,9 @@ FFILE=${FROM}onepct_1850-1999_ens_1-100.${VAR}.nc
 TO=/work/mh0033/m300883/3rdPanel/data/influence/$VAR/
 TFILE=${TO}onepct_1850-1999_ens_1-100.${VAR}.nc
 
-# do pre-process
+# do select and yearly mean
 cdo -P 48 -f nc -yearmean -selmonth,1,2,3,4 -selyear,1851/1999 -shifttime,1mo ${FFILE} ${TFILE}
+
+# do anomaly 
+cdo -P 48 -f nc -sub ${TFILE} -timmean ${TFILE} ${TFILE:0:-3}ano.nc
+
