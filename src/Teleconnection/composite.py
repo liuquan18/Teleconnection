@@ -25,8 +25,9 @@ def extreme(
     
     return extreme
 
-def _composite(index,data,reduction='mean'):
+def composite(index,data,reduction='mean'):
     """
+    composite analysis for single height layer.
     the composite mean or count of data, determined by the extreme state
     of index.
         - stack to one series.
@@ -60,7 +61,7 @@ def _composite(index,data,reduction='mean'):
 
     return extreme_composite
 
-def composite(
+def hlayer_composite(
     index:xr.DataArray,
     data:xr.DataArray,
     reduction: str='mean',
