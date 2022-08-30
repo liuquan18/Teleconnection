@@ -85,9 +85,8 @@ def composite(
     elif period == 'last10':
         index = index.isel(time = slice(-10,None))
     data  = data.sel(time = index.time)
-    # index = index.stack(tmp = ('mode','hlayers')) # for groupby
 
-    # composite = index.groupby('tmp').map(_composite,data = data,reduction = reduction)
+
     Composite = []
     for mode in index.mode:
         _index = index.sel(mode = mode)
