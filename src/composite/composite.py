@@ -2,6 +2,7 @@ import xarray as xr
 import pandas as pd
 import numpy as np
 
+
 def extreme(
     xarr: xr.DataArray,
     extreme_type: str,
@@ -67,7 +68,7 @@ def _composite(index, data, reduction="mean"):
 def composite(
     index: xr.DataArray,
     data: xr.DataArray,
-    dim: str='hlayers',
+    dim: str = "hlayers",
     reduction: str = "mean",
     period: str = "all",
 ):
@@ -99,12 +100,12 @@ def composite(
     Composite = []
     for mode in index.mode:
         _index = index.sel(mode=mode)
-        if dim == 'hlayers':
+        if dim == "hlayers":
             composite = _index.groupby(dim).apply(
                 _composite, data=data, reduction=reduction
             )
-        elif dim == 'mode':
-            composite = _composite(_index,data,reduction)
+        elif dim == "mode":
+            composite = _composite(_index, data, reduction)
         Composite.append(composite)
     Composite = xr.concat(Composite, dim=index.mode)
 
