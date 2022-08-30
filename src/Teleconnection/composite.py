@@ -25,6 +25,28 @@ def extreme(
     
     return extreme
 
+def extreme_index(
+    index:xr.DataArray,
+    threshod: int=2
+)->xr.DataArray:
+    """
+    the pos and neg extreme index.
+    given an index of NAO and EA, return the extreme index of pos and neg
+    **Arguments**
+        *index* the NAO and EA index
+        *thredshold* the extreme threshold 
+    **Return**
+        *extr_index* the extreme pos and neg index
+    """
+    extr_index = []
+    extreme_type = xr.DataArray(['pos','neg'],dims = ['extr_type'])
+    for extr_type in extreme_type.values:
+        exindex = extreme(index,extreme_type=extr_type)
+        extr_index.append(exindex)
+    extr_index = xr.concat(extr_index, dim=extreme_type)
+    return extr_index.stack(com=('mode','extr_type'))
+
+
 def composite(index,data,reduction='mean'):
     """
     composite analysis for single height layer.
@@ -45,9 +67,9 @@ def composite(index,data,reduction='mean'):
     """
     try: # for spatial 3D data
         data = data.sel(hlayers = index.hlayers)
-    except KeyError:
+    except KeyError: # for spatial 2D data
         data = data
-        
+
     data = data.stack(com = ('time','ens'))
     index = index.stack(com = ('time','ens'))
 
