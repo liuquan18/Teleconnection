@@ -25,41 +25,77 @@ def extreme(
     
     return extreme
 
-def composite(index,data,reduction='mean'):
+def extreme_index(
+    index:xr.DataArray,
+    threshod: int
+)->xr.DataArray:
+    """
+    the pos and neg extreme index.
+    given an index of NAO and EA, return the extreme index of pos and neg
+    **Arguments**
+        *index* the NAO and EA index
+        *thredshold* the extreme threshold 
+    **Return**
+        *extr_index* the extreme pos and neg index
+    """
+    extr_index = []
+    extreme_type = xr.DataArray(['pos','neg'],dims = ['extr_type'])
+    for extr_type in extreme_type.values:
+        exindex = extreme(index,extreme_type=extr_type,threshold=threshod)
+        extr_index.append(exindex)
+    extr_index = xr.concat(extr_index, dim=extreme_type)
+    return extr_index
+
+
+def _composite(index,data,reduction='mean'):
     """
     composite analysis for single height layer.
     the composite mean or count of data, determined by the extreme state
     of index.
-        - stack to one series.
-        - for pos and neg:
-            - get the extreme index 
-            - select the data
-            - calculate the mean or counts.
-        - concat pos and neg.
     **Arguments**
-        *index* the from which the coordinates of 
-        extreme neg or pos cases are determined.
+        *index* the extreme index (single NAO or EA, pos or neg)
         *data* the field that are going to be selected and averaged.
     **Return**
         *extreme_composite* the mean field or counts of extreme cases.
     """
-    data = data.sel(hlayers = index.hlayers)
+    if ('hlayers' in index.dims) | ('plev' in index.dims):
+        data = data.sel(hlayers = index.hlayers)
+
     data = data.stack(com = ('time','ens'))
     index = index.stack(com = ('time','ens'))
+    extr_index = extreme_index(index)
+    extr_data = data.where(extr_index)
 
-    extreme_composite = []
+    if reduction == 'mean':
+        composite = extr_data.mean(dim = 'com')
+    elif reduction == 'count':
+        composite = extr_index.count(dim = 'com')
+
+    return composite
+
+def composite(
+    index:xr.DataArray,
+    data:xr.DataArray,
+    dims: str=('mode'),
+    reduction: str = 'mean',
+    threshod = 2):
+    """
+    composite analysis for mulity dim index
+    **Arguments**
+        *index* the NAO and EA index
+        *data* the data to be compositely analized.
+        *dims* which dims is reserved.
+        *reduction* 'mean' or 'count'
+    **return**
+        *composite* the composite mean or count of data
+    """
     extreme_type = xr.DataArray(['pos','neg'],dims = ['extr_type'])
     for extr_type in extreme_type.values:
-        extr_index = extreme(index,extreme_type=extr_type)
-        extr_data = data.where(extr_index)
-        if reduction == 'mean':
-            composite = extr_data.mean(dim = 'com')
-        elif reduction == 'count':
-            composite = extr_index.count(dim = 'com')
-        extreme_composite.append(composite)
-    extreme_composite = xr.concat(extreme_composite,dim=extreme_type)
-
-    return extreme_composite
+        exindex = extreme(index,extreme_type=extr_type,threshold=threshod)
+    extre_index = extre_index.stack(com = dims)
+    composite = extre_index.groupby('com').apply(_composite,
+    data = data,reduction=reduction)
+    return composite
 
 def hlayer_composite(
     index:xr.DataArray,
@@ -91,7 +127,7 @@ def hlayer_composite(
     Composite = []
     for mode in index.mode:
         _index = index.sel(mode = mode)
-        composite = _index.groupby('hlayers').apply(_composite,data = data,reduction=reduction)
+        composite = _index.groupby('hlayers').apply(composite,data = data,reduction=reduction)
         Composite.append(composite)
     Composite = xr.concat(Composite,dim = index.mode)
 

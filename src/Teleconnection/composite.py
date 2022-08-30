@@ -43,7 +43,7 @@ def extreme_index(
     for extr_type in extreme_type.values:
         exindex = extreme(index,extreme_type=extr_type,threshold=threshod)
         extr_index.append(exindex)
-    extr_index = xr.concat(extr_index, dim=extreme_type,threshold=threshod)
+    extr_index = xr.concat(extr_index, dim=extreme_type)
     return extr_index
 
 
@@ -59,7 +59,10 @@ def _composite(index,data,reduction='mean'):
         *extreme_composite* the mean field or counts of extreme cases.
     """
     if ('hlayers' in index.dims) | ('plev' in index.dims):
-        data = data.sel(hlayers = index.hlayers)
+        try:
+            data = data.sel(hlayers = index.hlayers)
+        except KeyError:
+            data = data
 
     data = data.stack(com = ('time','ens'))
     index = index.stack(com = ('time','ens'))
