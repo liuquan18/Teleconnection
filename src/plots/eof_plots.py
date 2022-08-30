@@ -65,7 +65,7 @@ def axbuild(ax):
     circle = mpath.Path(verts * radius + center)
     
     
-    # ax.coastlines()
+    ax.coastlines()
     gl=ax.gridlines(crs = ccrs.PlateCarree(),draw_labels=False)
     gl.xformatter = LongitudeFormatter(zero_direction_label=False)
     gl.xlocator = mticker.FixedLocator(np.arange(-180,180,45))
