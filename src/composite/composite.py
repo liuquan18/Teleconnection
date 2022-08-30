@@ -2,7 +2,6 @@ import xarray as xr
 import pandas as pd
 import numpy as np
 
-
 def extreme(
     xarr: xr.DataArray,
     extreme_type: str,
@@ -28,7 +27,6 @@ def extreme(
 
 def _composite(index, data, reduction="mean"):
     """
-    composite mean data of 3D data (lat,lon,time)
     the composite mean or count of data, determined by the extreme state
     of index.
         - stack to one series.
@@ -45,11 +43,9 @@ def _composite(index, data, reduction="mean"):
         *extreme_composite* the mean field or counts of extreme cases.
     """
     try:
-        if ("hlayers" in index.dims) & ("hlayers" in data.dims):
-            data = data.sel(hlayers=index.hlayers)
-    except:
-        print("index and data has different spatial dims")
-
+        data = data.sel(hlayers=index.hlayers)
+    except KeyError:
+        data = data
     data = data.stack(com=("time", "ens"))
     index = index.stack(com=("time", "ens"))
 
@@ -71,6 +67,7 @@ def _composite(index, data, reduction="mean"):
 def composite(
     index: xr.DataArray,
     data: xr.DataArray,
+    dim: str='hlayers',
     reduction: str = "mean",
     period: str = "all",
 ):
@@ -82,7 +79,6 @@ def composite(
     **Arguments**
         *index* the index of NAO and EA
         *data* the original geopotential data.
-        *dim* the dims to be reserved (groupby func)
         *reduction* mean or count
         *period* 'first10','last10','all'
     **Return**
@@ -96,20 +92,20 @@ def composite(
         )  # the index actually started from 1856,so wrong here.
     elif period == "last10":
         index = index.isel(time=slice(-10, None))
-    data = data.sel(time=data.time.dt.year.isin(index.time.dt.year))
+    data = data.sel(time=index.time)
+    # index = index.stack(tmp = ('mode','hlayers')) # for groupby
 
+    # composite = index.groupby('tmp').map(_composite,data = data,reduction = reduction)
     Composite = []
     for mode in index.mode:
         _index = index.sel(mode=mode)
-        if "hlayers" in _index.dims:
-            composite = _index.groupby("hlayers").apply(
+        if dim == 'hlayers':
+            composite = _index.groupby(dim).apply(
                 _composite, data=data, reduction=reduction
             )
-        else:
-            composite = _composite(index, data, reduction)
+        elif dim == 'mode':
+            composite = _composite(_index,data,reduction)
         Composite.append(composite)
     Composite = xr.concat(Composite, dim=index.mode)
 
     return Composite
-
-    return Composite.unstack()
