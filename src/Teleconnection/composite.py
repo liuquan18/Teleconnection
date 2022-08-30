@@ -47,45 +47,31 @@ def extreme_index(
     return extr_index.stack(com=('mode','extr_type'))
 
 
-def composite(index,data,reduction='mean'):
+def _composite(index,data,reduction='mean'):
     """
     composite analysis for single height layer.
     the composite mean or count of data, determined by the extreme state
     of index.
-        - stack to one series.
-        - for pos and neg:
-            - get the extreme index 
-            - select the data
-            - calculate the mean or counts.
-        - concat pos and neg.
     **Arguments**
-        *index* the from which the coordinates of 
-        extreme neg or pos cases are determined.
+        *index* the extreme index (single NAO or EA, pos or neg)
         *data* the field that are going to be selected and averaged.
     **Return**
         *extreme_composite* the mean field or counts of extreme cases.
     """
-    try: # for spatial 3D data
+    if ('hlayers' in index.dims) | ('plev' in index.dims):
         data = data.sel(hlayers = index.hlayers)
-    except KeyError: # for spatial 2D data
-        data = data
 
     data = data.stack(com = ('time','ens'))
     index = index.stack(com = ('time','ens'))
+    extr_index = extreme_index(index)
+    extr_data = data.where(extr_index)
 
-    extreme_composite = []
-    extreme_type = xr.DataArray(['pos','neg'],dims = ['extr_type'])
-    for extr_type in extreme_type.values:
-        extr_index = extreme(index,extreme_type=extr_type)
-        extr_data = data.where(extr_index)
-        if reduction == 'mean':
-            composite = extr_data.mean(dim = 'com')
-        elif reduction == 'count':
-            composite = extr_index.count(dim = 'com')
-        extreme_composite.append(composite)
-    extreme_composite = xr.concat(extreme_composite,dim=extreme_type)
+    if reduction == 'mean':
+        composite = extr_data.mean(dim = 'com')
+    elif reduction == 'count':
+        composite = extr_index.count(dim = 'com')
 
-    return extreme_composite
+    return composite
 
 def hlayer_composite(
     index:xr.DataArray,
