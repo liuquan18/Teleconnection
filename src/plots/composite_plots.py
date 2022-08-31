@@ -18,6 +18,8 @@ from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter, LatitudeLo
 from cartopy.util import add_cyclic_point
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+import src.plots.eof_plots as sept
+
 
 def comp_count_plot(count: xr.DataArray, mode: str):
     """
@@ -207,5 +209,60 @@ def lastfirst_comp_var(
                 cbar = fig.colorbar(
                     im, cax=cax, label=units[j], orientation="horizontal"
                 )
+
+    plt.show()
+
+
+def composite_gph(first, last, hlayers=1000):
+    """
+    composite map of first10 and last10 years, contourf and contour
+    respectively.
+    """
+    fig, axes = plt.subplots(
+        2,
+        2,
+        figsize=(6, 6),
+        dpi=500,
+        subplot_kw={
+            "projection": ccrs.LambertAzimuthalEqualArea(
+                central_longitude=0.0, central_latitude=90.0
+            )
+        },
+    )
+
+    periods = ["first10", "last10"]
+    modes = ["NAO", "EA"]
+    extr_type = ["pos", "neg"]
+    levels = (np.arange(-2.0, 2.1, 0.4),)
+
+    for i, row in enumerate(axes):  # for extr_type
+        for j, col in enumerate(row):  # for modes
+            data_first = first.sel(extr_type=extr_type[i], mode=modes[j])
+            data_last = last.sel(extr_type=extr_type[i], mode=modes[j])
+            lats = data_first.lat
+            data_first, lons = add_cyclic_point(
+                data_first, coord=data_first.lon, axis=-1
+            )
+            data_last, lons = add_cyclic_point(data_last, coord=data_last.lon, axis=-1)
+
+            imf = col.contourf(
+                lons,
+                lats,
+                data_first,
+                levels=levels,
+                extend="both",
+                transform=ccrs.PlateCarree(),
+                cmap="RdBu_r",
+            )
+            iml = col.contour(
+                lons,
+                lats,
+                data_last,
+                levels=levels,
+                transform=ccrs.PlateCarree(),
+            )
+
+            col.set_title(f"{extr_type[i]}  {periods[j]}")
+            buildax(col)
 
     plt.show()
