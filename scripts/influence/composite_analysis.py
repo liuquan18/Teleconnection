@@ -90,14 +90,14 @@ spcp.lastfirst_comp_map(
     t2maxFirst,
     t2maxLast,
     mode="NAO",
-    levels=np.arange(-3, 3.1, 1),
+    levels=np.arange(-3, 3.1, 0.5),
     unit="max 2m-temperature / K",
 )
 spcp.lastfirst_comp_map(
     t2maxFirst,
     t2maxLast,
     mode="EA",
-    levels=np.arange(-3, 3.1, 1),
+    levels=np.arange(-3, 3.1, 0.5),
     unit="max 2m-temperature / K",
 )
 
