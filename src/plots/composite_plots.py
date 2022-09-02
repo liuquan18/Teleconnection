@@ -17,8 +17,7 @@ import matplotlib.ticker as mticker
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter, LatitudeLocator
 from cartopy.util import add_cyclic_point
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-import src.plots.eof_plots as sept
+import matplotlib as mpl
 
 
 def comp_count_plot(count: xr.DataArray, mode: str):
@@ -80,7 +79,7 @@ def buildax(ax):
     add grid coastline and gridlines
     """
     ax.set_global()
-    ax.coastlines(linewidth=0.5)
+    ax.coastlines(linewidth=0.5, alpha=0.7)
     gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=0.5)
     gl.xformatter = LongitudeFormatter(zero_direction_label=False)
     gl.xlocator = mticker.FixedLocator(np.arange(-180, 180, 45))
@@ -213,32 +212,33 @@ def lastfirst_comp_var(
     plt.show()
 
 
-def composite_gph(first, last, hlayers=1000):
+def composite_gph(first, last, hlayers=100000):
     """
     composite map of first10 and last10 years, contourf and contour
     respectively.
     """
+    proj = ccrs.Orthographic(central_longitude=-20, central_latitude=60)
     fig, axes = plt.subplots(
         2,
         2,
-        figsize=(6, 6),
+        figsize=(10, 8),
         dpi=500,
-        subplot_kw={
-            "projection": ccrs.LambertAzimuthalEqualArea(
-                central_longitude=0.0, central_latitude=90.0
-            )
-        },
+        subplot_kw={"projection": proj},
     )
 
     periods = ["first10", "last10"]
     modes = ["NAO", "EA"]
     extr_type = ["pos", "neg"]
-    levels = (np.arange(-2.0, 2.1, 0.4),)
+    levels = np.arange(-2.0, 2.1, 0.5)
 
+    shadings = []
     for i, row in enumerate(axes):  # for extr_type
         for j, col in enumerate(row):  # for modes
-            data_first = first.sel(extr_type=extr_type[i], mode=modes[j])
-            data_last = last.sel(extr_type=extr_type[i], mode=modes[j])
+            data_first = first.sel(
+                extr_type=extr_type[i], mode=modes[j], hlayers=hlayers
+            )
+            data_last = last.sel(extr_type=extr_type[i], mode=modes[j], hlayers=hlayers)
+
             lats = data_first.lat
             data_first, lons = add_cyclic_point(
                 data_first, coord=data_first.lon, axis=-1
@@ -254,15 +254,26 @@ def composite_gph(first, last, hlayers=1000):
                 transform=ccrs.PlateCarree(),
                 cmap="RdBu_r",
             )
-            iml = col.contour(
-                lons,
-                lats,
-                data_last,
-                levels=levels,
-                transform=ccrs.PlateCarree(),
-            )
+            shadings.append(imf)
+            with mpl.rc_context({"lines.linewidth": 1}):
+                iml = col.contour(
+                    lons,
+                    lats,
+                    data_last,
+                    levels=levels,
+                    colors="k",
+                    linewidth=0.1,
+                    transform=ccrs.PlateCarree(),
+                )
 
-            col.set_title(f"{extr_type[i]}  {periods[j]}")
+            col.set_title(f"{modes[j]}  {extr_type[i]}")
             buildax(col)
+    fig.subplots_adjust(hspace=0.3, wspace=0.5, right=0.8)
+    cbar_ax = fig.add_axes([0.85, 0.25, 0.03, 0.5])
+    cbar = fig.colorbar(
+        imf,
+        cax=cbar_ax,
+        label="gph / m",
+    )
 
     plt.show()
