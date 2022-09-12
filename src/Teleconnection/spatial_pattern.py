@@ -146,7 +146,11 @@ def sqrtcoslat (xarr):
     return wgts
 
 
-def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
+def doeof(
+    seasondata:xr.DataArray,
+    nmode: int = 2,
+    dim: str = 'com',
+    standard: bool = True):
     """
     do eof to seasonal data along a combined dim, which is gotten from the above function 
     'stack_ens'
@@ -210,7 +214,9 @@ def doeof(seasondata,nmode = 2,dim = 'com',standard=True):
     return eofx,pcx,frax
 
 
-def project_field(fieldx,eofx,dim = 'com'):
+def project_field(
+    fieldx,eofx,dim = 'com'
+    ):
     """
     project original field onto eofs to get the temporal index.
     Different from python eofs package, here if there are three dimensions in sptial,
@@ -371,16 +377,25 @@ def changing_eofs(xarr,validtime,nmode,window ):
     eofs = list()
     fras = list()
 
-    for time in tqdm(validtime):
-        tenyear_xarr = field.sel(time = time)
-        eof,_,fra = doeof(tenyear_xarr,nmode=nmode,dim = 'com')  # the pc here is neither 
-                                                             # fixed nor non-fixed pattern.
-        eofs.append(eof)
-        fras.append(fra)
+    # changing eofs (dynamic):
+    if len(validtime)>1:
+        for time in tqdm(validtime):
+            tenyear_xarr = field.sel(time = time)
+            eof,_,fra = doeof(tenyear_xarr,nmode=nmode,dim = 'com')  # the pc here is neither 
+                                                                # fixed nor non-fixed pattern.
+            eofs.append(eof)
+            fras.append(fra)
 
-    EOF = xr.concat(eofs,dim = validtime)
-    FRA = xr.concat(fras,dim = validtime)
+        EOF = xr.concat(eofs,dim = validtime)
+        FRA = xr.concat(fras,dim = validtime)
+
+    # for one pattern (first,all,last) and all time step
+    elif len(validtime)==1:
+        tenyear_xarr = field.sel(time = validtime)
+        EOF,_,FRA = doeof(tenyear_xarr,nmode=nmode,dim='com')
+
     return EOF, FRA
+
 
 
 def fixed_pc(xarr,pattern,dim = 'com'):

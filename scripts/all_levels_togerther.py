@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 #%%
 import src.Teleconnection.spatial_pattern as sp
-import src.Teleconnection.eof_plots as ept
+import plots.eof_plots as ept
 
 
 # %%

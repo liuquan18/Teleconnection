@@ -17,4 +17,6 @@ dependencies:
     - dask 
     - netCDF4 
     - bottleneck
+    - statsmodels
+    - pyextremes
 

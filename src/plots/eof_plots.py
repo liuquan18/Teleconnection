@@ -65,7 +65,7 @@ def axbuild(ax):
     circle = mpath.Path(verts * radius + center)
     
     
-    # ax.coastlines()
+    ax.coastlines()
     gl=ax.gridlines(crs = ccrs.PlateCarree(),draw_labels=False)
     gl.xformatter = LongitudeFormatter(zero_direction_label=False)
     gl.xlocator = mticker.FixedLocator(np.arange(-180,180,45))
@@ -82,7 +82,7 @@ def visu_eofspa(eofs,plev = [50000,85000],levels = np.arange(-1,1.1,0.2)):
     """
     two heights, both NAO and EA
     """
-    fig,axes = plt.subplots(2,2,figsize = (8,8),
+    fig,axes = plt.subplots(2,2,figsize = (8,8),dpi = 500,
                         subplot_kw={'projection':
                                     ccrs.LambertAzimuthalEqualArea(
                                         central_longitude=0.0,
@@ -102,7 +102,7 @@ def visu_eofspa(eofs,plev = [50000,85000],levels = np.arange(-1,1.1,0.2)):
                         transform = ccrs.PlateCarree(),
                         cmap = 'RdBu_r'
                         )
-            col.set_title(f'plev:{plev[i]} mode:{mode[j]}')
+            col.set_title('plev:{:3.0f} hpa mode:{}'.format(plev[i]/100,mode[j]))
     fig.subplots_adjust(hspace = 0.05,wspace = 0.05,right = 0.8)
     cbar_ax = fig.add_axes([0.85, 0.2, 0.03, 0.6])
     fig.colorbar(im, cax=cbar_ax,label = 'eofs')
@@ -159,7 +159,7 @@ def visu_eof_single(eof,levels = np.arange(-1,1.1,0.2)):
     fig.set_figwidth(13.5)
 
     EOFmaps.cbar.set_label("gph/m")
-    plt.show()
+
 
 def visu_spatial_type(eofs,plev,mode = 'EA'):
     """
@@ -191,11 +191,11 @@ def visu_spatial_type(eofs,plev,mode = 'EA'):
     plt.suptitle(f"plev = {plev}")
     plt.show()
 
-def visu_composite_spa(composite,plev = [50000],levels = np.arange(-1,1.1,0.2)):
+def visu_composite_spa(composite,plev = 50000,levels = np.arange(-2,2.1,0.4)):
     """
     two heights, both NAO and EA
     """
-    fig,axes = plt.subplots(2,2,figsize = (8,8),
+    fig,axes = plt.subplots(2,2,figsize = (8,8),dpi = 500,
                         subplot_kw={'projection':
                                     ccrs.LambertAzimuthalEqualArea(
                                         central_longitude=0.0,
@@ -458,14 +458,14 @@ def vertical_profile_diff(ind_extre,dep_extre):
     ind_diff = sis.period_diff(ind_extre).unstack([0,1])
     dep_diff = sis.period_diff(dep_extre).unstack([0,1])
     
-    fig,axes = plt.subplots(2,2,figsize =(5.5,7),dpi = 150)
+    fig,axes = plt.subplots(2,3,figsize =(7,7),dpi = 150)
     plt.subplots_adjust(wspace=0.3,hspace=0.3)
 
     colors = ['#1f77b4', '#2ca02c', '#d62728','#ff7f0e']
     patterns = ['first','all','last','dynamic']
     modes = ['NAO','EA']
-    inds = ['independent','dependent']
-    data = [ind_diff,dep_diff]
+    inds = ['independent','dependent','difference']
+    data = [ind_diff,dep_diff,ind_diff-dep_diff]
 
     for i, row in enumerate(axes): # modes
         for j, ax in enumerate(row):  # ind
@@ -478,7 +478,7 @@ def vertical_profile_diff(ind_extre,dep_extre):
                 ax.plot(data_mode['neg'], y, color = colors[l],dashes = [3,3])
 
                 ax.set_ylim(1000,200)
-                ax.set_xlim(-10,40)
+                ax.set_xlim(-15,40)
                 ax.set_title(f"{modes[i]} {inds[j]}")
 
             if j == 0:
@@ -502,3 +502,83 @@ def vertical_profile_diff(ind_extre,dep_extre):
     type_legend = axes[1,0].legend(custom_lines,['first','all','last','dynamic','','pos','neg'],
     loc = 'lower right',fontsize = 6)
     axes[1,0].add_artist(type_legend)
+
+def scatter_pattern_counts(ind_pattern,dep_pattern,mode,fit_reg = True):
+    """
+    scatter plot, extreme events increments v.s pattern difference
+    **Arguments**
+        *ind_pattern* the dataframe, with columns of extreme-event-number change 
+        (compare to extreme counts with first pattern) and pattern difference from 
+        first pattern.
+        *dep_pattern* the same, but for dependent eof analysis.
+        *mode* NAO or EA
+    **Return**
+        axes
+    """
+    fig,axes = plt.subplots(1,2,figsize = (7,4),dpi = 500)
+
+    ind = ind_pattern.xs((slice(70000,100000),mode),level = ('hlayers','mode'))
+
+    dep = dep_pattern.xs((slice(70000,100000),mode),level = ('hlayers','mode'))
+
+    sns.regplot(data = ind,y = 'pos',x = 'pattern_diff',ax = axes[0],
+    label = 'positive',fit_reg = fit_reg)
+
+    sns.regplot(data = ind,y = 'neg',x = 'pattern_diff',ax = axes[0],
+    label = 'negative',
+    robust=True,fit_reg = fit_reg)
+
+    sns.regplot(data = dep,y = 'pos',x = 'pattern_diff',ax = axes[1],
+    label = 'positive',fit_reg = fit_reg)
+
+    sns.regplot(data = dep,y = 'neg',x = 'pattern_diff',ax = axes[1],
+    label = 'negative',fit_reg = fit_reg)
+
+
+
+    for ax in axes:
+        ax.set_xlim(0,0.22)
+        ax.set_ylim(-1,20)
+        ax.set_xlabel("pattern difference")
+        ax.set_ylabel("extreme count increment difference")
+        ax.legend(loc = 'upper left')
+    axes[0].set_title("independent")
+    axes[1].set_title("dependent")
+
+
+def vertical_profile_slides(extreme_counts,mode = 'NAO'):
+    """
+    using matplotlib to plot the vertical profile.
+    solve the problem of y-axis sort.
+    """
+
+    # select one single pattern for each subplot.
+    all = sis.combine_diff(extreme_counts,mode = mode)
+    first = all[0].xs('first',level = 'pattern',axis = 1)
+    last = all[1].xs('last',level = 'pattern',axis = 1)
+    dynamic = all[2].xs('dynamic',level = 'diff',axis = 1)
+    data_single = pd.concat([first,last,dynamic],keys = ['first','last','dynamic'],axis = 1)
+
+    # plot  
+    fig, axes = plt.subplots(1,3,figsize = (8,3),dpi = 300)
+    plt.subplots_adjust(wspace = 0.3)
+
+    patterns = ['first','last','dynamic']
+    periods =['first10','last10','diff']
+
+    for i, ax in enumerate(axes):  # periods
+        period_data = data_single[patterns[i]]
+        y = (period_data.index.values/100).astype(int)
+        
+        ax.plot(period_data['pos'], y, c = 'k',ls = 'solid',label = 'pos')
+        ax.plot(period_data['neg'], y, c = 'k',ls = 'dashed',label = 'neg')
+
+        ax.set_ylim(1000,200)
+        ax.set_xlim(-5,50)
+
+        ax.set_title(f"{mode} {periods[i]}")
+
+        ax.set_xlabel("extreme counts")
+        if i == 0:
+            ax.set_ylabel("gph/hpa")
+    axes[0].legend(loc = 'lower right')

@@ -36,6 +36,7 @@ def index_diff_pattern(xarr,independent = True, standard=True):
     _, all_last,_ = ssp.season_eof(xarr,nmode=2,window=10,
     fixed_pattern="last",independent=independent)    
 
+    # using the mean and std of all-all to standardize all the series.
     if standard:
         all_mean = all_all.mean(dim = 'time')
         all_std = all_all.std(dim = 'time')

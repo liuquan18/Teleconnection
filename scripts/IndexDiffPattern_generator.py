@@ -8,6 +8,7 @@ The scripts should generate 9 index.
     first10           X       X           X
     last10            X       X           X
 """
+#%%
 # imports
 import numpy as np
 import pandas as pd
@@ -22,9 +23,14 @@ import pylab
 import src.Teleconnection.spatial_pattern as ssp
 import src.Teleconnection.pattern_statistic as sps
 import src.Teleconnection.index_statistic as sis
-import src.Teleconnection.eof_plots as sept
 import src.Teleconnection.temporal_index as sti
 
+import importlib
+importlib.reload(sis)
+importlib.reload(sti)
+importlib.reload(ssp)
+importlib.reload(sps)
+#%%
 # Data load and pre-process
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
 # split ens
@@ -35,22 +41,25 @@ demean = splitens-splitens.mean(dim = 'ens')
 trop = demean.sel(hlayers = slice(20000,100000))
 trop = trop.var156
 
-
+#%%
 # all periods on three patterns
 print("independent index")
 all_all_ind,all_first_ind,all_last_ind = sti.index_diff_pattern(trop,
-independent=True,standard=True)
+independent=True,standard=False)
 
 print("dependent index")
 all_all_dep, all_first_dep,all_last_dep = sti.index_diff_pattern(trop,
-independent=False, standard=True)
+independent=False, standard=False)
 
+#%%
 #save the data
-all_all_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_all_ind.nc')
-all_first_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_first_ind.nc')
-all_last_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_ind.nc')
+all_all_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_all_ind_nonstd.nc')
+all_first_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_first_ind_nonstd.nc')
+all_last_ind.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_ind_nonstd.nc')
 
-all_all_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_all_dep.nc')
-all_first_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_frist_dep.nc')
-all_last_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_dep.nc')
+all_all_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_all_dep_nonstd.nc')
+all_first_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_frist_dep_nonstd.nc')
+all_last_dep.to_netcdf('/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_last_dep_nonstd.nc')
 
+
+# %%
