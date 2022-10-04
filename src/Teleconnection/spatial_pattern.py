@@ -173,7 +173,8 @@ def doeof(
     wgts = sqrtcoslat(seasondata)
     
     # EOF decompose
-    solver = Eof(seasondata.values,weights = wgts,center = True)  
+    solver = Eof(seasondata.values,weights = wgts,center = True)  # if it's com dim, is is right to remove the mean
+                                                                  # along the com dim?
     eof = solver.eofs(neofs = nmode)     # (mode,lat,lon,...)
     pc = solver.pcs(npcs = nmode)        # (com,mode)
     fra = solver.varianceFraction(nmode) # (mode)

@@ -21,8 +21,8 @@ jobs:
       - name: Install package
         run: |
           python3 -m pip install -e .
-      - name: Test with pytest
-        run: pytest .
+      # - name: Test with pytest
+      #   run: pytest .
 
       - name: Build docs
         run: |

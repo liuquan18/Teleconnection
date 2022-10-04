@@ -1,7 +1,6 @@
 """
 source code for index statistics
 """
-from inspect import stack
 import xarray as xr
 import numpy as np
 import pandas as pd

@@ -9,12 +9,9 @@ Welcome to thirdPanel's documentation!
 .. toctree::
    :maxdepth: 2
 
-   spatial_pattern
-   temporal_index
-   pattern_statistic
-   index_statistic
-   eof_plots
-
+   functions
+   result
+   
 
 Indices and tables
 ==================

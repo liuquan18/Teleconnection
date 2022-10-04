@@ -31,6 +31,8 @@ author = 'Quan Liu'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.duration',
+    'sphinx.ext.doctest',
     'sphinx.ext.autosummary',
     'myst_parser'
 ]

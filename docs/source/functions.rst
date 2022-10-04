@@ -1,9 +1,10 @@
 Functions
 =========
 
-.. automodule:: src.Teleconnection
+.. automodule:: src.Teleconnection.spatial_pattern
 
 .. autosummary::
    :toctree: _autosummary
 
-   add
+   doeof
+   project_field
