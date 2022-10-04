@@ -5,5 +5,3 @@ Functions
 
 .. autosummary::
    :toctree: _autosummary
-
-   add
