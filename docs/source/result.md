@@ -1,2 +1,3 @@
 # Results
-## !my figure](plots/hadley.png)
+## random plots
+![my figure](plots/hadley.png)
