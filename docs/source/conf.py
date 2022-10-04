@@ -32,7 +32,7 @@ author = 'Quan Liu'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.duration',
-    'sphinx.ext.doctest'
+    'sphinx.ext.doctest',
     'sphinx.ext.autosummary',
     'myst_parser'
 ]
