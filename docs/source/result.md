@@ -18,10 +18,15 @@ In order to show the change of the spatial patterns, two different EOFs are appl
 
 
 # 2. extreme event count
-Since the spatial pattern itself changes, a dynamical spatial pattern is adopted to generate the NAO and EA index. 
+Since the spatial pattern itself changes, a dynamical spatial pattern is adopted to generate the NAO and EA index here. 
 
 ## Horizontal-EOF extreme event counts
 ![horizontal EOF extreme counts](plots/wrap_up_aftervoc/all_changingPattern_extreme_counts_ind.png)
 
 ## Horizontal-vertical-EOF extreme event counts
 ![hv-extremecounts](plots/wrap_up_aftervoc/all_changingPattern_extreme_counts_dep.png)
+
+No matter which EOF (horizontal or horizontal-vertical) adopted, totally, there are more negative extreme events than positive extremes. 
+
+Comparing the two plots, the skewness close to the surface (eastward shift of the spatial pattern) of EA, help to reduce the difference between the positive extremes and negative extremes. 
+

@@ -13,7 +13,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../.."))
+# sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, "/work/mh0033/m300883/3rdPanel")
+
 
 
 # -- Project information -----------------------------------------------------
