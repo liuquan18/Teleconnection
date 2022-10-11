@@ -222,9 +222,11 @@ def project_field(
     project original field onto eofs to get the temporal index.
     Different from python eofs package, here if there are three dimensions in sptial,
     i.e, [lat,lon,height], the projected pc is calculated independently from each height.
+
     **Arguments:**
         *field*: the DataArray field to be projected
         *eof*: the eofs
+        
     **Returns:**
         projected pcs
     """
