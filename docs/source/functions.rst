@@ -1,7 +1,7 @@
 Functions
 =========
 
-.. automodule:: src.Teleconnection.temporal_index
+.. automodule:: src.Teleconnection.spatial_pattern
 
 .. autosummary::
    :toctree: _autosummary
