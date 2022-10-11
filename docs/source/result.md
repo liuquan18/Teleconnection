@@ -82,7 +82,7 @@ The number of extreme events increased. In the meanwhile, the spatial patterns a
 
 shading for the first10 years, contour for the last10 years. 
 
-<img src="plots/wrap_up_aftervoc/ext_spatial.png" alt="ext_sptail" style="zoom:50%;" />
+![ext_sptial](plots/wrap_up_aftervoc/ext_spatial.png)
 
 Overall, we have shown above that even after removal of the externally forced signal (ensemble mean), we still see increased number of extreme events (especially negative extreme events), and changed spatial patterns, of both NAO and EA. Therefore, we argue that **the external forcing changed the internal mode of atmospheric circulation, in terms of the extreme states**. 
 
