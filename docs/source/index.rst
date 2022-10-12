@@ -10,8 +10,7 @@ Welcome to thirdPanel's documentation!
    :maxdepth: 2
 
    functions
-   result
-   
+   result   
 
 Indices and tables
 ==================
