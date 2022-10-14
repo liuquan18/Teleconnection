@@ -46,7 +46,8 @@ def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all"):
     """
 
     # the validtime period where totally ten years of data are fully avaiable.
-    validtime = xarr.isel(time=slice(5, -5)).time
+    gap = (window/10).astype(int)
+    validtime = xarr.isel(time=slice(gap, -1*gap)).time
 
     # if do the all-all decompose
     if fixed_pattern == "all":  # a little different from the following two.
