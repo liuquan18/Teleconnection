@@ -26,7 +26,9 @@ def doeof(
     """
 
     # make sure that the first dim is the 'com' or 'time'.
-    seasondata = seasondata.transpose(dim, ...)
+    try:
+        seasondata = seasondata.transpose(dim, ...)
+    
 
     # weights
     wgts = tools.sqrtcoslat(seasondata)
@@ -206,3 +208,4 @@ def sign_coef(eof):
     coef_EA = 2 * coef_EA - 1
 
     return xr.concat([coef_NAO, coef_EA], dim="mode")
+
