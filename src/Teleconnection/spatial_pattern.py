@@ -28,8 +28,8 @@ def doeof(
     # make sure that the first dim is the 'com' or 'time'.
     try:
         seasondata = seasondata.transpose(dim, ...)
-    
-
+    except ValueError:
+        print("no combined dimension found. use tools.stackens() first")
     # weights
     wgts = tools.sqrtcoslat(seasondata)
 
