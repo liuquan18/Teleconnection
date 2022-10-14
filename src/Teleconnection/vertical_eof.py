@@ -1,11 +1,4 @@
-import numpy as np
-import pandas as pd
-import xarray as xr
-
-import src.Teleconnection.tools as tools
 import src.Teleconnection.rolling_eof as rolling_eof
-
-
 
 def vertical_eof(xarr, nmode, window=10, fixed_pattern="all", independent=True):
     """

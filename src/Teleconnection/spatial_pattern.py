@@ -206,5 +206,3 @@ def sign_coef(eof):
     coef_EA = 2 * coef_EA - 1
 
     return xr.concat([coef_NAO, coef_EA], dim="mode")
-
-
