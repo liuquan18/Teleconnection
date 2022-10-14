@@ -15,3 +15,6 @@ data = ex.isel(hlayers = 0).var156
 data = xr.
 eof,pc,fra = ssp.doeof(ex,nmode = 1)
 # %%
+
+print("hello Arim")
+# %%
