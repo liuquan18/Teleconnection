@@ -1,4 +1,9 @@
+import numpy as np
+import xarray as xr
+from tqdm.notebook import tqdm
+
 import src.Teleconnection.rolling_eof as rolling_eof
+
 
 def vertical_eof(xarr, nmode, window=10, fixed_pattern="all", independent=True):
     """

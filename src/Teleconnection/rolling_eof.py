@@ -59,7 +59,7 @@ def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all"):
         # in order to make it the same  order as the following, we do project-field to get the index.
         PC = fixed_pc(xarr, EOF)
 
-    elif fixed_pattern == False:
+    elif fixed_pattern == "False":
         EOF, FRA = changing_eofs(xarr, validtime, nmode=nmode, window=window)
         PC = changing_pc(xarr, validtime, EOF)
 
@@ -107,15 +107,15 @@ def changing_eofs(xarr, validtime, nmode, window):
             eofs.append(eof)
             fras.append(fra)
 
-        EOF = xr.concat(eofs, dim=validtime)
+        EOFs = xr.concat(eofs, dim=validtime)
         FRA = xr.concat(fras, dim=validtime)
 
     # for one pattern (first,all,last) and all time step
     elif len(validtime) == 1:
         tenyear_xarr = field.sel(time=validtime)
-        EOF, _, FRA = ssp.doeof(tenyear_xarr, nmode=nmode, dim="com")
+        EOFs, _, FRA = ssp.doeof(tenyear_xarr, nmode=nmode, dim="com")
 
-    return EOF, FRA
+    return EOFs, FRA
 
 
 def fixed_pc(xarr, pattern, dim="com"):
