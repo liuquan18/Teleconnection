@@ -2,7 +2,9 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
+import src.Teleconnection.tools as tools
 import src.Teleconnection.vertical_eof as vertical_eof
+
 
 ###### high level APIs #################
 def season_eof(
@@ -23,7 +25,7 @@ def season_eof(
     """
     # if the data should be standarize
     if standard:
-        xarr = standardize(xarr)
+        xarr = tools.standardize(xarr)
 
     # passing parameters
     kwargs = {
@@ -33,7 +35,7 @@ def season_eof(
         "independent": independent,  # choose vetrical eof method.
     }
 
-    eof, pc, fra = vertical_eof(xarr, **kwargs)
+    eof, pc, fra = vertical_eof.vertical_eof(xarr, **kwargs)
 
     return eof, pc, fra
 
@@ -47,7 +49,7 @@ def main():
         "/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc"
     )
     # split ens
-    splitens = split_ens(allens)
+    splitens = tools.split_ens(allens)
     # demean ens-mean
     demean = splitens - splitens.mean(dim="ens")
     # select traposphere
