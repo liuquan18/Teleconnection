@@ -1,17 +1,17 @@
 #%%
 # import
+#%%
+import importlib
 from os import sched_param
-import xarray as xr
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+import xarray as xr
 
 import src.composite.composite as scp
 import src.plots.composite_plots as spcp
-
-#%%
-import importlib
 
 importlib.reload(spcp)
 importlib.reload(scp)
