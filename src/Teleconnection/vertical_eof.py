@@ -14,6 +14,10 @@ def vertical_eof(xarr, nmode, window=10, fixed_pattern="all", independent=True):
                        if independent = True, the eof is applied independently over all levels.
                        if independent = False, the vertical dimension is seen as one of the
                        spatial dimension. so the eof stands for the common pattern of all layers.
+    
+    **Return**
+
+        *eof*, *pc* and *fra*
     """
     if independent == True:
         eof, pc, fra = independent_eof(xarr, nmode, window, fixed_pattern)
@@ -39,7 +43,7 @@ def independent_eof(xarr, nmode, window, fixed_pattern):
     hlayers = xarr.hlayers
     for h in tqdm(hlayers):
         field = xarr.sel(hlayers=h)
-        eof, pc, fra = rolling_eof(field, nmode, window, fixed_pattern)
+        eof, pc, fra = rolling_eof.rolling_eof(field, nmode, window, fixed_pattern)
 
         eofs.append(eof)
         pcs.append(pc)
