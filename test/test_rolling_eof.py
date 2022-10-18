@@ -30,4 +30,4 @@ eof, pc, fra = rolling_eof.rolling_eof(ex, nmode=2, window=6, fixed_pattern="Fal
 
 # test
 def test_rolling_eof():
-    assert len(ex) == 14
+    assert len(ex) == 20
