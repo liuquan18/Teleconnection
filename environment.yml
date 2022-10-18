@@ -21,6 +21,7 @@ dependencies:
     - pyextremes
     - pip
     - nbsphinx
+    - ipywidgets
     - pip:
         - myst_parser
     
