@@ -75,7 +75,7 @@ def field_composite(var, independent="dep", hlayer=100000):
 
 #%%
 # Precip
-PrecipFirst, PrecipLast, PrecipDiff = field_composite("precip", "dep", hlayer=50000)
+PrecipFirst, PrecipLast, PrecipDiff = field_composite("precip", "dep", hlayer=100000)
 
 print("precip")
 spcp.lastfirst_comp_map(PrecipFirst, PrecipLast, mode="NAO")
