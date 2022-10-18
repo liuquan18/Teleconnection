@@ -35,4 +35,4 @@ window=6,fixed_pattern='all',independent = True,standard=True)
 
 # test
 def test_season_eof():
-    assert eof.hlayers == ex.hlayers
+    assert fra.sum().values > 0

@@ -27,4 +27,4 @@ eof, pc, fra = ssp.doeof(data, nmode=2)
 
 # do eof
 def test_doeof():
-    assert fra > 0
+    assert fra.sum().values > 0

@@ -27,8 +27,8 @@ ex = xr.DataArray(
 )
 
 # %%
-eof, pcs, fras = vertical_eof.vertical_eof(ex, nmode = 2, window = 6, fixed_pattern = "all", independent = True)
+eof, pc, fra = vertical_eof.vertical_eof(ex, nmode = 2, window = 6, fixed_pattern = "all", independent = True)
 # %%
 # test
 def test_vertical_eof():
-    assert ex.hlayers == eof.hlayers
+    assert fra.sum().values>0
