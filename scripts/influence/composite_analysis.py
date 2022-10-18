@@ -126,3 +126,21 @@ spcp.lastfirst_comp_map(
 
 spcp.lastfirst_comp_var(PrecipDiff,t2maxDiff,tsurfDiff,mode = 'NAO')
 # %%
+windFirst, windLast, windDiff = field_composite("windspeed","dep",hlayer = 100000)
+# %%
+print("windspeed")
+spcp.lastfirst_comp_map(
+    windFirst,
+    windLast,
+    mode="NAO",
+    levels=np.arange(-3, 3.1, 0.5),
+    unit="velocity [m/s]",
+)
+spcp.lastfirst_comp_map(
+    windFirst,
+    windLast,
+    mode="EA",
+    levels=np.arange(-3, 3.1, 0.5),
+    unit="velocity [m/s]",
+)
+# %%
