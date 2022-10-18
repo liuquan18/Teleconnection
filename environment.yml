@@ -20,6 +20,7 @@ dependencies:
     - statsmodels
     - pyextremes
     - pip
+    - nbsphinx
     - pip:
         - myst_parser
     
