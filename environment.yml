@@ -19,4 +19,7 @@ dependencies:
     - bottleneck
     - statsmodels
     - pyextremes
+    - pip
+    - pip:
+        - myst_parser
     
