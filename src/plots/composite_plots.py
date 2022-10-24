@@ -1,23 +1,19 @@
-from typing_extensions import assert_type
-import pandas as pd
-import xarray as xr
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from matplotlib.lines import Line2D
-
 import cartopy.crs as ccrs
-from cartopy.mpl.geoaxes import GeoAxes
-from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
-from mpl_toolkits.axes_grid1 import AxesGrid
-import matplotlib.path as mpath
-from matplotlib.colorbar import Colorbar
-
-import matplotlib.ticker as mticker
-from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter, LatitudeLocator
-from cartopy.util import add_cyclic_point
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib as mpl
+import matplotlib.path as mpath
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import xarray as xr
+from cartopy.mpl.geoaxes import GeoAxes
+from cartopy.mpl.ticker import (LatitudeFormatter, LatitudeLocator,
+                                LongitudeFormatter)
+from cartopy.util import add_cyclic_point
+from matplotlib.colorbar import Colorbar
+from matplotlib.lines import Line2D
+from mpl_toolkits.axes_grid1 import AxesGrid, make_axes_locatable
 
 
 def comp_count_plot(count: xr.DataArray, mode: str):
