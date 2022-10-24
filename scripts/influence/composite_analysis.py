@@ -125,13 +125,22 @@ spcp.lastfirst_comp_var(PrecipDiff,t2maxDiff,tsurfDiff,mode = 'NAO')
 
 # %% wind
 # windspeed
-wspdFirst, wspdLast, wspdDiff = field_composite("windspeed","dep",hlayer = 100000)
+# wspdFirst, wspdLast, wspdDiff = field_composite("windspeed","dep",hlayer = 100000)
 
 #u10
 uFirst, uLast, uDiff = field_composite("u10","dep",hlayer = 100000)
 
 #v10
-vFirst, vLast, vDiff = field_composite("u10","dep",hlayer = 100000)
+vFirst, vLast, vDiff = field_composite("v10","dep",hlayer = 100000)
+
+
+#%% save
+uFirst.to_netcdf("/work/mh0033/m300883/3rdPanel/data/influence/u10/uFirst.nc")
+uLast.to_netcdf("/work/mh0033/m300883/3rdPanel/data/influence/u10/uLast.nc")
+
+vFirst.to_netcdf("/work/mh0033/m300883/3rdPanel/data/influence/v10/vFirst.nc")
+vLast.to_netcdf("/work/mh0033/m300883/3rdPanel/data/influence/v10/vLast.nc")
+
 
 # wind plots
 #%% 
@@ -146,6 +155,9 @@ import iris.quickplot as qplt
 #%%
 uwind = uFirst.sel(mode = 'NAO',extr_type = 'pos')
 vwind = vFirst.sel(mode = 'NAO',extr_type = 'pos')
+
+uwind = uwind.to_iris()
+vwind = vwind.to_iris()
 
 #%%
 # windspeed 
