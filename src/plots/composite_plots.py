@@ -151,7 +151,7 @@ def contourf(ax, data, levels):
 
 
 def axes_grid(
-    nrow, ncol, proj=ccrs.Orthographic(central_longitude=-20, central_latitude=60)
+    nrow=2, ncol=3, proj=ccrs.Orthographic(central_longitude=-20, central_latitude=60)
 ):
     fig, axes = plt.subplots(
         nrow, ncol, figsize=(10, 8), dpi=500, subplot_kw={"projection": proj}
