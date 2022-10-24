@@ -25,21 +25,14 @@ importlib.reload(spcp)
 importlib.reload(scp)
 # %% Composite analysis
 # u10
-uFirst, uLast, uDiff = scp.field_composite("u10", "dep", hlayer=100000)
+udata = scp.field_composite("u10", "dep", hlayer=100000)
 
 # v10
-vFirst, vLast, vDiff = scp.field_composite("v10", "dep", hlayer=100000)
+vdata = scp.field_composite("v10", "dep", hlayer=100000)
 
 
 #%%
 # split periods
-def split_periods(first, last):
-    data = [
-        first,
-        last,
-        last - first,
-    ]
-    return data
 
 def erase_while_line(data):
     lats = data.lat
@@ -80,7 +73,7 @@ for i in range(2):  # for extr_type
 
 
         u = xr2iris(
-            erase_while_line(udata[j]),
+            udata[j],
             mode=mode,
             extr_type=extr_type[i],
             var="u10",
@@ -88,7 +81,7 @@ for i in range(2):  # for extr_type
         )
 
         v = xr2iris(
-            erase_while_line(vdata[j]),
+            vdata[j],
             mode=mode,
             extr_type=extr_type[i],
             var="v10",
