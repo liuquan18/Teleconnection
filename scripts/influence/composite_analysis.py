@@ -1,6 +1,4 @@
 #%%
-# import
-#%%
 import importlib
 from os import sched_param
 
@@ -15,7 +13,6 @@ import src.plots.composite_plots as spcp
 
 importlib.reload(spcp)
 importlib.reload(scp)
-
 # %%
 
 
@@ -135,6 +132,30 @@ uFirst, uLast, uDiff = field_composite("u10","dep",hlayer = 100000)
 
 #v10
 vFirst, vLast, vDiff = field_composite("u10","dep",hlayer = 100000)
+
+# wind plots
+#%% 
+import cartopy.feature as cfeat
+import matplotlib.pyplot as plt
+
+import iris
+import iris.plot as iplt
+import iris.quickplot as qplt
+
+
+#%%
+uwind = uFirst.sel(mode = 'NAO',extr_type = 'pos')
+vwind = vFirst.sel(mode = 'NAO',extr_type = 'pos')
+
+#%%
+# windspeed 
+windspeed = (uwind**2 + vwind**2)**0.5
+windspeed = windspeed.rename("windspeed")
+
+# plot windspeed as contour
+qplt.contourf(windspeed,20)
+iplt.quiver(uwind,vwind,pivot = "middle")
+qplt.show()
 
 
 #%%
