@@ -30,14 +30,27 @@ udata = scp.field_composite("u10", "dep", hlayer=100000)
 # v10
 vdata = scp.field_composite("v10", "dep", hlayer=100000)
 
+# erase the white line
+udata = [erase_white_line(da) for da in udata]
+vdata = [erase_white_line(da) for da in vdata]
+
 
 #%%
-# split periods
-
-def erase_while_line(data):
+# function to erase the white line
+def erase_white_line(data):
     lats = data.lat
-    data_value, lons = add_cyclic_point(data, coord = data.lon, axis = -1)
-    new_data = xr.DataArray(data_value,dims = data.dims,coords = {'lat':lats,'lon':lons})
+    data_value, lons = add_cyclic_point(data, coord=data.lon, axis=-1)
+    new_data = xr.DataArray(
+        data_value,
+        dims=data.dims,
+        coords={
+            "lat": lats,
+            "lon": lons,
+            "hlayers": data.hlayers,
+            "mode": data.mode,
+            "extr_type": data.extr_type,
+        },
+    )
     return new_data
 
 
@@ -58,19 +71,20 @@ def xr2iris(data, mode, extr_type, var="u10", long_name="10m u-velocity"):
 
 
 # %% Visulization
-udata = split_periods(uFirst, uLast)
-vdata = split_periods(vFirst, vLast)
 
-proj=ccrs.Orthographic(central_longitude=-20, central_latitude=60)
-mode = "NAO"
+proj = ccrs.Orthographic(central_longitude=-20, central_latitude=60)
+mode = "EA"
 extr_type = ["pos", "neg"]
 periods = ["first10", "last10", "last10 - first10"]
 
-for i in range(2):  # for extr_type
-    for j in range(3):  # for periods
 
-        axes = plt.subplot(2,3,j+(i*3)+1,projection = proj)
+fig = plt.figure(figsize=(12, 6), dpi=150)
 
+for i in range(2):  # rows for extr_type
+    for j in range(3):  # cols for periods
+
+        axes = plt.subplot(2, 3, j + (i * 3) + 1, projection=proj)
+        axes = spcp.buildax(axes)
 
         u = xr2iris(
             udata[j],
@@ -92,7 +106,14 @@ for i in range(2):  # for extr_type
         windspeed.rename("windspeed")
 
         # Plot the wind speed as a contour plot.
-        qplt.contourf(windspeed, np.arange(0, 3.1, 0.5))
+        qplt.contourf(
+            windspeed,
+            np.arange(0.2, 4.1, 0.4),
+            transform=ccrs.PlateCarree(),
+            add_colorbar=False,
+            zorder=20,
+        )
+        plt.gca().coastlines(linewidth=0.3)
 
         # Add arrows to show the wind vectors.
         iplt.quiver(
@@ -102,6 +123,8 @@ for i in range(2):  # for extr_type
             width=0.003,
             scale=30,
             units="width",
+            transform=ccrs.PlateCarree(),
+            zorder=100,
         )
 
         plt.title("composite wind")
