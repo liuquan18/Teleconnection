@@ -20,9 +20,11 @@ from cartopy.util import add_cyclic_point
 
 import src.composite.composite as scp
 import src.plots.composite_plots as spcp
+import src.plots.utils as spu
 
 importlib.reload(spcp)
 importlib.reload(scp)
+importlib.reload(spu)
 # %% Composite analysis
 # u10
 udata = scp.field_composite("u10", "dep", hlayer=100000)
@@ -31,40 +33,20 @@ udata = scp.field_composite("u10", "dep", hlayer=100000)
 vdata = scp.field_composite("v10", "dep", hlayer=100000)
 
 # erase the white line
-udata = [erase_white_line(da) for da in udata]
-vdata = [erase_white_line(da) for da in vdata]
-
+udata = [spu.erase_white_line(da) for da in udata]
+vdata = [spu.erase_white_line(da) for da in vdata]
 
 #%%
-# function to erase the white line
-def erase_white_line(data):
-    data = data.transpose(..., "lon")  # make the lon as the last dim
-    dims = data.dims  # all the dims
-    res_dims = tuple(dim for dim in dims if dim != "lon")  # dims apart from lon
-    res_coords = [data.coords[dim] for dim in res_dims]    # get the coords
-
-    # add one more longitude to the data
-    data_value, lons = add_cyclic_point(data, coord=data.lon, axis=-1)
-
-    # make the lons as index
-    lon_dim = xr.IndexVariable(
-        "lon", lons, attrs={"standard_name": "longitude", "units": "degrees_east"}
-    )
-
-    # the new coords with changed lon
-    new_coords = res_coords + [lon_dim]  # changed lon but new coords
-
-    new_data = xr.DataArray(data_value, coords=new_coords, name=data.name)
-
-    return new_data
-
+# windspeed
+windspeed = [(udata[i] ** 2 + vdata[i] ** 2) ** 0.5 for i in range(2)]
+windspeed.append(windspeed[1] - windspeed[0])
 
 #%% to iris cube
-def xr2iris(data, mode, extr_type, var="u10", long_name="10m u-velocity"):
+def xr2iris(data, mode, extr_type, long_name="10m u-velocity"):
 
     # select one map
     data = data.sel(mode=mode, extr_type=extr_type)
-    data = data.drop_vars(["hlayers", "mode", "extr_type"])
+    data = data.squeeze()
 
     # standard
     glo_Con = "CF-1.8"
@@ -80,22 +62,21 @@ def xr2iris(data, mode, extr_type, var="u10", long_name="10m u-velocity"):
 proj = ccrs.Orthographic(central_longitude=-20, central_latitude=60)
 mode = "EA"
 extr_type = ["pos", "neg"]
-periods = ["first10", "last10", "last10 - first10"]
+periods = ["first10", "last10", "Diff"]
 
 
-fig = plt.figure(figsize=(12, 6), dpi=150)
-
+fig = plt.figure(figsize=(12, 6), dpi=200)
+plt.subplots_adjust(bottom=0.15)
 for i in range(2):  # rows for extr_type
     for j in range(3):  # cols for periods
 
         axes = plt.subplot(2, 3, j + (i * 3) + 1, projection=proj)
-        axes = spcp.buildax(axes)
+        axes = spu.buildax(axes, zorder=40)
 
         u = xr2iris(
             udata[j],
             mode=mode,
             extr_type=extr_type[i],
-            var="u10",
             long_name="10m u-velocity",
         )
 
@@ -103,37 +84,44 @@ for i in range(2):  # rows for extr_type
             vdata[j],
             mode=mode,
             extr_type=extr_type[i],
-            var="v10",
             long_name="10m v-velocity",
         )
 
-        windspeed = (u**2 + v**2) ** 0.5
-        windspeed.rename("windspeed")
+        wspd = xr2iris(
+            windspeed[j],
+            mode=mode,
+            extr_type=extr_type[i],
+            long_name=periods[j],
+        )
 
         # Plot the wind speed as a contour plot.
-        qplt.contourf(
-            windspeed,
-            np.arange(0.2, 4.1, 0.4),
-            transform=ccrs.PlateCarree(),
-            add_colorbar=False,
+        contourf = qplt.contourf(
+            wspd,
+            10,
+            vmin=-3.0,
+            vmax=3.0,
             zorder=20,
+            extend="max",
+            cmap="RdBu",
         )
-        cb = plt.colorbar()
+        cb = contourf.colorbar
         cb.remove()
-        plt.gca().coastlines(linewidth=0.3)
+
+        plt.gca().coastlines(linewidth=0.3, zorder=30)
 
         # Add arrows to show the wind vectors.
         iplt.quiver(
-            u[::6, ::6],
-            v[::6, ::6],
+            u[::5, ::5],
+            v[::5, ::5],
             pivot="middle",
             width=0.003,
-            scale=30,
+            scale=25,
             units="width",
-            transform=ccrs.PlateCarree(),
             zorder=100,
         )
 
-        plt.title("composite wind")
+cbar_ax = fig.add_axes([0.33, 0.1, 0.4, 0.03])
+fig.colorbar(contourf, cax=cbar_ax, label="windspeed", orientation="horizontal")
+
 
 # %%

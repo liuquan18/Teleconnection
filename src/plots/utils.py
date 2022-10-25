@@ -35,10 +35,13 @@ import iris.quickplot as qplt
 
 # function to erase the white line
 def erase_white_line(data):
+    """
+    erase the white line aroung 180 degree.
+    """
     data = data.transpose(..., "lon")  # make the lon as the last dim
     dims = data.dims  # all the dims
     res_dims = tuple(dim for dim in dims if dim != "lon")  # dims apart from lon
-    res_coords = [data.coords[dim] for dim in res_dims]    # get the coords
+    res_coords = [data.coords[dim] for dim in res_dims]  # get the coords
 
     # add one more longitude to the data
     data_value, lons = add_cyclic_point(data, coord=data.lon, axis=-1)
@@ -56,18 +59,34 @@ def erase_white_line(data):
     return new_data
 
 
-
-
-def buildax(ax):
+def buildax(ax, zorder=50):
     """
     add grid coastline and gridlines
     """
     ax.set_global()
     ax.coastlines(linewidth=0.5, alpha=0.7)
-    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=0.5)
+    gl = ax.gridlines(
+        crs=ccrs.PlateCarree(), draw_labels=False, linewidth=0.5, zorder=zorder
+    )
     gl.xformatter = LongitudeFormatter(zero_direction_label=False)
     gl.xlocator = mticker.FixedLocator(np.arange(-180, 180, 45))
 
     gl.ylocator = mticker.FixedLocator([20, 40, 60])
     gl.yformatter = LatitudeFormatter()
 
+
+def remove_cb(contourf_object):
+    """
+    remove the colorbar of the object
+    """
+    cb = contourf_object.colorbar
+    cb.remove()
+
+
+def add_cb(fig, im, loc=[0.85, 0.2, 0.03, 0.6], label="label",orientation = 'horizontal'):
+    """
+    add colobar to a fig based on the image at loc.
+    """
+
+    cbar_ax = fig.add_axes(loc)
+    fig.colorbar(im, cax=cbar_ax, label=label,orientation = orientation)
