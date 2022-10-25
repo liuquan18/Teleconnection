@@ -38,19 +38,23 @@ vdata = [erase_white_line(da) for da in vdata]
 #%%
 # function to erase the white line
 def erase_white_line(data):
-    lats = data.lat
+    data = data.transpose(..., "lon")  # make the lon as the last dim
+    dims = data.dims  # all the dims
+    res_dims = [dim for dim in dims if dim != "lon"]  # dims apart from lon
+
+    # add one more longitude to the data
     data_value, lons = add_cyclic_point(data, coord=data.lon, axis=-1)
-    new_data = xr.DataArray(
-        data_value,
-        dims=data.dims,
-        coords={
-            "lat": lats,
-            "lon": lons,
-            "hlayers": data.hlayers,
-            "mode": data.mode,
-            "extr_type": data.extr_type,
-        },
+
+    # make the lons as index
+    lon_dim = xr.IndexVariable(
+        "lon", lons, attrs={"standard_name": "longitude", "units": "degrees_east"}
     )
+
+    # the new coords with changed lon
+    new_coords = res_dims + [lon_dim]  # changed lon but new coords
+
+    new_data = xr.DataArray(data_value, coords=new_coords, name=data.name)
+
     return new_data
 
 
@@ -113,6 +117,8 @@ for i in range(2):  # rows for extr_type
             add_colorbar=False,
             zorder=20,
         )
+        cb = plt.colorbar()
+        cb.remove()
         plt.gca().coastlines(linewidth=0.3)
 
         # Add arrows to show the wind vectors.
