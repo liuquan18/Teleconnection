@@ -40,7 +40,8 @@ vdata = [erase_white_line(da) for da in vdata]
 def erase_white_line(data):
     data = data.transpose(..., "lon")  # make the lon as the last dim
     dims = data.dims  # all the dims
-    res_dims = [dim for dim in dims if dim != "lon"]  # dims apart from lon
+    res_dims = tuple(dim for dim in dims if dim != "lon")  # dims apart from lon
+    res_coords = [data.coords[dim] for dim in res_dims]    # get the coords
 
     # add one more longitude to the data
     data_value, lons = add_cyclic_point(data, coord=data.lon, axis=-1)
@@ -51,7 +52,7 @@ def erase_white_line(data):
     )
 
     # the new coords with changed lon
-    new_coords = res_dims + [lon_dim]  # changed lon but new coords
+    new_coords = res_coords + [lon_dim]  # changed lon but new coords
 
     new_data = xr.DataArray(data_value, coords=new_coords, name=data.name)
 
