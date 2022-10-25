@@ -58,70 +58,77 @@ def xr2iris(data, mode, extr_type, long_name="10m u-velocity"):
 
 
 # %% Visulization
+def wind_plots(mode):
+    proj = ccrs.Orthographic(central_longitude=-20, central_latitude=60)
+    mode = mode
+    extr_type = ["pos", "neg"]
+    periods = ["first10", "last10", "Diff"]
 
-proj = ccrs.Orthographic(central_longitude=-20, central_latitude=60)
-mode = "EA"
-extr_type = ["pos", "neg"]
-periods = ["first10", "last10", "Diff"]
 
+    fig = plt.figure(figsize=(12, 6), dpi=200)
+    plt.subplots_adjust(bottom=0.15)
+    for i in range(2):  # rows for extr_type
+        for j in range(3):  # cols for periods
 
-fig = plt.figure(figsize=(12, 6), dpi=200)
-plt.subplots_adjust(bottom=0.15)
-for i in range(2):  # rows for extr_type
-    for j in range(3):  # cols for periods
+            axes = plt.subplot(2, 3, j + (i * 3) + 1, projection=proj)
+            axes = spu.buildax(axes, zorder=40)
 
-        axes = plt.subplot(2, 3, j + (i * 3) + 1, projection=proj)
-        axes = spu.buildax(axes, zorder=40)
+            u = xr2iris(
+                udata[j],
+                mode=mode,
+                extr_type=extr_type[i],
+                long_name="10m u-velocity",
+            )
 
-        u = xr2iris(
-            udata[j],
-            mode=mode,
-            extr_type=extr_type[i],
-            long_name="10m u-velocity",
-        )
+            v = xr2iris(
+                vdata[j],
+                mode=mode,
+                extr_type=extr_type[i],
+                long_name="10m v-velocity",
+            )
 
-        v = xr2iris(
-            vdata[j],
-            mode=mode,
-            extr_type=extr_type[i],
-            long_name="10m v-velocity",
-        )
+            wspd = xr2iris(
+                windspeed[j],
+                mode=mode,
+                extr_type=extr_type[i],
+                long_name=periods[j],
+            )
 
-        wspd = xr2iris(
-            windspeed[j],
-            mode=mode,
-            extr_type=extr_type[i],
-            long_name=periods[j],
-        )
+            # Plot the wind speed as a contour plot.
+            contourf = qplt.contourf(
+                wspd,
+                np.arange(-3.0,3.1,0.5),
+                zorder=20,
+                extend="max",
+                cmap="RdBu",
+            )
+            cb = contourf.colorbar
+            cb.remove()
 
-        # Plot the wind speed as a contour plot.
-        contourf = qplt.contourf(
-            wspd,
-            10,
-            vmin=-3.0,
-            vmax=3.0,
-            zorder=20,
-            extend="max",
-            cmap="RdBu",
-        )
-        cb = contourf.colorbar
-        cb.remove()
+            plt.gca().coastlines(linewidth=0.3, zorder=30)
 
-        plt.gca().coastlines(linewidth=0.3, zorder=30)
+            # Add arrows to show the wind vectors.
+            iplt.quiver(
+                u[::5, ::5],
+                v[::5, ::5],
+                pivot="middle",
+                width=0.003,
+                scale=25,
+                units="width",
+                zorder=100,
+            )
 
-        # Add arrows to show the wind vectors.
-        iplt.quiver(
-            u[::5, ::5],
-            v[::5, ::5],
-            pivot="middle",
-            width=0.003,
-            scale=25,
-            units="width",
-            zorder=100,
-        )
+    cbar_ax = fig.add_axes([0.33, 0.1, 0.4, 0.03])
+    fig.colorbar(contourf, cax=cbar_ax, label="windspeed", orientation="horizontal")
+    plt.show()
 
-cbar_ax = fig.add_axes([0.33, 0.1, 0.4, 0.03])
-fig.colorbar(contourf, cax=cbar_ax, label="windspeed", orientation="horizontal")
+# %%
+print("="*5+"NAO"+"="*5)
+wind_plots("NAO")
+plt.savefig("/work/mh0033/m300883/3rdPanel/docs/source/plots/wrap_up_aftervoc/NAO_wind_composite.png",dpi = 200)
 
+print("="*5+"EA"+"="*5)
+wind_plots("EA")
+plt.savefig("/work/mh0033/m300883/3rdPanel/docs/source/plots/wrap_up_aftervoc/EA_wind_composite.png",dpi = 200)
 
 # %%
