@@ -113,7 +113,17 @@ For EA extremes, The effect of both positive and negative extremes shift eastwar
 >
 > Here also show the result of max-2m temperature. The same to surface temperature, The influences expand eastward to Eurasia. 
 
-Here, the maps show the composite mean. If we also take account of the number of extreme counts change. For example, we could say, the number of negative extremes of EA increases in the warmer climate; the negative extremes of EA tend to induce more sever cooling over eastern Eurasia. Then, in the warmer climate, there will be even more cooling over eastern Eurasia. It seem acts as the negative feedbacks of climate warming. 
+Here, the maps show the composite mean. If we also take account of the number of extreme counts change. For example, we could say, the number of negative extremes of EA increases in the warmer climate; the negative extremes of EA tend to induce more sever cooling over eastern Eurasia. Then, in the warmer climate, there will be even more cooling over eastern Eurasia. It seem acts as the negative feedbacks of climate warming.
+
+**wind - NAO extreme types**
+![wind_NAO](plots/wrap_up_aftervoc/NAO_wind_composite.png)
+
+**wind - EA extreme types**
+![wind_EA](plots/wrap_up_aftervoc/EA_wind_composite.png)
+
+Over North Atlantic, For NAO, the wind strengthens in both positive and negative extremes. while for EA, the wind weakens in both cases. In other words, the wind has positive feedbacks for NAO extremes, while the wind has negative feedbacks for EA extremes. 
+Another noticable region is North Pacific. For NAO, the circulation over North Pacific strengthen in their corresponding patterns (pos for clockwise, neg for counterclockwise), the negative extreme has stronger influence. For EA, again, response negatively. 
+Generally, Positive extremes of both NAO and EA, induce more warm air going into North pole; Negative extremes of both NAO and EA, induce more cold air leaving the North pole. 
 
 **Precipitation - NAO extreme types**
 
