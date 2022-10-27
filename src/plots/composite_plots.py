@@ -235,7 +235,7 @@ def composite_gph(first, last, hlayers=100000):
         2,
         2,
         figsize=(10, 8),
-        dpi=500,
+        dpi=300,
         subplot_kw={"projection": proj},
     )
 
@@ -281,7 +281,7 @@ def composite_gph(first, last, hlayers=100000):
 
             col.set_title(f"{modes[j]}  {extr_type[i]}")
             buildax(col)
-    fig.subplots_adjust(hspace=0.3, wspace=0.5, right=0.8)
+    fig.subplots_adjust(hspace=0.3, wspace=0.1, right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.25, 0.03, 0.5])
     cbar = fig.colorbar(
         imf,
