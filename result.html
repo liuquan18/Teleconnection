@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>1. spatial patterns &#8212; thirdPanel  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="src.Teleconnection.spatial_pattern.project_field" href="_autosummary/src.Teleconnection.spatial_pattern.project_field.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="spatial-patterns">
+<h1>1. spatial patterns<a class="headerlink" href="#spatial-patterns" title="Permalink to this heading">¶</a></h1>
+<p>In order to show the temporal and vertical change of the spatial patterns, two different EOFs are applied: <em>horizontal</em> and <em>horizontal-vertical</em> EOF.</p>
+<ul class="simple">
+<li><p><em>horizontal EOF</em>: each vertical layer is decomposed indecently, so that the spatial patterns change vertically.</p></li>
+<li><p><em>horizontal-vertical EOF</em> : all the layers decomposed together, so that all the vertical layers share one common spatial pattern.</p></li>
+</ul>
+<section id="nao-lat-height">
+<h2>NAO_lat_height<a class="headerlink" href="#nao-lat-height" title="Permalink to this heading">¶</a></h2>
+<p>(zonal mean, $1 \times CO_2, 2 \times CO_2, 4 \times CO_2$)
+<img alt="NAO_lat_all" src="plots/wrap_up_aftervoc/NAO_lat_all.png" /></p>
+</section>
+<section id="ea-lon-height">
+<h2>EA_lon_height<a class="headerlink" href="#ea-lon-height" title="Permalink to this heading">¶</a></h2>
+<p>(meridional mean, $1 \times CO_2, 2 \times CO_2, 4 \times CO_2$)
+<img alt="EA_lon_all" src="plots/wrap_up_aftervoc/EA_lon_all.png" /></p>
+<p>Both method show <strong>strengthened amplitude</strong> of spatial patterns for both NAO and EA. Horizontal EOF shows vertically <strong>more skew spatial pattern</strong> in a warmer climate.</p>
+</section>
+</section>
+<section id="extreme-event-count">
+<h1>2. extreme event count<a class="headerlink" href="#extreme-event-count" title="Permalink to this heading">¶</a></h1>
+<p>Since the spatial pattern itself changes, a dynamical spatial pattern is adopted to generate the NAO and EA index here.</p>
+<section id="horizontal-eof-extreme-event-counts">
+<h2>Horizontal-EOF extreme event counts<a class="headerlink" href="#horizontal-eof-extreme-event-counts" title="Permalink to this heading">¶</a></h2>
+<p>Count of extremes (x-axis) over different altitude (y-axis)</p>
+<p><img alt="all_counts_ind" src="plots/wrap_up_aftervoc/all_changingPattern_extreme_counts_ind.png" /></p>
+</section>
+<section id="horizontal-vertical-eof-extreme-event-counts">
+<h2>Horizontal-vertical-EOF extreme event counts<a class="headerlink" href="#horizontal-vertical-eof-extreme-event-counts" title="Permalink to this heading">¶</a></h2>
+<p><img alt="all_counts_dep" src="plots/wrap_up_aftervoc/all_changingPattern_extreme_counts_dep.png" />
+No matter which EOF (horizontal or horizontal-vertical) adopted, totally, <strong>there are more negative extreme events than positive extremes</strong>.</p>
+<p>Comparing the two plots, the skewness close to the surface (eastward shift of the spatial pattern) of EA, help to reduce the difference between the positive extremes and negative extremes.</p>
+</section>
+</section>
+<section id="extreme-event-count-change-against-global-warming">
+<h1>3. extreme event count change against global warming<a class="headerlink" href="#extreme-event-count-change-against-global-warming" title="Permalink to this heading">¶</a></h1>
+<p>By comparing the extreme event counts in the first 10years v.s the last10 years, we see the climate change influence upon the extreme event counts of teleconnection modes.</p>
+<p><strong>NAO extreme event count change</strong>
+(Horizontal-vertical-EOF)</p>
+<p><img alt="NAO_change_dep" src="plots/wrap_up_aftervoc/NAO_change_dep.png" />
+<strong>EA extreme event count change</strong>
+(Horizontal-vertical-EOF)
+<img alt="EA_change_dep" src="plots/wrap_up_aftervoc/EA_change_dep.png" /></p>
+<p>By using Horizontal-vertical-EOF and dynamical spatial patterns (that is, vertically common, temporally changing spatial patterns), <strong>Both positive and negative extreme event counts of NAO and EA rise</strong>; <strong>the rise of negative extreme event is larger than positive</strong>.</p>
+<blockquote>
+<div><p>The conclusion here is robust to the EOF methods we use. Below the same plots but for horizontal EOF (the spatial pattern changes along altitudes), because of eastward shift of the spatial pattern of EA, the difference between the positive and negative extreme events decreased at near surface level.</p>
+<p><strong>NAO extreme event count change</strong>
+(Horizontal-EOF)</p>
+<p><img alt="NAO_change_ind" src="plots/wrap_up_aftervoc/NAO_change_ind.png" /></p>
+<p><strong>EA extreme event count change</strong>
+(Horizontal-EOF)</p>
+<p><img alt="EA_change_ind" src="plots/wrap_up_aftervoc/EA_change_ind.png" /></p>
+<p>However, the conclusion here is sensitive to the spatial patterns we take. The plots above take the dynamical spatial pattern, which means, the spatial pattern changes along time. index for the first10 years is generated by projecting the spatial pattern of first10 years onto original data of first10 years. And so to the last10 years. If we take static spatial patterns, the conclusion is a little bit more complicated.</p>
+<p><strong>the influence of spatial pattern to extreme event count</strong> (Horizontal-vertical-EOF)</p>
+<p><img alt="NAO_diff_patterns" src="plots/wrap_up_aftervoc/NAO_diff_patterns.png" /></p>
+<p><img alt="EA_diff_patterns" src="plots/wrap_up_aftervoc/EA_diff_patterns.png" />
+(<em>There are some problems of colors in this plot</em>)</p>
+<p>No matter which pattern we take, the conclusion that there is larger rise of negative extreme events compared to positive extreme events stays robust. However, the amplitude of the increment is changeable. For all cases, the negative extreme events increased. For some experiment, the positive extreme events even decreased.</p>
+<p>Although we mentioned before that the conclusion is robust in terms of the EOF method. But still the difference of the extreme count increment between horizontal EOF and horizontal-vertical EOF exists, especially for EA. A vertically common spatial pattern seem to contribute more negative extremes and less positive extremes.</p>
+<p><img alt="extreme_coutns_vertical_profile" src="plots/wrap_up_aftervoc/extreme_counts_vertical_profile.png" /></p>
+</div></blockquote>
+</section>
+<section id="spatial-pattern-of-the-extreme-events-change-against-the-global-warming">
+<h1>4. Spatial pattern of the extreme events change against the global warming<a class="headerlink" href="#spatial-pattern-of-the-extreme-events-change-against-the-global-warming" title="Permalink to this heading">¶</a></h1>
+<p>The number of extreme events increased. In the meanwhile, the spatial patterns also changed. Composite analysis of the geopotential height in terms of the different types of extreme events shows that <strong>the spatial pattern for negative NAO extremes and positive EA extremes shift northeastward</strong>.</p>
+<p><strong>Composite analysis of 1000hpa geopotential height</strong></p>
+<p>shading for the first10 years, contour for the last10 years.</p>
+<p><img alt="ext_sptial" src="plots/wrap_up_aftervoc/ext_spatial.png" /></p>
+<p>Overall, we have shown above that even after removal of the externally forced signal (ensemble mean), we still see increased number of extreme events (especially negative extreme events), and changed spatial patterns, of both NAO and EA. Therefore, we argue that <strong>the external forcing changed the internal mode of atmospheric circulation, in terms of the extreme states</strong>.</p>
+</section>
+<section id="effects-of-increased-extreme-events-of-teleconnections">
+<h1>5. Effects of increased extreme events of teleconnections<a class="headerlink" href="#effects-of-increased-extreme-events-of-teleconnections" title="Permalink to this heading">¶</a></h1>
+<p>Does such kind of change matter? Here we do the composite analysis of temperature and precipitation in terms of different extreme types.</p>
+<p><strong>Surface temperature - NAO extreme types</strong></p>
+<p>Composite analysis of surface temperature in terms of different NAO extreme types. The last column shows the difference.</p>
+<p><img alt="NAO_temp" src="plots/wrap_up_aftervoc/NAO_temp.png" /></p>
+<p>For NAO extremes, the effect of positive extreme events (inducing warming over northern high latitudes) gets mild. The effected region of negative extreme events expanded over Eurasia.</p>
+<p><strong>Surface temperature - EA extreme types</strong></p>
+<p><img alt="EA_temp" src="plots/wrap_up_aftervoc/EA_TEMP.png" />
+For EA extremes, The effect of both positive and negative extremes shift eastward over Eurasia, that’s consistent to the eastward shift of their spatial patterns. Especially negative extremes, the warming induce more serve cooling over mid-eastearn part of Eurasia.</p>
+<blockquote>
+<div><p><strong>max 2m-temperature - NAO extreme types</strong></p>
+<p><img alt="NAO_2m" src="plots/wrap_up_aftervoc/NAO_2m.png" /></p>
+<p><strong>max 2m-temperature - EA extreme types</strong></p>
+<p><img alt="EA_2m" src="plots/wrap_up_aftervoc/EA_2m.png" /></p>
+<p>Here also show the result of max-2m temperature. The same to surface temperature, The influences expand eastward to Eurasia.</p>
+</div></blockquote>
+<p>Here, the maps show the composite mean. If we also take account of the number of extreme counts change. For example, we could say, the number of negative extremes of EA increases in the warmer climate; the negative extremes of EA tend to induce more sever cooling over eastern Eurasia. Then, in the warmer climate, there will be even more cooling over eastern Eurasia. It seem acts as the negative feedbacks of climate warming.</p>
+<p><strong>wind - NAO extreme types</strong>
+<img alt="wind_NAO" src="plots/wrap_up_aftervoc/NAO_wind_composite.png" /></p>
+<p><strong>wind - EA extreme types</strong>
+<img alt="wind_EA" src="plots/wrap_up_aftervoc/EA_wind_composite.png" /></p>
+<p>Over North Atlantic, For NAO, the wind strengthens in both positive and negative extremes. while for EA, the wind weakens in both cases. In other words, the wind has positive feedbacks for NAO extremes, while the wind has negative feedbacks for EA extremes.
+Another noticable region is North Pacific. For NAO, the circulation over North Pacific strengthen in their corresponding patterns (pos for clockwise, neg for counterclockwise), the negative extreme has stronger influence. For EA, again, response negatively.
+Generally, Positive extremes of both NAO and EA, induce more warm air going into North pole; Negative extremes of both NAO and EA, induce more cold air leaving the North pole.</p>
+<p><strong>Precipitation - NAO extreme types</strong></p>
+<p><img alt="precip_NAO" src="plots/wrap_up_aftervoc/precp_NAO.png" />
+<img alt="precip_EA" src="plots/wrap_up_aftervoc/precip_EA.png" /></p>
+<p>(The unit should be changed)</p>
+<p>The change of NAO and EA extremes strengths the influence to precipitation.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">thirdPanel</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. spatial patterns</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#nao-lat-height">NAO_lat_height</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ea-lon-height">EA_lon_height</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#extreme-event-count">2. extreme event count</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#horizontal-eof-extreme-event-counts">Horizontal-EOF extreme event counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#horizontal-vertical-eof-extreme-event-counts">Horizontal-vertical-EOF extreme event counts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#extreme-event-count-change-against-global-warming">3. extreme event count change against global warming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#spatial-pattern-of-the-extreme-events-change-against-the-global-warming">4. Spatial pattern of the extreme events change against the global warming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#effects-of-increased-extreme-events-of-teleconnections">5. Effects of increased extreme events of teleconnections</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="_autosummary/src.Teleconnection.spatial_pattern.project_field.html" title="previous chapter">src.Teleconnection.spatial_pattern.project_field</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, thirdPanel developers.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/result.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
