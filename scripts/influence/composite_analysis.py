@@ -1,21 +1,18 @@
 #%%
-# import
+import importlib
 from os import sched_param
-import xarray as xr
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+import xarray as xr
 
 import src.composite.composite as scp
 import src.plots.composite_plots as spcp
 
-#%%
-import importlib
-
 importlib.reload(spcp)
 importlib.reload(scp)
-
 # %%
 
 
@@ -75,7 +72,7 @@ def field_composite(var, independent="dep", hlayer=100000):
 
 #%%
 # Precip
-PrecipFirst, PrecipLast, PrecipDiff = field_composite("precip", "dep", hlayer=50000)
+PrecipFirst, PrecipLast, PrecipDiff = field_composite("precip", "dep", hlayer=100000)
 
 print("precip")
 spcp.lastfirst_comp_map(PrecipFirst, PrecipLast, mode="NAO")
@@ -125,4 +122,69 @@ spcp.lastfirst_comp_map(
 # %%
 
 spcp.lastfirst_comp_var(PrecipDiff,t2maxDiff,tsurfDiff,mode = 'NAO')
+
+# %% wind
+# windspeed
+# wspdFirst, wspdLast, wspdDiff = field_composite("windspeed","dep",hlayer = 100000)
+
+#u10
+uFirst, uLast, uDiff = field_composite("u10","dep",hlayer = 100000)
+
+#v10
+vFirst, vLast, vDiff = field_composite("v10","dep",hlayer = 100000)
+
+
+#%% save
+uFirst.to_netcdf("/work/mh0033/m300883/3rdPanel/data/influence/u10/uFirst.nc")
+uLast.to_netcdf("/work/mh0033/m300883/3rdPanel/data/influence/u10/uLast.nc")
+
+vFirst.to_netcdf("/work/mh0033/m300883/3rdPanel/data/influence/v10/vFirst.nc")
+vLast.to_netcdf("/work/mh0033/m300883/3rdPanel/data/influence/v10/vLast.nc")
+
+
+# wind plots
+#%% 
+import cartopy.feature as cfeat
+import matplotlib.pyplot as plt
+
+import iris
+import iris.plot as iplt
+import iris.quickplot as qplt
+
+
+#%%
+uwind = uFirst.sel(mode = 'NAO',extr_type = 'pos')
+vwind = vFirst.sel(mode = 'NAO',extr_type = 'pos')
+
+uwind = uwind.to_iris()
+vwind = vwind.to_iris()
+
+#%%
+# windspeed 
+windspeed = (uwind**2 + vwind**2)**0.5
+windspeed = windspeed.rename("windspeed")
+
+# plot windspeed as contour
+qplt.contourf(windspeed,20)
+iplt.quiver(uwind,vwind,pivot = "middle")
+qplt.show()
+
+
+#%%
+
+print("windspeed")
+spcp.lastfirst_comp_map(
+    wspdFirst,
+    wspdLast,
+    mode="NAO",
+    levels=np.arange(-3, 3.1, 0.5),
+    unit="velocity [m/s]",
+)
+spcp.lastfirst_comp_map(
+    wspdFirst,
+    wspdLast,
+    mode="EA",
+    levels=np.arange(-3, 3.1, 0.5),
+    unit="velocity [m/s]",
+)
 # %%

@@ -1,23 +1,18 @@
-from typing_extensions import assert_type
-import pandas as pd
-import xarray as xr
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from matplotlib.lines import Line2D
-
 import cartopy.crs as ccrs
-from cartopy.mpl.geoaxes import GeoAxes
-from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
-from mpl_toolkits.axes_grid1 import AxesGrid
-import matplotlib.path as mpath
-from matplotlib.colorbar import Colorbar
-
-import matplotlib.ticker as mticker
-from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter, LatitudeLocator
-from cartopy.util import add_cyclic_point
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib as mpl
+import matplotlib.path as mpath
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import xarray as xr
+from cartopy.mpl.geoaxes import GeoAxes
+from cartopy.mpl.ticker import LatitudeFormatter, LatitudeLocator, LongitudeFormatter
+from cartopy.util import add_cyclic_point
+from matplotlib.colorbar import Colorbar
+from matplotlib.lines import Line2D
+from mpl_toolkits.axes_grid1 import AxesGrid, make_axes_locatable
 
 
 def comp_count_plot(count: xr.DataArray, mode: str):
@@ -100,12 +95,6 @@ def lastfirst_comp_map(
     cols for extr_type (pos, neg)
     """
 
-    proj = ccrs.Orthographic(central_longitude=-20, central_latitude=60)
-
-    fig, axes = plt.subplots(
-        2, 3, figsize=(10, 8), dpi=500, subplot_kw={"projection": proj}
-    )
-
     data = [
         first.sel(mode=mode),
         last.sel(mode=mode),
@@ -114,24 +103,24 @@ def lastfirst_comp_map(
     extr_type = ["pos", "neg"]
     periods = ["first10", "last10", "last10 - first10"]
 
+    fig, axes = axes_grid(2, 3)
+
     for i, row in enumerate(axes):  # for extr_type
         for j, col in enumerate(row):  # for first10, last10.
             data_p = data[j].sel(extr_type=extr_type[i])
-            lats = data_p.lat
-            data_c, lons = add_cyclic_point(data_p, coord=data_p.lon, axis=-1)
-
-            im = col.contourf(
-                lons,
-                lats,
-                data_c,
-                levels=levels,
-                extend="both",
-                transform=ccrs.PlateCarree(),
-                cmap="RdBu_r",
-            )
+            im = contourf(col, data_p, levels)
             col.set_title(f"{extr_type[i]}  {periods[j]}")
             buildax(col)
 
+    cbar_ax = cbar(levels, unit, fig, im)
+    if "precip" in unit:
+        cbar_ax.set_yticklabels(np.arange(-1.5, 1.6, 0.5).astype(str))
+        cbar_ax.set_title("1e-5", pad=20)
+
+    plt.show()
+
+
+def cbar(levels, unit, fig, im):
     fig.subplots_adjust(hspace=-0.2, wspace=0.2, right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.25, 0.03, 0.5])
     cbar = fig.colorbar(
@@ -140,11 +129,35 @@ def lastfirst_comp_map(
         label=unit,
         ticks=levels,
     )
-    if "precip" in unit:
-        cbar_ax.set_yticklabels(np.arange(-1.5, 1.6, 0.5).astype(str))
-        cbar_ax.set_title("1e-5", pad=20)
 
-    plt.show()
+    return cbar_ax
+
+
+def contourf(ax, data, levels):
+    lats = data.lat
+    data_c, lons = add_cyclic_point(data, coord=data.lon, axis=-1)
+
+    im = ax.contourf(
+        lons,
+        lats,
+        data_c,
+        levels=levels,
+        extend="both",
+        transform=ccrs.PlateCarree(),
+        cmap="RdBu_r",
+    )
+
+    return im
+
+
+def axes_grid(
+    nrow=2, ncol=3, proj=ccrs.Orthographic(central_longitude=-20, central_latitude=60)
+):
+    fig, axes = plt.subplots(
+        nrow, ncol, figsize=(10, 8), dpi=500, subplot_kw={"projection": proj}
+    )
+
+    return fig, axes
 
 
 def lastfirst_comp_var(
@@ -222,7 +235,7 @@ def composite_gph(first, last, hlayers=100000):
         2,
         2,
         figsize=(10, 8),
-        dpi=500,
+        dpi=300,
         subplot_kw={"projection": proj},
     )
 
@@ -268,7 +281,7 @@ def composite_gph(first, last, hlayers=100000):
 
             col.set_title(f"{modes[j]}  {extr_type[i]}")
             buildax(col)
-    fig.subplots_adjust(hspace=0.3, wspace=0.5, right=0.8)
+    fig.subplots_adjust(hspace=0.3, wspace=0.1, right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.25, 0.03, 0.5])
     cbar = fig.colorbar(
         imf,

@@ -5,6 +5,7 @@ This is the source code for temporal index generator
 import numpy as np
 import xarray as xr
 
+import src.Teleconnection.season_eof as season_eof
 import src.Teleconnection.spatial_pattern as ssp
 
 
@@ -28,12 +29,12 @@ def index_diff_pattern(xarr,independent = True, standard=True):
         Three indexes projected from the same time series (all the years) but onto 
         three different spatial patterns.
     """
-    _,all_all,_ = ssp.season_eof(xarr, nmode=2,window=10,
+    _,all_all,_ = season_eof.season_eof(xarr, nmode=2,window=10,
     fixed_pattern="all",independent=independent)  # "method" doesn't matter since the pc is 
                         # calculated independently.
-    _, all_first,_ = ssp.season_eof(xarr,nmode=2,window=10,
+    _, all_first,_ = season_eof.season_eof(xarr,nmode=2,window=10,
     fixed_pattern="first",independent=independent)
-    _, all_last,_ = ssp.season_eof(xarr,nmode=2,window=10,
+    _, all_last,_ = season_eof.season_eof(xarr,nmode=2,window=10,
     fixed_pattern="last",independent=independent)    
 
     # using the mean and std of all-all to standardize all the series.
@@ -54,7 +55,7 @@ def index_changing_pattern(xarr, independent = True, standard = True):
     spatial patterns, which varies as time goes by. such spatial patterns are generated
     by so called 'rolling_eof'.
     """
-    EOF,index,FRA = ssp.season_eof(xarr,nmode=2,method = 'rolling_eof',window=10,
+    EOF,index,FRA = season_eof.season_eof(xarr,nmode=2,method = 'rolling_eof',window=10,
                 fixed_pattern=False,return_full_eof=True,independent = independent,
                 standard = True)
 

@@ -5,6 +5,8 @@ FROM=/work/mh1007/MPI-GE_processed/onepct/
 FFILE=${FROM}onepct_1850-1999_ens_1-100.${VAR}.nc
 
 TO=/work/mh0033/m300883/3rdPanel/data/influence/$VAR/
+mkdir -p ${TO}
+
 TFILE=${TO}onepct_1850-1999_ens_1-100.${VAR}.nc
 
 # do select and yearly mean

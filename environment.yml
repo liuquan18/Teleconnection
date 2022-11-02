@@ -19,4 +19,11 @@ dependencies:
     - bottleneck
     - statsmodels
     - pyextremes
-
+    - pip
+    - nbsphinx
+    - ipywidgets
+    - iris
+    - pip:
+        - myst_parser
+        - nc-time-axis
+        

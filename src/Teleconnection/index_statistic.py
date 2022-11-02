@@ -1,14 +1,15 @@
 """
 source code for index statistics
 """
-import xarray as xr
 import numpy as np
 import pandas as pd
-from eofs.standard import Eof
-from tqdm.notebook import trange, tqdm
 import seaborn as sns
+import xarray as xr
+from eofs.standard import Eof
+from tqdm.notebook import tqdm, trange
 
 import src.Teleconnection.temporal_index as sti
+
 
 def df_sel(df,condition):
     """
