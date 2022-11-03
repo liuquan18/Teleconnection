@@ -9,13 +9,14 @@ import pandas as pd
 import seaborn as sns
 import xarray as xr
 
-import plots.eof_plots as sept
+import src.plots.eof_plots as sept
 import src.composite.composite as scp
 import src.plots.composite_plots as spcp
 import src.Teleconnection.index_statistic as sis
 import src.Teleconnection.pattern_statistic as sps
 import src.Teleconnection.spatial_pattern as ssp
 import src.Teleconnection.temporal_index as sti
+import src.Teleconnection.tools as stt
 
 importlib.reload(sis)
 importlib.reload(sti)
@@ -59,7 +60,7 @@ dep_std = (changing_dep - mean_dep) / std_dep
 allens = xr.open_dataset(
     "/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc"
 )
-splitens = ssp.split_ens(allens)
+splitens = stt.split_ens(allens)
 # demean ens-meancomposite
 demean = splitens - splitens.mean(dim="ens")
 # select traposphere
