@@ -20,7 +20,7 @@ def season_eof(
         *rolling_eof*: whether to use rolling_eof or not.
 
     **Return:**
-    
+
         EOF, PC and FRA
     """
     # if the data should be standarize
@@ -38,6 +38,7 @@ def season_eof(
     eof, pc, fra = vertical_eof.vertical_eof(xarr, **kwargs)
 
     return eof, pc, fra
+
 
 def main():
     """
