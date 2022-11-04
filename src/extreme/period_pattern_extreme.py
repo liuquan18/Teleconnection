@@ -1,6 +1,9 @@
 import xarray as xr
 import src.extreme.extreme as ext
 
+import importlib
+importlib.reload(ext)
+
 
 def normalize(period_period: xr.DataArray, all_all: xr.DataArray):
     """
