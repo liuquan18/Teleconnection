@@ -33,5 +33,5 @@ all_all = xr.DataArray(
 
 
 # %%
-period_extreme_count = period_ext.period_extreme_count(period_period,all_all)
+period_extreme_count = period_ext.period_extreme_count(period_period,all_all,dim = 'time')
 # %%
