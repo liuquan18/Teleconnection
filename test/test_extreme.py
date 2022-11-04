@@ -24,8 +24,10 @@ ex = xr.DataArray(
 )
 # %%
 extreme = ext.extreme(ex,threshod = 4)
-extreme_count = ext.count_extreme(extreme)
+extreme_count = ext.count_extreme(extreme,dim = ('time','ens'))
 # %%
 # test
 def test_extreme():
     assert extreme_count.mean().values == 10
+
+# %%
