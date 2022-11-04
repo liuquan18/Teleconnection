@@ -19,19 +19,13 @@ all_time = pd.date_range("2010-10-01", "2060-10-01", freq="Y")
 period_values = np.random.randn(len(period_time))
 all_values = np.random.randn(len(all_time))
 
-period_period = xr.DataArray(
-    period_values,
-    dims = ['time'],
-    coords = {'time':period_time}
-)
+period_period = xr.DataArray(period_values, dims=["time"], coords={"time": period_time})
 
-all_all = xr.DataArray(
-    all_values,
-    dims = ['time'],
-    coords = {'time':all_time}
-)
+all_all = xr.DataArray(all_values, dims=["time"], coords={"time": all_time})
 
 
 # %%
-period_extreme_count = period_ext.period_extreme_count(period_period,all_all,dim = 'time')
+period_extreme_count = period_ext.period_extreme_count(
+    period_period, all_all, dim="time", threshold=0.8
+)
 # %%
