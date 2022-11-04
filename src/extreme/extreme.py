@@ -21,7 +21,7 @@ def extreme(xarr, threshod=2):
     return ex
 
 
-def count_extreme(extreme_nan):
+def count_extreme(extreme_nan,dim = ("time","ens")):
     """
     count the number of extreme cases in xarr
     **Arguments**
@@ -30,10 +30,6 @@ def count_extreme(extreme_nan):
         number of extreme cases, with the coordinate of 'hlayer' and 'mode'
         reserved.
     """
-    try:
-        count = extreme_nan.count(dim=("time", "ens"))
-    except ValueError:
-        count = extreme_nan.count(dim="time")
-    except:
-        print("not correct dim name")
+    count = extreme_nan.count(dim=dim)
+
     return count
