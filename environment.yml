@@ -26,4 +26,5 @@ dependencies:
     - pip:
         - myst_parser
         - nc-time-axis
+        - black
         
