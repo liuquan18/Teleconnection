@@ -103,39 +103,6 @@ def period_index(all_indexes, period):
         ]
     return ten_indexes
 
-
-def extreme(xarr, threshod=2):
-    """
-    mask out non-extreme data.
-    label non-extreme data as np.nan.
-    **Arguments**
-        *xarr* the xarr to be process
-    **Return**
-        *ex* extreme xarray with one extra dimension called 'extr_type'
-    """
-    pos_ex = xarr.where(xarr > threshod)
-    neg_ex = xarr.where(xarr < -1 * threshod)
-    ex = xr.concat([pos_ex, neg_ex], dim=["pos", "neg"])
-    ex = ex.rename({"concat_dim": "extr_type"})
-    return ex
-
-
-def period_extreme(all_indexes, period):
-    """
-    The same as period_index, but now mask out the non-extreme elements.
-    **Arguments**
-        *all_index* the three index of all years from the three patterns.
-                    should be order in [all_all, all_first, all_last]
-        *period* the first 10 or last 10 years of index
-    **Return**
-        the three index for 10 period, only with the extreme elements.
-        ordered in [_all,_first,_last]
-    """
-    ten_indexes = period_index(all_indexes, period=period)
-    ten_extremes = [extreme(ten_index) for ten_index in ten_indexes]
-    return ten_extremes
-
-
 def main():
     all_all_ind = xr.open_dataset(
         "/work/mh0033/m300883/3rdPanel/data/indexDiffPattern/all_all_ind.nc"
