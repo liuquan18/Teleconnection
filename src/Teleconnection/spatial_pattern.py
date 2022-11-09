@@ -8,9 +8,7 @@ from tqdm.notebook import tqdm, trange
 import src.Teleconnection.tools as tools
 
 
-def doeof(
-    data: xr.DataArray, nmode: int = 2, dim: str = "com", standard: bool = True
-):
+def doeof(data: xr.DataArray, nmode: int = 2, dim: str = "com", standard: bool = True):
     """
     do eof to seasonal data along a combined dim, which is gotten from the above function
     'stack_ens'
@@ -54,11 +52,11 @@ def doeof(
     std_pc_sp = std_pc.reshape(dim_add_sp)
 
     # eof should always be normalized.
-    eof = eof_dw * std_pc_sp  
+    eof = eof_dw * std_pc_sp
 
     # while pc sometime should not for comparation.
     if standard:
-        pc = pc / std_pc  
+        pc = pc / std_pc
 
     # xarray container for eof
     eof_cnt = data[:nmode]
@@ -86,7 +84,7 @@ def doeof(
     return eofx, pcx, frax
 
 
-def project_field(fieldx, eofx, dim="com",standard = True):
+def project_field(fieldx, eofx, dim="com", standard=True):
     """project original field onto eofs to get the temporal index.
 
     Different from python eofs package, here if there are three dimensions in sptial,
@@ -220,4 +218,3 @@ def sign_coef(eof):
     coef_EA = 2 * coef_EA - 1
 
     return xr.concat([coef_NAO, coef_EA], dim="mode")
-
