@@ -3,18 +3,17 @@ import numpy as np
 import src.composite.composite as composite
 
 
-def composite(
+def Tel_field_composite(
     index: xr.DataArray,
     data: xr.DataArray,
-    dim: str = "hlayers",
     reduction: str = "mean",
-    period: str = "all",
+    threshold: int = 2,
 ):
     """
-    composite mean maps of extreme cases or counts of extreme cases.
-    given the index and the data, determine the time and ens coordinates
-    where extreme cases happen from the index, and select the data with
-    those indexes, average the selected fields.
+    composite mean maps or counts of field in terms of teleconnection mode extremes.
+    given the index and the data, find the coordinates (time and ens)
+    of the extremes from the index, select the data with
+    those coordinates, average/count the selected fields.
     **Arguments**
         *index* the index of NAO and EA
         *data* the original geopotential data.
@@ -23,29 +22,24 @@ def composite(
     **Return**
         *compostie* the composite mean of the extreme cases.
     """
-    if period == "all":
-        index = index
-    elif period == "first10":
-        index = index.isel(
-            time=slice(0, 10)
-        )  # the index actually started from 1856,so wrong here.
-    elif period == "last10":
-        index = index.isel(time=slice(-10, None))
+
+    # Select the same time period
     data = data.sel(time=index.time)
 
-    Composite = []
-    for mode in index.mode:
-        _index = index.sel(mode=mode)
-        if dim == "hlayers":
-            composite = _index.groupby(dim).apply(
-                composite.composite, data=data, reduction=reduction
-            )
-        elif dim == "mode":
-            composite = composite.composite(_index, data, reduction)
-        Composite.append(composite)
-    Composite = xr.concat(Composite, dim=index.mode)
+    # combine time and ens into one dim
+    index = index.stack(com=("time", "ens"))
+    data = data.stack(com=("time", "ens"))
 
-    return Composite
+    # since there is 'mode' dim in index, here groupby.
+    tel_composite = index.groupby("mode").apply(
+        composite.extreme_composite,
+        data=data,
+        reduction=reduction,
+        dim="com",
+        threshold=threshold,
+    )
+
+    return tel_composite
 
 
 def field_composite(var, independent="dep", hlayer=100000):
