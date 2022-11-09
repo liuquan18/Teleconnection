@@ -118,7 +118,7 @@ def changing_eofs(xarr, validtime, nmode, window):
     return EOFs, FRA
 
 
-def fixed_pc(xarr, pattern, dim="com"):
+def fixed_pc(xarr, pattern, dim="com",standard = True):
     """projecting the xarr to a fixed spatial pattern.
 
     **Arguments**
@@ -132,7 +132,7 @@ def fixed_pc(xarr, pattern, dim="com"):
     """
     # stack
     fieldx = tools.stack_ens(xarr, withdim="time")
-    pc = ssp.project_field(fieldx, pattern, dim=dim)
+    pc = ssp.project_field(fieldx, pattern, dim=dim,standard = standard)
     return pc
 
 
