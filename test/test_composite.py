@@ -17,8 +17,6 @@ np.random.seed(0)
 
 index = xr.DataArray(values_index, dims=["time"], coords={"time": time})
 
-# %%
-
 values_data = np.ones((11,10,10))
 lon = np.arange(10)
 lat = np.arange(10)
