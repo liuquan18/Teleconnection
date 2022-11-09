@@ -7,7 +7,7 @@ import src.Teleconnection.spatial_pattern as ssp
 import src.Teleconnection.tools as tools
 
 
-def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all"):
+def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all",standard = Ture):
     """do eof analysis with in a rolling window.
 
     rolling EOF is like rolling mean, here the default window is 10 years. The EOFs, PCs and
@@ -37,6 +37,7 @@ def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all"):
                        years in the begining and the end.
         *return_full_eof*: whether to return the full rolling eofs. if False, only the first and the
                            last eof is returned. if True, it would take a long time.
+        *standard* whether the pc (from project field) should be standard with its own std and mean
     **Returns**:
 
         EOF: The eofs, but now with the first dim as the time.[time-10,mode,lat,lon,(height)]
@@ -61,16 +62,16 @@ def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all"):
 
     elif fixed_pattern == "False":
         EOF, FRA = changing_eofs(xarr, validtime, nmode=nmode, window=window)
-        PC = changing_pc(xarr, validtime, EOF)
+        PC = changing_pc(xarr, validtime, EOF,standard = standard)
 
     elif fixed_pattern == "first":
         # only the EOF of the first10 is needed.
         EOF, FRA = changing_eofs(xarr, validtime[0], nmode=nmode, window=window)
-        PC = fixed_pc(xarr, EOF)
+        PC = fixed_pc(xarr, EOF,standard = standard)
 
     elif fixed_pattern == "last":
         EOF, FRA = changing_eofs(xarr, validtime[-1], nmode=nmode, window=window)
-        PC = fixed_pc(xarr, EOF)
+        PC = fixed_pc(xarr, EOF,standard = standard)
 
     return EOF, PC, FRA
 
@@ -118,7 +119,7 @@ def changing_eofs(xarr, validtime, nmode, window):
     return EOFs, FRA
 
 
-def fixed_pc(xarr, pattern, dim="com",standard = True):
+def fixed_pc(xarr, pattern, dim="com",standard=True):
     """projecting the xarr to a fixed spatial pattern.
 
     **Arguments**
@@ -136,7 +137,7 @@ def fixed_pc(xarr, pattern, dim="com",standard = True):
     return pc
 
 
-def changing_pc(xarr, validtime, EOF):
+def changing_pc(xarr, validtime, EOF,standard):
     """A changing pc by projecting all ensembles onto the spatial pattern in this year.
 
     **Arguments**
@@ -153,7 +154,7 @@ def changing_pc(xarr, validtime, EOF):
     for time in validtime:
         field = xarr.sel(time=time)
         pattern = EOF.sel(time=time)
-        pc = ssp.project_field(field, pattern, dim="ens")  # project all ens onto one eof.
+        pc = ssp.project_field(field, pattern, dim="ens",standard = standard)  # project all ens onto one eof.
         PC.append(pc)
     PC = xr.concat(PC, dim=validtime)
     return PC
