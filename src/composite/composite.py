@@ -9,7 +9,7 @@ def extreme(
     threshold: int = 2,
 ) -> xr.DataArray:
     """
-    select only the extreme cases from the index.
+    select only the positive or extreme cases from the index.
     detect the extreme cases identified from the threshold.
     **Arguments**
         *xarr* the index to be checked.
@@ -26,7 +26,7 @@ def extreme(
     return extreme
 
 
-def composite(index, data, reduction="mean",dim = 'com'):
+def composite(index, data, reduction="mean", dim="com"):
     """
     the composite mean or count of data, in terms of different extreme type.
         - stack to one series.
@@ -45,8 +45,13 @@ def composite(index, data, reduction="mean",dim = 'com'):
     extreme_composite = []
     extreme_type = xr.DataArray(["pos", "neg"], dims=["extr_type"])
     for extr_type in extreme_type.values:
+
+        # get the coordinates of the extremes
         extr_index = extreme(index, extreme_type=extr_type)
+
+        # get the data at the extreme coordinates
         extr_data = data.where(extr_index)
+
         if reduction == "mean":
             composite = extr_data.mean(dim=dim)
         elif reduction == "count":
@@ -55,4 +60,3 @@ def composite(index, data, reduction="mean",dim = 'com'):
     extreme_composite = xr.concat(extreme_composite, dim=extreme_type)
 
     return extreme_composite
-
