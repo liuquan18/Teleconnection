@@ -61,7 +61,7 @@ def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all", standard=True):
         # here the pc is not directly used since the eof is multiplied by the std of pc, then if we
         # do the project-field, the resulted projectd-pc is not the same as the pc from the solver.
         # in order to make it the same  order as the following, we do project-field to get the index.
-        PC = fixed_pc(xarr, EOF,standard = standard)
+        PC = fixed_pc(xarr, EOF, standard=standard)
 
     elif fixed_pattern == "False":
         EOF, FRA = changing_eofs(xarr, validtime, nmode=nmode, window=window)
@@ -101,7 +101,7 @@ def changing_eofs(xarr, validtime, nmode, window):
     fras = list()
 
     # changing eofs (dynamic):
-    if len(validtime) > 1:
+    if validtime.size > 1:
         for time in tqdm(validtime):
             tenyear_xarr = field.sel(time=time)
             eof, _, fra = ssp.doeof(
@@ -115,7 +115,7 @@ def changing_eofs(xarr, validtime, nmode, window):
         FRA = xr.concat(fras, dim=validtime)
 
     # for one pattern (first,all,last) and all time step
-    elif len(validtime) == 1:
+    elif validtime.size == 1:
         tenyear_xarr = field.sel(time=validtime)
         EOFs, _, FRA = ssp.doeof(tenyear_xarr, nmode=nmode, dim="com")
 
