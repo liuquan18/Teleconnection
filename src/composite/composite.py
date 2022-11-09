@@ -47,7 +47,7 @@ def composite(
     return composite
 
 
-def extreme_composite(index, data, reduction="mean", dim="com"):
+def extreme_composite(index, data, reduction="mean", dim="com",threshold = 2):
     """
     the composite mean or count of data, in terms of different extreme type.
 
@@ -63,7 +63,7 @@ def extreme_composite(index, data, reduction="mean", dim="com"):
     for extr_type in extreme_type.values:
 
         # get the coordinates of the extremes
-        extr_index = extreme(index, extreme_type=extr_type)
+        extr_index = extreme(index, extreme_type=extr_type,threshold=threshold)
 
         # do composite analysis based on the extreme index
         extr_composite = composite(extr_index, data, reduction=reduction, dim=dim)
