@@ -26,15 +26,31 @@ def extreme(
     return extreme
 
 
-def composite(index, data, reduction="mean", dim="com"):
+def composite(
+    index: xr.DataArray, data: xr.DataArray, reduction: str = "mean", dim: str = "com"
+):
+    """
+    do composite mean or count of data given the index
+    **Argument**
+        *index* the index which declears the coords to do the composite analysis
+        *data* the data to be meaned or counted
+        *reduction* "mean" or "count"
+        *dim* along which dim to do the mean and count.
+    """
+    # get the data at the  coordinates
+    sel_data = data.where(index)
+
+    if reduction == "mean":
+        composite = sel_data.mean(dim=dim)
+    elif reduction == "count":
+        composite = sel_data.count(dim=dim)
+    return composite
+
+
+def extreme_composite(index, data, reduction="mean", dim="com"):
     """
     the composite mean or count of data, in terms of different extreme type.
-        - stack to one series.
-        - for pos and neg:
-            - get the extreme index
-            - select the data
-            - calculate the mean or counts.
-        - concat pos and neg.
+
     **Arguments**
         *index* the from which the coordinates of
         extreme neg or pos cases are determined.
@@ -42,21 +58,18 @@ def composite(index, data, reduction="mean", dim="com"):
     **Return**
         *extreme_composite* the mean field or counts of extreme cases.
     """
-    extreme_composite = []
+    Ext_composite = []
     extreme_type = xr.DataArray(["pos", "neg"], dims=["extr_type"])
     for extr_type in extreme_type.values:
 
         # get the coordinates of the extremes
         extr_index = extreme(index, extreme_type=extr_type)
 
-        # get the data at the extreme coordinates
-        extr_data = data.where(extr_index)
+        # do composite analysis based on the extreme index
+        extr_composite = composite(extr_index, data, reduction=reduction, dim=dim)
+        Ext_composite.append(extr_composite)
 
-        if reduction == "mean":
-            composite = extr_data.mean(dim=dim)
-        elif reduction == "count":
-            composite = extr_index.count(dim=dim)
-        extreme_composite.append(composite)
-    extreme_composite = xr.concat(extreme_composite, dim=extreme_type)
+    # concate the positive and negative extremes together.
+    Extreme_composite = xr.concat(Ext_composite, dim=extreme_type)
 
-    return extreme_composite
+    return Extreme_composite
