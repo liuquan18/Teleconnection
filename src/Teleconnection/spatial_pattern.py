@@ -179,13 +179,13 @@ def project_field(fieldx, eofx, dim="com", standard=True):
             },
         )
     PPC.name = "pc"
-
+    # standardize pc
+    mean = PPC.mean(dim="com")
+    std = PPC.mean(dim="time")
+    PPC = (PPC - mean) / std
     # to unstack 'com' to 'time' and 'ens' if 'com' exists.
     PPC = PPC.unstack()
 
-    # standardize pc
-    if standard:
-        PPC = tools.standardize(PPC)
     return PPC
 
 
