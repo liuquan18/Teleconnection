@@ -86,7 +86,7 @@ def doeof(
     return eofx, pcx, frax
 
 
-def project_field(fieldx, eofx, dim="com"):
+def project_field(fieldx, eofx, dim="com",standard = True):
     """project original field onto eofs to get the temporal index.
 
     Different from python eofs package, here if there are three dimensions in sptial,
@@ -96,6 +96,7 @@ def project_field(fieldx, eofx, dim="com"):
 
         *field*: the DataArray field to be projected
         *eof*: the eofs
+        *standard*: whether standardize the ppc with its std or not
 
     **Returns:**
 
@@ -180,7 +181,14 @@ def project_field(fieldx, eofx, dim="com"):
             },
         )
     PPC.name = "pc"
-    return PPC.unstack()  # to unstack 'com' to 'time' and 'ens' if 'com' exists.
+
+    # to unstack 'com' to 'time' and 'ens' if 'com' exists.
+    PPC = PPC.unstack()
+
+    # standardize pc
+    if standard:
+        PPC = tools.standardize(PPC)
+    return PPC
 
 
 def sign_coef(eof):
