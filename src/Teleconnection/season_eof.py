@@ -8,7 +8,12 @@ import src.Teleconnection.vertical_eof as vertical_eof
 
 ###### high level APIs #################
 def season_eof(
-    xarr, nmode=2, window=10, fixed_pattern="all", independent=True, standard=True
+    xarr: xr.DataArray,         # the geopotential data to be decomposed
+    nmode: int=2,               # the number of modes to generate
+    window: int=10,             # the rolling window if fixed_pattern = 'False'.
+    fixed_pattern: str="all",   # the fixed_pattern 'all','first','last','False'.
+    independent: bool=True,     # the vertical eof strategy.
+    standard: bool=True         # standard pc or not.
 ):
     """high_level API for seasonal data eof analysis.
 
@@ -23,8 +28,8 @@ def season_eof(
 
         EOF, PC and FRA
     """
-    # if the data should be standarize
-    if standard:
+    # the data should be standarize if there are more than one altitudes
+    if xarr.hlayers.size>1:
         xarr = tools.standardize(xarr)
 
     # passing parameters
@@ -33,6 +38,7 @@ def season_eof(
         "window": window,  # for rolling_eof
         "fixed_pattern": fixed_pattern,  # for rolling_eof
         "independent": independent,  # choose vetrical eof method.
+        "standard": standard
     }
 
     eof, pc, fra = vertical_eof.vertical_eof(xarr, **kwargs)
