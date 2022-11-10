@@ -49,7 +49,8 @@ def _period_extreme_count(period_extreme: xr.DataArray, dim: tuple):
 
 
 def period_extreme_count(
-    period_period: xr.DataArray, all_all: xr.DataArray, dim=("time", "ens"),threshold = 2
+    period_period: xr.DataArray, all_all: xr.DataArray, dim=("time", "ens"),threshold = 2,
+    standard: str = True
 ):
     """
     the extreme count of ten_year period
@@ -57,10 +58,15 @@ def period_extreme_count(
         *period_period* the index of the first10-first or last10-last
         *all_all* the index of all-all pattern
         *dim* along which dim to count.
+        *threshod* threshold for extreme 
+        *standard*
     **Return**
         *extreme_count* the count of the extremes in this ten years.
     """
-    period_index = normalize(period_period, all_all)
+    if all_all is not None:
+        if standard:
+            period_index = normalize(period_period, all_all)
+
     extreme = period_extreme(period_index,threshold)
     count = _period_extreme_count(extreme, dim=dim)
     return count

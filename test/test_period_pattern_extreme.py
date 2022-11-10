@@ -33,3 +33,5 @@ period_extreme_count = period_ext.period_extreme_count(
 # test
 def test_period_pattern_extreme():
     assert period_extreme_count.values == [2, 2]
+
+# %%
