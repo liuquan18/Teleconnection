@@ -27,13 +27,23 @@ def vertical_eof(
         *eof*, *pc* and *fra*
     """
     if independent == True:
-        eof, pc, fra = independent_eof(xarr, nmode, window, fixed_pattern,standard)
+        eof, pc, fra = independent_eof(
+            xarr, 
+            nmode = nmode, 
+            window = window, 
+            fixed_pattern = fixed_pattern,
+            standard = standard)
     else:
-        eof, pc, fra = dependent_eof(xarr, nmode, window, fixed_pattern,standard)
+        eof, pc, fra = dependent_eof(
+            xarr, 
+            nmode = nmode, 
+            window = window, 
+            fixed_pattern = fixed_pattern,
+            standard = standard)
 
     return eof, pc, fra
 
-def independent_eof(xarr, nmode, window, fixed_pattern,standard):
+def independent_eof(xarr, **kwargs):
     """
     do eof independently over all layers.
     **Arguments**
@@ -50,8 +60,7 @@ def independent_eof(xarr, nmode, window, fixed_pattern,standard):
     hlayers = xarr.hlayers
     for h in tqdm(hlayers):
         field = xarr.sel(hlayers=h)
-        eof, pc, fra = rolling_eof.rolling_eof(field, nmode, window, fixed_pattern,
-            standard=standard)
+        eof, pc, fra = rolling_eof.rolling_eof(field, **kwargs)
 
         eofs.append(eof)
         pcs.append(pc)
@@ -62,7 +71,7 @@ def independent_eof(xarr, nmode, window, fixed_pattern,standard):
     return eofs, pcs, fras
 
 
-def dependent_eof(xarr, nmode, window, fixed_pattern, standard):
+def dependent_eof(xarr, **kwargs):
     """
     do eof independently over all layers.
     **Arguments**
@@ -72,8 +81,7 @@ def dependent_eof(xarr, nmode, window, fixed_pattern, standard):
     **Return**
         EOF, PC and FRA.
     """
-    eofs, pcs, fras = rolling_eof.rolling_eof(xarr, nmode, window, fixed_pattern, 
-        standard=standard)
+    eofs, pcs, fras = rolling_eof.rolling_eof(xarr, **kwargs)
 
     return eofs, pcs, fras
 
