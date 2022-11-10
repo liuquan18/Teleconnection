@@ -24,9 +24,9 @@ note that here the index of first10 years and last10 years are generated from di
 - select the first10 (last10) years from all_first name as `first10_first ` (`last10_last`)
 
     ```python
-    first10_first = all_first.sel(time = slice(0,10))
+    first10_first = all_first.isel(time = slice(0,10))
 
-    last10_last = all_last.sel(time = slice(-10,len(all_last)))
+    last10_last = all_last.isel(time = slice(-10,len(all_last)))
     ```
 
 
