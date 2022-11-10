@@ -72,7 +72,7 @@ def dependent_eof(xarr, nmode, window, fixed_pattern, standard):
     **Return**
         EOF, PC and FRA.
     """
-    eofs, pcs, fras = rolling_eof(xarr, nmode, window, fixed_pattern, 
+    eofs, pcs, fras = rolling_eof.rolling_eof(xarr, nmode, window, fixed_pattern, 
         standard=standard)
 
     return eofs, pcs, fras
