@@ -157,13 +157,18 @@ def changing_pc(xarr, validtime, EOF, standard):
     for time in validtime:
         field = xarr.sel(time=time)
         pattern = EOF.sel(time=time)
+
+        # here the standard must be False since there is only one time step here.
         pc = ssp.project_field(
             field, pattern, dim="ens", standard=False,
         )  # project all ens onto one eof.
         PC.append(pc)
     PC = xr.concat(PC, dim=validtime)
+
+    # The real standardization is done here.
     if standard:
         PC = tools.standardize(PC)
+        
     return PC
 
 
