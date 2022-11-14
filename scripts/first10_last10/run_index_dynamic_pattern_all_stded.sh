@@ -14,3 +14,6 @@
 ulimit -s 204800
 ulimit -c 0
 
+set -e 
+ls -l
+srun python ./index_dynamic_pattern_all_stded.py
