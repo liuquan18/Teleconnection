@@ -2,6 +2,7 @@ import xarray as xr
 import src.extreme.extreme as ext
 
 import importlib
+
 importlib.reload(ext)
 
 
@@ -23,7 +24,7 @@ def normalize(period_period: xr.DataArray, all_all: xr.DataArray):
     return period_period
 
 
-def period_extreme(peiod_index: xr.DataArray,threshold = 2):
+def period_extreme(peiod_index: xr.DataArray, threshold=2):
     """
     mask out non-extreme cases as np.nan.
     **Arguments**
@@ -32,7 +33,7 @@ def period_extreme(peiod_index: xr.DataArray,threshold = 2):
     **Return**
         *period_extreme* with all-non-extreme labeled as np.nan
     """
-    period_extreme = ext.extreme(peiod_index,threshold)
+    period_extreme = ext.extreme(peiod_index, threshold)
     return period_extreme
 
 
@@ -49,8 +50,11 @@ def _period_extreme_count(period_extreme: xr.DataArray, dim: tuple):
 
 
 def period_extreme_count(
-    period_period: xr.DataArray, all_all: xr.DataArray, dim=("time", "ens"),threshold = 2,
-    standard: str = True
+    period_period: xr.DataArray,
+    all_all: xr.DataArray = None,
+    dim=("time", "ens"),
+    threshold=2,
+    standard: str = True,
 ):
     """
     the extreme count of ten_year period
@@ -58,15 +62,15 @@ def period_extreme_count(
         *period_period* the index of the first10-first or last10-last
         *all_all* the index of all-all pattern
         *dim* along which dim to count.
-        *threshod* threshold for extreme 
+        *threshod* threshold for extreme
         *standard*
     **Return**
         *extreme_count* the count of the extremes in this ten years.
     """
     if all_all is not None:
         if standard:
-            period_index = normalize(period_period, all_all)
+            period_period = normalize(period_period, all_all)
 
-    extreme = period_extreme(period_index,threshold)
+    extreme = period_extreme(period_period, threshold)
     count = _period_extreme_count(extreme, dim=dim)
     return count
