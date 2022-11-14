@@ -4,6 +4,10 @@ The indexes here are used to show the main plots in the paper.
 - **Temporally**, *dynamical spatial patterns* makes sure that the index also reveals the change of the spatial patterns. 
 
 Since the dynamical spatial patterns are adopted, two ways of standardization are applied here 
+
+![three series](/docs/source/plots/first10_last10/IMG_7831.png)
+
+
 ## 1. standardize the index of first10 years and last10 years seperately
 note that here the index of first10 years and last10 years are generated from different spaital patterns. `first10_first` and `last10_last` are standarded with the mean and std of its own (specificlly the mean and std of `all_first` and `all_last`.)
 
