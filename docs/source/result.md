@@ -1,5 +1,5 @@
-
-# 1. spatial patterns
+# result before 3rdPanel meeting
+## 1. spatial patterns
 
 In order to show the temporal and vertical change of the spatial patterns, two different EOFs are applied: *horizontal* and *horizontal-vertical* EOF. 
 
@@ -7,32 +7,32 @@ In order to show the temporal and vertical change of the spatial patterns, two d
 - *horizontal-vertical EOF* : all the layers decomposed together, so that all the vertical layers share one common spatial pattern. 
 
 
-## NAO_lat_height 
+### NAO_lat_height 
 (zonal mean, $1 \times CO_2, 2 \times CO_2, 4 \times CO_2$)
 ![NAO_lat_all](plots/wrap_up_aftervoc/NAO_lat_all.png)
 
-## EA_lon_height
+### EA_lon_height
 (meridional mean, $1 \times CO_2, 2 \times CO_2, 4 \times CO_2$)
 ![EA_lon_all](plots/wrap_up_aftervoc/EA_lon_all.png)
 
 Both method show **strengthened amplitude** of spatial patterns for both NAO and EA. Horizontal EOF shows vertically **more skew spatial pattern** in a warmer climate. 
 
 
-# 2. extreme event count
+## 2. extreme event count
 Since the spatial pattern itself changes, a dynamical spatial pattern is adopted to generate the NAO and EA index here. 
 
-## Horizontal-EOF extreme event counts
+### Horizontal-EOF extreme event counts
 
 Count of extremes (x-axis) over different altitude (y-axis)
 
 ![all_counts_ind](plots/wrap_up_aftervoc/all_changingPattern_extreme_counts_ind.png)
-## Horizontal-vertical-EOF extreme event counts
+### Horizontal-vertical-EOF extreme event counts
 ![all_counts_dep](plots/wrap_up_aftervoc/all_changingPattern_extreme_counts_dep.png)
 No matter which EOF (horizontal or horizontal-vertical) adopted, totally, **there are more negative extreme events than positive extremes**. 
 
 Comparing the two plots, the skewness close to the surface (eastward shift of the spatial pattern) of EA, help to reduce the difference between the positive extremes and negative extremes. 
 
-# 3. extreme event count change against global warming
+## 3. extreme event count change against global warming
 
 By comparing the extreme event counts in the first 10years v.s the last10 years, we see the climate change influence upon the extreme event counts of teleconnection modes. 
 
@@ -74,7 +74,7 @@ By using Horizontal-vertical-EOF and dynamical spatial patterns (that is, vertic
 >![extreme_coutns_vertical_profile](plots/wrap_up_aftervoc/extreme_counts_vertical_profile.png)
 
 
-# 4. Spatial pattern of the extreme events change against the global warming
+## 4. Spatial pattern of the extreme events change against the global warming
 
 The number of extreme events increased. In the meanwhile, the spatial patterns also changed. Composite analysis of the geopotential height in terms of the different types of extreme events shows that **the spatial pattern for negative NAO extremes and positive EA extremes shift northeastward**. 
 
@@ -86,7 +86,7 @@ shading for the first10 years, contour for the last10 years.
 
 Overall, we have shown above that even after removal of the externally forced signal (ensemble mean), we still see increased number of extreme events (especially negative extreme events), and changed spatial patterns, of both NAO and EA. Therefore, we argue that **the external forcing changed the internal mode of atmospheric circulation, in terms of the extreme states**. 
 
-# 5. Effects of increased extreme events of teleconnections
+## 5. Effects of increased extreme events of teleconnections
 
 Does such kind of change matter? Here we do the composite analysis of temperature and precipitation in terms of different extreme types.
 
