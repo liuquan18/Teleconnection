@@ -5,6 +5,7 @@ import numpy as np
 import src.Teleconnection.season_eof as season_eof
 import src.Teleconnection.tools as tools
 # %%
+print("reading data...")
 # data
 allens = xr.open_dataset("/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc")
 #split ens
@@ -20,15 +21,17 @@ trop = trop.var156
 
 # %%
 # all_first_stdd
+print("decomposign first 10")
 _, all_first,_ = season_eof.season_eof(
     trop,
     nmode = 2,
     window = 10,
     fixed_pattern = 'first',
     independent = False,
-    standard = True
+    standard = False
 )
 # %%
+print("decomposing last10..")
 # all_last_stdd
 _, all_last,_ = season_eof.season_eof(
     trop,
@@ -36,7 +39,7 @@ _, all_last,_ = season_eof.season_eof(
     window = 10,
     fixed_pattern = 'last',
     independent = False,
-    standard = True
+    standard = False
 )
 # %%
 # select the first10 and last10 years.
