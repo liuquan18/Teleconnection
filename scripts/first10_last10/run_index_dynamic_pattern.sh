@@ -16,4 +16,8 @@ ulimit -c 0
 
 set -e 
 ls -l
+echo "================ standardized with self ================"
+srun python ./index_dynamic_pattern_self_stded.py
+
+echo "================ standardized with all ================"
 srun python ./index_dynamic_pattern_all_stded.py
