@@ -1,14 +1,15 @@
-# Depedent Index from dynamical spatial patterns
+# Analysis process
+
+## Depedent Index from dynamical spatial patterns
 The indexes here are used to show the main plots in the paper.
 - **Vertically**, *Horizontal-vertical EOF* (dependent) takes the whole troposphere as a whole, the magnitude of the spatial patterns strengthen, the shift of the centers of actions are mild (compared to horizontal EOF).
 - **Temporally**, *dynamical spatial patterns* makes sure that the index also reveals the change of the spatial patterns. 
 
 Since the dynamical spatial patterns are adopted, two ways of standardization are applied here 
 
-![three series](/docs/source/plots/first10_last10/IMG_7831.png)
+![three series](plots/first10_last10/standard_ways.png)
 
-
-## 1. standardize the index of first10 years and last10 years seperately
+### 1. standardize the index of first10 years and last10 years seperately
 note that here the index of first10 years and last10 years are generated from different spaital patterns. `first10_first` and `last10_last` are standarded with the mean and std of its own (specificlly the mean and std of `all_first` and `all_last`.)
 
 - generate `all_first` and `all_last` and standard them with their own means and stds. 
@@ -34,7 +35,7 @@ note that here the index of first10 years and last10 years are generated from di
     ```
 
 
-## 2. Standardize the index from different patterns with mean and std of index from one common pattern (all-patterns).
+### 2. Standardize the index from different patterns with mean and std of index from one common pattern (all-patterns).
  `all_first`, `all_last`, and `all_all` are generated. then `first10_first` and `last10_last` are selected. both of them are standard with the temporal mean and std of `all_all`.
 
 - generate the index `all_first`,`all_last` and `all_all`, with the pc *unstandardized*.
@@ -63,10 +64,13 @@ note that here the index of first10 years and last10 years are generated from di
     ```
 
 
-# PDF of index from dynamic spatial patterns
-something here...
+## PDF of index from dynamic spatial patterns
+just use the xarray function
+```python
+    xr.DataArray.plot.hist()
+```
 
-# Extreme count of index
+## Extreme count of index
 get the vertical profile of the extreme count
 ```python
 first10_ext_count = period_extreme_count(first10_first,dim = ("time","ens"),threshold = 2, standard = False)

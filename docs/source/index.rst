@@ -7,12 +7,13 @@ Welcome to thirdPanel's documentation!
 =====================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    Analysis_process
    functions
-   result
-   first_last_10_dynamic_pattern   
+   3rd Panel meeting <result>
+   first10_last_10_dynamic_pattern
+   problems   
    
 
 Indices and tables

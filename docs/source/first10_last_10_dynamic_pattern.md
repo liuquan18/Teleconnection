@@ -1,34 +1,36 @@
-# the PDF of index from dynmical sptial pattern
+# first10_last10_results
+
 
 ## Two different way to define extreme events
 ![standard ways](plots/first10_last10/standard_ways.png)
 
-## 500hpa
-### standardizised with mean and std of own
+## the PDF of index from dynmical sptial pattern
+### 500hpa
+**standardizised with mean and std of own**
 
 the extreme definition is somehow different in the first10 and last10 periods
 ![std_self_500](plots/first10_last10/hist_std_self_500hpa.png)
- ### standardizised with mean and std of all_all
+**standardizised with mean and std of all_all**
  the extreme definition is somehow the same in the first10 and last10 periods
 
  ![std_all_500](plots/first10_last10/hist_std_all_500hpa.png)
 
-## 850hpa
-### standardizised with mean and std of own
+### 850hpa
+**standardizised with mean and std of own**
 ![std_self_500](plots/first10_last10/hist_std_self_850hpa.png)
- ### standardizised with mean and std of all_all
+ **standardizised with mean and std of all_all**
  ![std_all_500](plots/first10_last10/hist_std_all_850hpa.png)
  
-# The vetical profile of index from dynamical spatial patterns
-## self standardisized
+## The vetical profile of index from dynamical spatial patterns
+### self standardisized
 ![NAO_self](plots/first10_last10/NAO_self.png)
 
 ![EA_self](plots/first10_last10/EA_self.png)
 
 
-## all standardisized
+### all standardisized
 ![NAO_all](plots/first10_last10/NAO_all.png)
 
 ![EA_all](plots/first10_last10/EA_all.png)
-◊
+
 
