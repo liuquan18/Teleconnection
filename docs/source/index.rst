@@ -9,8 +9,11 @@ Welcome to thirdPanel's documentation!
 .. toctree::
    :maxdepth: 2
 
+   Analysis_process
    functions
-   result   
+   result
+   first_last_10_dynamic_pattern   
+   
 
 Indices and tables
 ==================
