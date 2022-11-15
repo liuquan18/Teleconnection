@@ -7,7 +7,7 @@ Welcome to thirdPanel's documentation!
 =====================================
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    Analysis_process
    functions
