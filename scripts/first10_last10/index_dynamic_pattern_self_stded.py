@@ -44,6 +44,7 @@ print("standardizing...")
 first10_first = tools.standardize(first10_first)
 last10_last = tools.standardize(last10_last)
 
+#%%
 # save
 print("saving...")
 first10_first.to_netcdf(
@@ -52,3 +53,5 @@ first10_first.to_netcdf(
 last10_last.to_netcdf(
     "/work/mh0033/m300883/3rdPanel/data/first_last/dep/std_self/last10_last.nc"
 )
+
+# %%
