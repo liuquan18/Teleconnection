@@ -24,6 +24,7 @@ dependencies:
     - ipywidgets
     - proplot
     - iris
+    - scikit
     - pip:
         - myst_parser
         - nc-time-axis
