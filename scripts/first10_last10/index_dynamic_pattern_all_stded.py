@@ -45,6 +45,7 @@ _, all_all, _ = season_eof.season_eof(
 
 # %%
 # select the first10 and last10 years
+print("select periods ...")
 first10_first = all_first.isel(time=slice(0, 10))
 last10_last = all_last.isel(time=slice(-10, all_last.time.size))
 
