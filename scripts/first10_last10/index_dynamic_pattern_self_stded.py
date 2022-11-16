@@ -41,9 +41,16 @@ first10_first = all_first.isel(time=slice(0, 10))
 last10_last = all_last.isel(time=slice(-10, all_last.time.size))
 # %%
 print("standardizing...")
-first10_first = tools.standardize(first10_first)
-last10_last = tools.standardize(last10_last)
+# first10_first = tools.standardize(first10_first)
+# last10_last = tools.standardize(last10_last)
 
+def standardize(period_index):
+    mean = period_index.mean(dim = ('time','ens'))
+    std = period_index.std(dim = ('time','ens'))
+    return (period_index-mean)/std
+    
+first10_first = standardize(first10_first)
+last10_last = standardize(last10_last)
 #%%
 # save
 print("saving...")
