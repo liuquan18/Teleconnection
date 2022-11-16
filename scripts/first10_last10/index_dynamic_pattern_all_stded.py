@@ -51,8 +51,8 @@ last10_last = all_last.isel(time=slice(-10, all_last.time.size))
 #%%
 # Normalize with the mean and std of all_all
 print("Normalizing...")
-first10_first = extreme.normalize(first10_first, all_all)
-last10_last = extreme.normalize(last10_last, all_all)
+first10_first = extreme.normalize(first10_first, all_all,dim = ('ens','time'))
+last10_last = extreme.normalize(last10_last, all_all, dim = ('ens','time'))
 
 #%%
 # save

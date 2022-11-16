@@ -6,7 +6,7 @@ import importlib
 importlib.reload(ext)
 
 
-def normalize(period_period: xr.DataArray, all_all: xr.DataArray):
+def normalize(period_period: xr.DataArray, all_all: xr.DataArray,dim = 'time'):
     """
     normalize the temporal index of first10 and last10 years
     with the mean and std of all index from all pattern
@@ -15,11 +15,12 @@ def normalize(period_period: xr.DataArray, all_all: xr.DataArray):
     **Arguments**
         *period_period* the index of the first10 or last10 years
         *all_all* the index of all the years with all pattern
+        *dim* along which dim to do the normalize.
     **Return**
         *peiod_period* the normalized index
     """
-    mean = all_all.mean(dim="time")
-    std = all_all.std(dim="time")
+    mean = all_all.mean(dim= dim)
+    std = all_all.std(dim=dim)
     period_period = (period_period - mean) / std
     return period_period
 
