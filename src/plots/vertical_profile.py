@@ -65,6 +65,6 @@ def plot_vertical_profile(first_ec, last_ec,mode,std_type):
     axes[1].legend(loc = 'll', ncols = 1,title = 'period')
     axes[2].legend(loc = 'cr', ncols = 1,title = 'extreme type')
     axes[2].set_ylim(1000,200)
-    axes[2].set_xlim(-20,20)
+    axes[2].set_xlim(-10,30)
     axes[2].spines['right'].set_visible(False)
     axes[2].spines['top'].set_visible(False)    
