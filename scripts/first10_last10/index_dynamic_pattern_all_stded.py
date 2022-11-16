@@ -5,6 +5,10 @@ import src.Teleconnection.season_eof as season_eof
 import src.Teleconnection.tools as tools
 import src.extreme.period_pattern_extreme as extreme
 
+#%%
+import importlib
+importlib.reload(extreme)
+
 # %%
 # data
 print("data reading")
@@ -64,5 +68,11 @@ first10_first.to_netcdf(
 last10_last.to_netcdf(
     "/work/mh0033/m300883/3rdPanel/data/first_last/dep/std_all/last10_last.nc"
 )
+
+#save all
+# %%
+all_first.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep/first_pattern/all_first_nonstd.nc")
+all_last.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep/last_pattern/all_last_nonstd.nc")
+all_all.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep/all_pattern/all_all_nonstd.nc")
 
 # %%
