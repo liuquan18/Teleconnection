@@ -23,13 +23,16 @@ trop = demean.sel(hlayers=slice(20000, 100000))
 trop = trop.var156
 
 # %%
-print("decomposing periods data...")
+print("decomposing first data...")
 
 # all_fist, all_last and all_all, without the standardarization
 _, all_first, _ = season_eof.season_eof(
     trop, nmode=2, window=10, fixed_pattern="first", independent=False, standard=False
 )
 
+
+# %%
+print("decomposing last data...")
 _, all_last, _ = season_eof.season_eof(
     trop, nmode=2, window=10, fixed_pattern="first", independent=False, standard=False
 )
@@ -60,3 +63,5 @@ first10_first.to_netcdf(
 last10_last.to_netcdf(
     "/work/mh0033/m300883/3rdPanel/data/first_last/dep/std_all/last10_last.nc"
 )
+
+# %%
