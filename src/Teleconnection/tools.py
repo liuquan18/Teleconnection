@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import xarray as xr
+from sklearn.utils import shuffle
 
 
 ########### functions to do pre-process ###########
@@ -100,7 +101,6 @@ def standardize(xarr):
 ########## Function to do EOF #####################
 
 
-
 def detect_spdim(xarr):
     """
     output the length of the spatil dim. since some of the xarr is lon-lat, while some lon-lat-height.
@@ -135,3 +135,14 @@ def sqrtcoslat(xarr):
     # sqrt
     wgts = np.sqrt(coslat.values).reshape(weight_shape)
     return wgts
+
+
+def random_order(xarr, dim="com"):
+    """
+    random sort the xarr along the dim.
+    """
+    index = np.arange(xarr.com.size)
+    random_index = shuffle(index)
+    xarr["com"] = random_index
+    xarr = xarr.sortby("com")
+    return xarr

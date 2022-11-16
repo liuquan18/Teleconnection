@@ -8,20 +8,29 @@ from tqdm.notebook import tqdm, trange
 import src.Teleconnection.tools as tools
 
 
-def doeof(data: xr.DataArray, nmode: int = 2, dim: str = "com", standard: bool = True):
+def doeof(
+    data: xr.DataArray,
+    nmode: int = 2,
+    dim: str = "com",
+    standard: bool = True,
+    shuffle: bool = True,
+):
     """
-    do eof to seasonal data along a combined dim, which is gotten from the above function
-    'stack_ens'
+    do eof to seasonal data along a combined dim
+
     **Arguments**:
         *seasondata*: The data to be decomposed, where the first dim should be the dim of 'com' or 'time'.
         *nmode*: how many modes, mode=2,means NAO and EA respectively.
         *dim*: along which dim to do the eof (calculate the co variance)
         *standard*: standard the output pc or not.
+        *shuffle* random order the com (ens and time) or not.
+
     **Returns**:
         eof: DataArray, spatial patterns scaled (multiplied) with the temporal std of seasonal index.
              has the same spatial size as the input seasondata.[mode, lat,lon,...]
         pc: DataArray, seasonal index, if standard = True, scaled (divided) by the temporal std of itself. [mode,time]]
         exp_var: explained variance of each mode. [mode]
+
     """
 
     # make sure that the first dim is the 'com' or 'time'.
@@ -29,6 +38,11 @@ def doeof(data: xr.DataArray, nmode: int = 2, dim: str = "com", standard: bool =
         data = data.transpose(dim, ...)
     except ValueError:
         print("no combined dimension found. use tools.stackens() first")
+
+    # shuffle
+    if shuffle:
+        data = tools.random_order(data,dim = dim)
+
     # weights
     wgts = tools.sqrtcoslat(data)
 
