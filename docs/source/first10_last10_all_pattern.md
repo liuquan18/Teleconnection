@@ -8,6 +8,9 @@ Here the index from the same pattern (all_pattern), but standardized with differ
 ### PDF in 1000hpa
 ![PDF1000](plots/first10_last10/all_whole_std/PDF_1000.png)
 
+### violin plot
+![violin](plots/first10_last10/all_period_std/violin.png)
+
 ### NAO vertical Profile
 ![NAO_profile](plots/first10_last10/all_whole_std/NAO_profile.png)
 
@@ -20,6 +23,9 @@ Here the index from the same pattern (all_pattern), but standardized with differ
 
 ### PDF in 1000hpa
 ![PDF1000](plots/first10_last10/all_period_std/PDF_1000.png)
+
+### Violin
+![violin](plots/first10_last10/all_whole_std/violin.png)
 
 ### NAO vertical Profile
 ![NAO_profile](plots/first10_last10/all_period_std/NAO_profile.png)
