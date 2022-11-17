@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 #%%
 import src.Teleconnection.spatial_pattern as sp
-import plots.eof_plots as ept
+import src.plots.eof_plots as ept
 
 
 # %%
@@ -57,7 +57,7 @@ del(fra_sirf)
 
 
 # %%
-# standard-independent-rolling fixed first eof
+# standard-independent-rolling fixed last eof
 eof_sirl,pc_sirl,fra_sirl = sp.season_eof(trop.var156,nmode=2,method ="rolling_eof",
 window=10,fixed_pattern='last',return_full_eof= False,independent = True,standard=True)
 

@@ -9,33 +9,46 @@ import src.Teleconnection.tools as tools
 
 
 def doeof(
-    seasondata: xr.DataArray, nmode: int = 2, dim: str = "com", standard: bool = True
+    data: xr.DataArray,
+    nmode: int = 2,
+    dim: str = "com",
+    standard: bool = True,
+    shuffle: bool = True,
 ):
     """
-    do eof to seasonal data along a combined dim, which is gotten from the above function
-    'stack_ens'
+    do eof to seasonal data along a combined dim
+
     **Arguments**:
         *seasondata*: The data to be decomposed, where the first dim should be the dim of 'com' or 'time'.
         *nmode*: how many modes, mode=2,means NAO and EA respectively.
-        *dim*: along which dim to do the eof
+        *dim*: along which dim to do the eof (calculate the co variance)
+        *standard*: standard the output pc or not.
+        *shuffle* random order the com (ens and time) or not.
+
     **Returns**:
         eof: DataArray, spatial patterns scaled (multiplied) with the temporal std of seasonal index.
              has the same spatial size as the input seasondata.[mode, lat,lon,...]
-        pc: DataArray, seasonal index, scaled (divided) by the temporal std of itself. [mode,time]]
+        pc: DataArray, seasonal index, if standard = True, scaled (divided) by the temporal std of itself. [mode,time]]
         exp_var: explained variance of each mode. [mode]
+
     """
 
     # make sure that the first dim is the 'com' or 'time'.
     try:
-        seasondata = seasondata.transpose(dim, ...)
+        data = data.transpose(dim, ...)
     except ValueError:
         print("no combined dimension found. use tools.stackens() first")
+
+    # shuffle
+    if shuffle:
+        data = tools.random_order(data, dim=dim)
+
     # weights
-    wgts = tools.sqrtcoslat(seasondata)
+    wgts = tools.sqrtcoslat(data)
 
     # EOF decompose
     solver = Eof(
-        seasondata.values, weights=wgts, center=True
+        data.values, weights=wgts, center=True
     )  # if it's com dim, is is right to remove the mean
     # along the com dim?
     eof = solver.eofs(neofs=nmode)  # (mode,lat,lon,...)
@@ -49,22 +62,25 @@ def doeof(
     std_pc = (np.std(pc, axis=0)).astype(
         "float64"
     )  # (mode)  # here should it be temporal std????
-    dim_add_sp = np.hstack([nmode, tools.detect_spdim(seasondata)])  # [-1,1,1] or [-1,1,1,1]
+    dim_add_sp = np.hstack([nmode, tools.detect_spdim(data)])  # [-1,1,1] or [-1,1,1,1]
     std_pc_sp = std_pc.reshape(dim_add_sp)
 
-    eof = eof_dw * std_pc_sp  # eof should always be normalized.
+    # eof should always be normalized.
+    eof = eof_dw * std_pc_sp
+
+    # while pc sometime should not for comparation.
     if standard:
-        pc = pc / std_pc  # while pc sometime should not for comparation.
+        pc = pc / std_pc
 
     # xarray container for eof
-    eof_cnt = seasondata[:nmode]
+    eof_cnt = data[:nmode]
     eof_cnt = eof_cnt.rename({dim: "mode"})
     eof_cnt["mode"] = ["NAO", "EA"]
 
     # to xarray
     eofx = eof_cnt.copy(data=eof)
     pcx = xr.DataArray(
-        pc, dims=[dim, "mode"], coords={dim: seasondata[dim], "mode": ["NAO", "EA"]}
+        pc, dims=[dim, "mode"], coords={dim: data[dim], "mode": ["NAO", "EA"]}
     )
     frax = xr.DataArray(fra, dims=["mode"], coords={"mode": ["NAO", "EA"]})
     eofx.name = "eof"
@@ -82,7 +98,7 @@ def doeof(
     return eofx, pcx, frax
 
 
-def project_field(fieldx, eofx, dim="com"):
+def project_field(fieldx, eofx, dim="com", standard=True):
     """project original field onto eofs to get the temporal index.
 
     Different from python eofs package, here if there are three dimensions in sptial,
@@ -92,6 +108,7 @@ def project_field(fieldx, eofx, dim="com"):
 
         *field*: the DataArray field to be projected
         *eof*: the eofs
+        *standard*: whether standardize the ppc with its std or not
 
     **Returns:**
 
@@ -176,7 +193,13 @@ def project_field(fieldx, eofx, dim="com"):
             },
         )
     PPC.name = "pc"
-    return PPC.unstack()  # to unstack 'com' to 'time' and 'ens' if 'com' exists.
+
+    # to unstack 'com' to 'time' and 'ens' if 'com' exists.
+    PPC = PPC.unstack()
+
+    if standard:
+        PPC = tools.standardize(PPC)
+    return PPC
 
 
 def sign_coef(eof):
@@ -208,4 +231,3 @@ def sign_coef(eof):
     coef_EA = 2 * coef_EA - 1
 
     return xr.concat([coef_NAO, coef_EA], dim="mode")
-

@@ -7,7 +7,7 @@ import src.Teleconnection.spatial_pattern as ssp
 import src.Teleconnection.tools as tools
 
 
-def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all"):
+def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all", standard=True):
     """do eof analysis with in a rolling window.
 
     rolling EOF is like rolling mean, here the default window is 10 years. The EOFs, PCs and
@@ -37,6 +37,7 @@ def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all"):
                        years in the begining and the end.
         *return_full_eof*: whether to return the full rolling eofs. if False, only the first and the
                            last eof is returned. if True, it would take a long time.
+        *standard* whether the pc (from project field) should be standard with its own std and mean
     **Returns**:
 
         EOF: The eofs, but now with the first dim as the time.[time-10,mode,lat,lon,(height)]
@@ -46,31 +47,34 @@ def rolling_eof(xarr, nmode=2, window=10, fixed_pattern="all"):
     """
 
     # the validtime period where totally ten years of data are fully avaiable.
-    gap = int(window/2)
-    validtime = xarr.isel(time=slice(gap, -1*gap)).time
+    gap = int(window / 2)
+    validtime = xarr.isel(time=slice(gap, -1 * gap)).time
 
     # if do the all-all decompose
     if fixed_pattern == "all":  # a little different from the following two.
         EOF, pc, FRA = ssp.doeof(
-            tools.stack_ens(xarr, withdim="time"), nmode=nmode, dim="com", standard=False
+            tools.stack_ens(xarr, withdim="time"),
+            nmode=nmode,
+            dim="com",
+            standard=False,
         )
         # here the pc is not directly used since the eof is multiplied by the std of pc, then if we
         # do the project-field, the resulted projectd-pc is not the same as the pc from the solver.
         # in order to make it the same  order as the following, we do project-field to get the index.
-        PC = fixed_pc(xarr, EOF)
+        PC = fixed_pc(xarr, EOF, standard=standard)
 
     elif fixed_pattern == "False":
         EOF, FRA = changing_eofs(xarr, validtime, nmode=nmode, window=window)
-        PC = changing_pc(xarr, validtime, EOF)
+        PC = changing_pc(xarr, validtime, EOF, standard=standard)
 
     elif fixed_pattern == "first":
         # only the EOF of the first10 is needed.
         EOF, FRA = changing_eofs(xarr, validtime[0], nmode=nmode, window=window)
-        PC = fixed_pc(xarr, EOF)
+        PC = fixed_pc(xarr, EOF, standard=standard)
 
     elif fixed_pattern == "last":
         EOF, FRA = changing_eofs(xarr, validtime[-1], nmode=nmode, window=window)
-        PC = fixed_pc(xarr, EOF)
+        PC = fixed_pc(xarr, EOF, standard=standard)
 
     return EOF, PC, FRA
 
@@ -97,7 +101,7 @@ def changing_eofs(xarr, validtime, nmode, window):
     fras = list()
 
     # changing eofs (dynamic):
-    if len(validtime) > 1:
+    if validtime.size > 1:
         for time in tqdm(validtime):
             tenyear_xarr = field.sel(time=time)
             eof, _, fra = ssp.doeof(
@@ -111,14 +115,14 @@ def changing_eofs(xarr, validtime, nmode, window):
         FRA = xr.concat(fras, dim=validtime)
 
     # for one pattern (first,all,last) and all time step
-    elif len(validtime) == 1:
+    elif validtime.size == 1:
         tenyear_xarr = field.sel(time=validtime)
         EOFs, _, FRA = ssp.doeof(tenyear_xarr, nmode=nmode, dim="com")
 
     return EOFs, FRA
 
 
-def fixed_pc(xarr, pattern, dim="com"):
+def fixed_pc(xarr, pattern, standard):
     """projecting the xarr to a fixed spatial pattern.
 
     **Arguments**
@@ -132,11 +136,11 @@ def fixed_pc(xarr, pattern, dim="com"):
     """
     # stack
     fieldx = tools.stack_ens(xarr, withdim="time")
-    pc = ssp.project_field(fieldx, pattern, dim=dim)
+    pc = ssp.project_field(fieldx, pattern, standard=standard)
     return pc
 
 
-def changing_pc(xarr, validtime, EOF):
+def changing_pc(xarr, validtime, EOF, standard):
     """A changing pc by projecting all ensembles onto the spatial pattern in this year.
 
     **Arguments**
@@ -146,16 +150,25 @@ def changing_pc(xarr, validtime, EOF):
         *EOF* the changing EOFs.
 
     **Return**
-    
+
         changing pc, whose length is time-10.
     """
     PC = []
     for time in validtime:
         field = xarr.sel(time=time)
         pattern = EOF.sel(time=time)
-        pc = ssp.project_field(field, pattern, dim="ens")  # project all ens onto one eof.
+
+        # here the standard must be False since there is only one time step here.
+        pc = ssp.project_field(
+            field, pattern, dim="ens", standard=False,
+        )  # project all ens onto one eof.
         PC.append(pc)
     PC = xr.concat(PC, dim=validtime)
+
+    # The real standardization is done here.
+    if standard:
+        PC = tools.standardize(PC)
+        
     return PC
 
 

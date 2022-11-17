@@ -65,8 +65,7 @@ def wind_plots(mode):
     periods = ["first10", "last10", "Diff"]
 
 
-    fig = plt.figure(figsize=(12, 6), dpi=200)
-    plt.subplots_adjust(bottom=0.15)
+    fig = plt.figure(figsize=(10, 6), dpi=200)
     for i in range(2):  # rows for extr_type
         for j in range(3):  # cols for periods
 
@@ -117,7 +116,7 @@ def wind_plots(mode):
                 units="width",
                 zorder=100,
             )
-
+    plt.subplots_adjust(bottom=0.15, wspace = 0.001)
     cbar_ax = fig.add_axes([0.33, 0.1, 0.4, 0.03])
     fig.colorbar(contourf, cax=cbar_ax, label="windspeed", orientation="horizontal")
     plt.show()
@@ -125,10 +124,11 @@ def wind_plots(mode):
 # %%
 print("="*5+"NAO"+"="*5)
 wind_plots("NAO")
-plt.savefig("/work/mh0033/m300883/3rdPanel/docs/source/plots/wrap_up_aftervoc/NAO_wind_composite.png",dpi = 200)
+# plt.savefig("/work/mh0033/m300883/3rdPanel/docs/source/plots/wrap_up_aftervoc/NAO_wind_composite.png",dpi = 200)
 
+#%%
 print("="*5+"EA"+"="*5)
 wind_plots("EA")
-plt.savefig("/work/mh0033/m300883/3rdPanel/docs/source/plots/wrap_up_aftervoc/EA_wind_composite.png",dpi = 200)
+# plt.savefig("/work/mh0033/m300883/3rdPanel/docs/source/plots/wrap_up_aftervoc/EA_wind_composite.png",dpi = 200)
 
 # %%
