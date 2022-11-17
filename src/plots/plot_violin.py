@@ -1,6 +1,8 @@
 import xarray as xr
 import pandas as pd
 import proplot as pplt
+import numpy as np
+import seaborn as sns
 
 
 def to_dataframe(period, mode, name):
