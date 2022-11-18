@@ -17,6 +17,12 @@ Here the index from the same pattern (all_pattern), but standardized with differ
 ### EA vertical profile
 ![EA_profile](plots/first10_last10/all_whole_std/EA_profile.png)
 
+### spatial pattern change (Z500)
+![spatail_pattern_Z500](plots/first10_last10/all_whole_std/extreme_spatial_pattern_Z500.png)
+
+### spatial pattern change (section)
+![spatail_pattern_section](plots/first10_last10/all_whole_std/extreme_spatial_pattern_section.png)
+
 ## 2. standardize with the period only
 ### PDF in 850hpa
 ![PDF850](plots/first10_last10/all_period_std/PDF_850.png)
