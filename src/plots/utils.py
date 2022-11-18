@@ -59,14 +59,18 @@ def erase_white_line(data):
     return new_data
 
 
-def buildax(ax, zorder=50):
+def buildax(ax, zorder=50, alpha_coast=0.7,alpha_grid = 0.5):
     """
     add grid coastline and gridlines
     """
     ax.set_global()
-    ax.coastlines(linewidth=0.5, alpha=0.7)
+    ax.coastlines(linewidth=0.5, alpha=alpha_coast)
     gl = ax.gridlines(
-        crs=ccrs.PlateCarree(), draw_labels=False, linewidth=0.5, zorder=zorder
+        crs=ccrs.PlateCarree(),
+        draw_labels=False,
+        linewidth=0.5,
+        zorder=zorder,
+        alpha=alpha_grid,
     )
     gl.xformatter = LongitudeFormatter(zero_direction_label=False)
     gl.xlocator = mticker.FixedLocator(np.arange(-180, 180, 45))
