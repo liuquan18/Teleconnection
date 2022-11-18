@@ -75,18 +75,20 @@ def buildax(ax, zorder=50):
     gl.yformatter = LatitudeFormatter()
 
 
-def remove_cb(contourf_object):
+def remove_cb(ax):
     """
     remove the colorbar of the object
     """
-    cb = contourf_object.colorbar
+    cb = ax.colorbar
     cb.remove()
 
 
-def add_cb(fig, im, loc=[0.85, 0.2, 0.03, 0.6], label="label",orientation = 'horizontal'):
+def add_cb(
+    fig, im, loc=[0.85, 0.2, 0.03, 0.6], label="label", orientation="horizontal"
+):
     """
     add colobar to a fig based on the image at loc.
     """
 
     cbar_ax = fig.add_axes(loc)
-    fig.colorbar(im, cax=cbar_ax, label=label,orientation = orientation)
+    fig.colorbar(im, cax=cbar_ax, label=label, orientation=orientation)
