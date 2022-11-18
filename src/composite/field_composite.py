@@ -24,7 +24,7 @@ def Tel_field_composite(
     """
 
     # Select the same time period
-    data = data.sel(time=index.time)
+    data = data.sel(time=index.time,method = 'nereast')
 
     # combine time and ens into one dim
     index = index.stack(com=("time", "ens"))
