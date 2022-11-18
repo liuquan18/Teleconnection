@@ -177,7 +177,6 @@ def composite_gph(first, last, levels, hlayers=100000):
     fig, axes = plt.subplots(
         2,
         2,
-        figsize=(10, 8),
         dpi=300,
         subplot_kw={"projection": proj},
     )
@@ -196,10 +195,7 @@ def composite_gph(first, last, levels, hlayers=100000):
             data_last = last.sel(extr_type=extr_type[i], mode=modes[j], hlayers=hlayers)
 
             lats = data_first.lat
-            data_first, lons = add_cyclic_point(
-                data_first, coord=data_first.lon, axis=-1
-            )
-            data_last, lons = add_cyclic_point(data_last, coord=data_last.lon, axis=-1)
+            lons = data_first.lon
 
             imf = col.contourf(
                 lons,
@@ -211,19 +207,20 @@ def composite_gph(first, last, levels, hlayers=100000):
                 cmap="RdBu_r",
             )
             shadings.append(imf)
-            with mpl.rc_context({"lines.linewidth": 1}):
+            with mpl.rc_context({"lines.linewidth": 0.6}):
                 iml = col.contour(
                     lons,
                     lats,
                     data_last,
                     levels=levels,
+                    extend="both",
                     colors="k",
                     linewidth=0.1,
                     transform=ccrs.PlateCarree(),
                 )
 
             col.set_title(f"{modes[j]}  {extr_type[i]}")
-            utils.buildax(col)
+            utils.buildax(col, alpha_grid=0.3, alpha_coast=0.3)
     fig.subplots_adjust(hspace=0.3, wspace=0.1, right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.25, 0.03, 0.5])
     cbar = fig.colorbar(
