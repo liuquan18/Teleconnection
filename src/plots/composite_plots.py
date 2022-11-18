@@ -168,7 +168,7 @@ def lastfirst_comp_var(
     plt.show()
 
 
-def composite_gph(first, last, hlayers=100000):
+def composite_gph(first, last, levels, hlayers=100000):
     """
     composite map of first10 and last10 years, contourf and contour
     respectively.
@@ -185,7 +185,7 @@ def composite_gph(first, last, hlayers=100000):
     periods = ["first10", "last10"]
     modes = ["NAO", "EA"]
     extr_type = ["pos", "neg"]
-    levels = np.arange(-2.0, 2.1, 0.5)
+    levels = levels
 
     shadings = []
     for i, row in enumerate(axes):  # for extr_type
