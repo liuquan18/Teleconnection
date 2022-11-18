@@ -14,6 +14,8 @@ from matplotlib.colorbar import Colorbar
 from matplotlib.lines import Line2D
 from mpl_toolkits.axes_grid1 import AxesGrid, make_axes_locatable
 
+import src.plots.utils as utils
+
 
 def comp_count_plot(count: xr.DataArray, mode: str):
     """
@@ -22,19 +24,6 @@ def comp_count_plot(count: xr.DataArray, mode: str):
     count = count.sel(mode=mode).to_dataframe()
     count = count[["pc"]].unstack(1)
     count.plot(kind="bar", stacked=True)
-
-def buildax(ax):
-    """
-    add grid coastline and gridlines
-    """
-    ax.set_global()
-    ax.coastlines(linewidth=0.5, alpha=0.7)
-    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=0.5)
-    gl.xformatter = LongitudeFormatter(zero_direction_label=False)
-    gl.xlocator = mticker.FixedLocator(np.arange(-180, 180, 45))
-
-    gl.ylocator = mticker.FixedLocator([20, 40, 60])
-    gl.yformatter = LatitudeFormatter()
 
 
 def lastfirst_comp_map(
@@ -64,7 +53,7 @@ def lastfirst_comp_map(
             data_p = data[j].sel(extr_type=extr_type[i])
             im = contourf(col, data_p, levels)
             col.set_title(f"{extr_type[i]}  {periods[j]}")
-            buildax(col)
+            utils.buildax(col)
 
     cbar_ax = cbar(levels, unit, fig, im)
     if "precip" in unit:
@@ -165,7 +154,7 @@ def lastfirst_comp_var(
                 cmap="RdBu_r",
             )
             col.set_title(f"{extr_type[i]}  {vars[j]}")
-            buildax(col)
+            utils.buildax(col)
 
             if i == 1:
                 divider = make_axes_locatable(col)
@@ -234,7 +223,7 @@ def composite_gph(first, last, hlayers=100000):
                 )
 
             col.set_title(f"{modes[j]}  {extr_type[i]}")
-            buildax(col)
+            utils.buildax(col)
     fig.subplots_adjust(hspace=0.3, wspace=0.1, right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.25, 0.03, 0.5])
     cbar = fig.colorbar(
