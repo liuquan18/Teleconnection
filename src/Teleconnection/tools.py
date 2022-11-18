@@ -78,7 +78,7 @@ def stack_ens(xarr, withdim="window_dim"):
     return time_com_space
 
 
-def standardize(xarr):
+def standardize(xarr,dim = None):
     """
     standardize the DataArray with the temporal mean and std. Note here the function standardize
     the input with the mean and std of its own. for comparation the mean and std should be the
@@ -89,12 +89,17 @@ def standardize(xarr):
     **Returns**:
         xarr: standarized DataArray
     """
-    try:
-        time_mean = xarr.mean(dim="time")
-        time_std = xarr.std(dim="time")
-    except ValueError:
-        time_mean = xarr.mean(dim="window_dim")
-        time_std = xarr.std(dim="window_dim")
+    if dim == None:
+        try:
+            time_mean = xarr.mean(dim="time")
+            time_std = xarr.std(dim="time")
+        except ValueError:
+            time_mean = xarr.mean(dim="window_dim")
+            time_std = xarr.std(dim="window_dim")
+    else:
+        time_mean = xarr.mean(dim = dim)
+        time_std = xarr.std(dim = dim)
+    
     return (xarr - time_mean) / time_std
 
 
