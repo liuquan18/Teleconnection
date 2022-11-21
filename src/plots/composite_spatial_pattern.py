@@ -63,7 +63,7 @@ def composite_gph(first, last, levels, hlayers=100000):
     cbar = fig.colorbar(
         imf,
         cax=cbar_ax,
-        label="gph / m",
+        label="gph / std",
     )
 
     plt.show()
