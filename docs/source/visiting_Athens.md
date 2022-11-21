@@ -14,7 +14,7 @@ PDF and violin plots show obvious increased negative extremes.
 ### violin plot
 ![violin](plots/first10_last10/all_period_std/violin.png)
 
-## 2. Increased count of extreme cases
+## 2. Increased count of negative extreme cases
 We define the cases above (below) the 2std as the extreme events. The count of the extreme cases over different altitudes are shown as following: NAO shows clear increased negative extremes, the count of positive extreme stays the same. EA shows similiar result as NAO, but not so clear over lower altitudes.
 ### NAO vertical Profile
 ![NAO_profile](plots/first10_last10/all_whole_std/NAO_profile.png)
