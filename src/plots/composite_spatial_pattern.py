@@ -58,6 +58,7 @@ def composite_gph(first, last, levels, hlayers=100000):
 
             col.set_title(f"{modes[j]}  {extr_type[i]}")
             utils.buildax(col, alpha_grid=0.3, alpha_coast=0.3)
+
     fig.subplots_adjust(hspace=0.3, wspace=0.1, right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.25, 0.03, 0.5])
     cbar = fig.colorbar(
