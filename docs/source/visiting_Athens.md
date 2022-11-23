@@ -7,32 +7,38 @@ To ensure the robustness, the spatial pattern are decomposed with EOF analysis o
 PDF and violin plots show obvious increased negative extremes. 
 ### PDF in 850hpa
 ![PDF850](plots/first10_last10/all_whole_std/whole_PDF_850.png)
+Fig 1. **More negative extreme North Atlantic Oscillation and East Atlantic pattern in a warmer climate.** Probability Density Function of North Atlantic Oscillation (upper left) and East Atlantic pattern (upper right) indexes in first10 years (shadings) and last10 years (lines) at 850hpa geopotential height.
 
 ### PDF in 1000hpa
 ![PDF1000](plots/first10_last10/all_whole_std/whole_PDF_1000.png)
+Fig 2. The same as Fig 1. but for 1000hpa geopotential height. 
 
 ### violin plot
 ![violin](plots/first10_last10/all_period_std/violin.png)
+Fig 3. **More negative extreme North Atlanci Osciilation and East Atlantic pattern.** Violin plots of North Atlantic Oscillation (left) and East Atlantic pattern (right) in the first10 years (blue) and last10 years (orange) at all altitudes.
 
 ## 2. Increased count of negative extreme cases
 We define the cases above (below) the 2std as the extreme events. The count of the extreme cases over different altitudes are shown as following: NAO shows clear increased negative extremes, the count of positive extreme stays the same. EA shows similiar result as NAO, but not so clear over lower altitudes.
+
 ### NAO vertical Profile
 ![NAO_profile](plots/first10_last10/all_whole_std/NAO_profile.png)
+Fig 4. **Raised negative extremes of North Atlantic Oscillation in a warmer climate.** Vertical profile of extreme counts of North Atlantic Oscillation at all altitudes in the first10 (solid) and last10 (dashed) years. the last column shows the difference.
 
 ### EA vertical profile
 ![EA_profile](plots/first10_last10/all_whole_std/EA_profile.png)
-
+Fig 5. The same as Fig 4, but for East Atlantic pattern. 
 
 ## 3. The extreme spatial patterns
 composite analysis of geopotential height data in terms of different extreme types and different periods shows the change in spatial patterns of extreme cases.
+
 For **NAO**, positive extreme shows tripole pattern in the last10 years, compared to dipole pattern in the first10 years. negative extremes shows typical NAO spatial patterns, but strengthened in amplitude. The clear pattern change of NAO positive extremes may correspond to the non-obvious change of extreme positive extreme counts. Thus, dynamical patterns to generate the index are also excuted. 
 For **EA**, both positive and negative extremes show eastward shifts, such shifts are more obvious if dynamical spatial patterns are adopted.
 ### spatial pattern change (Z500)
 ![spatail_pattern_Z500](plots/first10_last10/all_whole_std/whole_extreme_spatial_pattern_Z500.png)
-
+Fig 6. **Spatial patterns of extremes in a warmer climate.** the composite analysis of 500hpa geopotential height data in terms of different extreme types and periods.
 ### spatial pattern change (section)
 ![spatail_pattern_section](plots/first10_last10/all_whole_std/extreme_spatial_pattern_section.png)
-
+Fig 7. **sptial patterns of extremes in a warmer climate.** Zonally averaged sptail pattern of extremes (rows) of North Atlantic Oscillation (left) and meridionally averaged spatial patterns of East Atlantic pattern (right).
 ## 4. Effects of increased extreme events of teleconnections
 
 Does such kind of change matter? Here we do the composite analysis of temperature and precipitation in terms of different extreme types.
@@ -42,12 +48,13 @@ Does such kind of change matter? Here we do the composite analysis of temperatur
 Composite analysis of surface temperature in terms of different NAO extreme types. The last column shows the difference. 
 
 ![NAO_temp](plots/wrap_up_aftervoc/NAO_temp.png)
+Fig 8. **Less warming over Northern Eurasia in winter.** composite analsysis of surface temperature in terms of different extreme types (rows) and different periods (first 2 cols). The last columns shows the difference.
 
 for NAO extremes, the influence of positive extremes (warm anomalies over northern Eurasia) gets weaker in the last 10 years. The influence of negative extreme events (cold anomalies over northern Eurasia) gets stronger in the last 10 years. Overall, both positive and negative extremes of NAO lead to less warming over northern Eurasia and the adjacent polar regions. 
 
 ![EA_temp](plots/wrap_up_aftervoc/EA_TEMP.png)
 For EA extremes, both the influences of positive extremes (warm anomalies over Eurasia) and negative extremes (cold anomalies over Eurasia) extend eastward to East Asia. 
-
+Fig 9. **Cooling extends to east Eurasia.** Same as Fig 8. but for East Atlantic pattern. 
 
 ## 5. different definition of extremes in the first10 and last10 years
 
