@@ -14,6 +14,7 @@ Welcome to thirdPanel's documentation!
    3rd Panel meeting <result>
    first10_last10_dynamic_pattern
    first10_last10_all_pattern
+   visiting_Athens
    problems   
    
 
