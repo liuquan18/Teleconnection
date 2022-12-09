@@ -43,7 +43,7 @@ _, all_last, _ = season_eof.season_eof(
 
 #%%
 print("decomposing all data...")
-_, all_all, _ = season_eof.season_eof(
+eof_all_all, all_all, _ = season_eof.season_eof(
     trop, nmode=2, window=10, fixed_pattern="all", independent=True, standard=False
 )
 
