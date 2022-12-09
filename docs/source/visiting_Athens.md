@@ -14,7 +14,7 @@ Fig 1. **More negative extreme North Atlantic Oscillation and East Atlantic patt
 Fig 2. The same as Fig 1. but for 1000hpa geopotential height. 
 
 ### violin plot
-![violin](plots/first10_last10/all_period_std/violin.png)
+![violin](plots/first10_last10/all_whole_std/violin_vertical.png)
 Fig 3. **More negative extreme North Atlanci Osciilation and East Atlantic pattern.** Violin plots of North Atlantic Oscillation (left) and East Atlantic pattern (right) in the first10 years (blue) and last10 years (orange) at all altitudes.
 
 ## 2. Increased count of negative extreme cases
