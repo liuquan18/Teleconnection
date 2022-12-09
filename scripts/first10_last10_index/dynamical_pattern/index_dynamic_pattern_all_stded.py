@@ -31,20 +31,20 @@ print("decomposing first data...")
 
 # all_fist, all_last and all_all, without the standardarization
 _, all_first, _ = season_eof.season_eof(
-    trop, nmode=2, window=10, fixed_pattern="first", independent=False, standard=False
+    trop, nmode=2, window=10, fixed_pattern="first", independent=True, standard=False
 )
 
 
 # %%
 print("decomposing last data...")
 _, all_last, _ = season_eof.season_eof(
-    trop, nmode=2, window=10, fixed_pattern="first", independent=False, standard=False
+    trop, nmode=2, window=10, fixed_pattern="first", independent=True, standard=False
 )
 
 #%%
 print("decomposing all data...")
 _, all_all, _ = season_eof.season_eof(
-    trop, nmode=2, window=10, fixed_pattern="all", independent=False, standard=False
+    trop, nmode=2, window=10, fixed_pattern="all", independent=True, standard=False
 )
 
 # %%
@@ -71,8 +71,8 @@ last10_last.to_netcdf(
 
 #save all
 # %%
-all_first.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep/first_pattern/all_first_nonstd.nc")
-all_last.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep/last_pattern/all_last_nonstd.nc")
-all_all.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/dep/all_pattern/all_all_nonstd.nc")
+all_first.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind/first_pattern/all_first_nonstd.nc")
+all_last.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind/last_pattern/all_last_nonstd.nc")
+all_all.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind/all_pattern/all_all_nonstd.nc")
 
 # %%

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>visiting_Athens.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="visiting-athens">Visiting Athens</h1>
+<p>The paper focuses on the following scientific question: How does global warming influence the internal variability of teleconnection modes like the North Atlantic Oscillation (NAO) and East Atlantic (EA) pattern, in terms of extreme states? Since we only focus on the internal variability, the externally forced signal is removed beforehand. The global warming’s influence on internal variability of NAO and EA is then represented as the difference between the last 10 years and the first 10 years in the 1% CO_2 run.</p>
+<p>To ensure the robustness, the spatial pattern are decomposed with EOF analysis over all the temporal_ensemble fields (that's 150*100 samples), and all vetical altitudes (Horizontal_vetival EOF), hereafter referred as &quot;all_pattern&quot;. Then the indexes are generated by projecting the geopotential height data onto the &quot;all_pattern&quot;. Here shows the statistics of standardized indexes (with temporal_ens_mean and _std).</p>
+<h2 id="1-more-negative-extreme-nao-and-ea-in-a-warmer-climate">1. More negative extreme NAO and EA in a warmer climate</h2>
+<p>PDF and violin plots show obvious increased negative extremes.</p>
+<h3 id="pdf-in-850hpa">PDF in 850hpa</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/whole_PDF_850.png" alt="PDF850">
+Fig 1. <strong>More negative extreme North Atlantic Oscillation and East Atlantic pattern in a warmer climate.</strong> Probability Density Function of North Atlantic Oscillation (upper left) and East Atlantic pattern (upper right) indexes in first10 years (shadings) and last10 years (lines) at 850hpa geopotential height.</p>
+<h3 id="pdf-in-1000hpa">PDF in 1000hpa</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/whole_PDF_1000.png" alt="PDF1000">
+Fig 2. The same as Fig 1. but for 1000hpa geopotential height.</p>
+<h3 id="violin-plot">violin plot</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_period_std/violin.png" alt="violin">
+Fig 3. <strong>More negative extreme North Atlanci Osciilation and East Atlantic pattern.</strong> Violin plots of North Atlantic Oscillation (left) and East Atlantic pattern (right) in the first10 years (blue) and last10 years (orange) at all altitudes.</p>
+<h2 id="2-increased-count-of-negative-extreme-cases">2. Increased count of negative extreme cases</h2>
+<p>We define the cases above (below) the 2std as the extreme events. The count of the extreme cases over different altitudes are shown as following: NAO shows clear increased negative extremes, the count of positive extreme stays the same. EA shows similiar result as NAO, but not so clear over lower altitudes.</p>
+<h3 id="nao-vertical-profile">NAO vertical Profile</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/NAO_profile.png" alt="NAO_profile">
+Fig 4. <strong>Raised negative extremes of North Atlantic Oscillation in a warmer climate.</strong> Vertical profile of extreme counts of North Atlantic Oscillation at all altitudes in the first10 (solid) and last10 (dashed) years. the last column shows the difference.</p>
+<h3 id="ea-vertical-profile">EA vertical profile</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/EA_profile.png" alt="EA_profile">
+Fig 5. The same as Fig 4, but for East Atlantic pattern.</p>
+<h2 id="4-return-period-of-extremes">4. return period of extremes</h2>
+<p><strong>Extreme Value Theory</strong> provides another way to check the extremeness of the index.
+Since the index among ensemble domain are Indentical Independent Distributed, the idea of &quot;Block Maximum&quot; of Extreme Value Theory can be extended to ensemble domain. i.e, the maximum along ensemble should also fit to the extreme distribution.</p>
+<h3 id="41-the-return-period-of-nao-and-ea-at-500hpa">4.1 The return period of NAO and EA at 500hpa.</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/NAO_return_period.png" alt="NAO_return period">
+Fig 6 The return period of NAO index in the first10 (blue) and last10 (red) years
+<img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/EA_return_period.png" alt="EA_return period">
+Fig 7 The return period of EA index in the first10 (blue) and last10 (red) years.</p>
+<h3 id="42-the-median-return-period-vertical-profile">4.2 the median return period vertical profile</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/NAO_return_period_vetical.png" alt="NAO vertical profile">
+Fig 8 the vertical profile of median return period of NAO index in the first10 (blue) and last10 (red) years.</p>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/EA_return_period_vetical.png" alt="EA vertical profile">
+Fig 9 the vertical profile of median return period of EA index in the first10 (blue) and last10 (red) years.</p>
+<h2 id="5-the-extreme-spatial-patterns">5. The extreme spatial patterns</h2>
+<p>composite analysis of geopotential height data in terms of different extreme types and different periods shows the change in spatial patterns of extreme cases.</p>
+<p>For <strong>NAO</strong>, positive extreme shows tripole pattern in the last10 years, compared to dipole pattern in the first10 years. negative extremes shows typical NAO spatial patterns, but strengthened in amplitude. The clear pattern change of NAO positive extremes may correspond to the non-obvious change of extreme positive extreme counts. Thus, dynamical patterns to generate the index are also excuted.
+For <strong>EA</strong>, both positive and negative extremes show eastward shifts, such shifts are more obvious if dynamical spatial patterns are adopted.</p>
+<h3 id="spatial-pattern-change-z500">spatial pattern change (Z500)</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/whole_extreme_spatial_pattern_Z500.png" alt="spatail_pattern_Z500">
+Fig 10. <strong>Spatial patterns of extremes in a warmer climate.</strong> the composite analysis of 500hpa geopotential height data in terms of different extreme types and periods.</p>
+<h3 id="spatial-pattern-change-section">spatial pattern change (section)</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/all_whole_std/extreme_spatial_pattern_section.png" alt="spatail_pattern_section">
+Fig 11. <strong>sptial patterns of extremes in a warmer climate.</strong> Zonally averaged sptail pattern of extremes (rows) of North Atlantic Oscillation (left) and meridionally averaged spatial patterns of East Atlantic pattern (right).</p>
+<h2 id="6-effects-of-increased-extreme-events-of-teleconnections">6. Effects of increased extreme events of teleconnections</h2>
+<p>Does such kind of change matter? Here we do the composite analysis of temperature and precipitation in terms of different extreme types.</p>
+<p><strong>Surface temperature - NAO extreme types</strong></p>
+<p>Composite analysis of surface temperature in terms of different NAO extreme types. The last column shows the difference.</p>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/wrap_up_aftervoc/NAO_temp.png" alt="NAO_temp">
+Fig 12. <strong>Less warming over Northern Eurasia in winter.</strong> composite analsysis of surface temperature in terms of different extreme types (rows) and different periods (first 2 cols). The last columns shows the difference.</p>
+<p>for NAO extremes, the influence of positive extremes (warm anomalies over northern Eurasia) gets weaker in the last 10 years. The influence of negative extreme events (cold anomalies over northern Eurasia) gets stronger in the last 10 years. Overall, both positive and negative extremes of NAO lead to less warming over northern Eurasia and the adjacent polar regions.</p>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/wrap_up_aftervoc/EA_TEMP.png" alt="EA_temp">
+For EA extremes, both the influences of positive extremes (warm anomalies over Eurasia) and negative extremes (cold anomalies over Eurasia) extend eastward to East Asia.
+Fig 13. <strong>Cooling extends to east Eurasia.</strong> Same as Fig 8. but for East Atlantic pattern.</p>
+<h2 id="5-different-definition-of-extremes-in-the-first10-and-last10-years">5. different definition of extremes in the first10 and last10 years</h2>
+<h3 id="nao-extreme-counts-vertical-profile">NAO extreme counts vertical profile</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/dynamic_self_std/NAO_self.png" alt="NAO_self_dynamic"></p>
+<h3 id="ea-extreme-counts-vertical-profile">EA extreme counts vertical profile</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/dynamic_self_std/EA_self.png" alt="EA_self_dynamic"></p>
+<h3 id="extreme-sptial-patterns">extreme sptial patterns</h3>
+<p><img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/dynamic_self_std/dynamic_self_extreme_pattern_Z500.png" alt="Z500">
+<img src="file:///work/mh0033/m300883/3rdPanel/docs/source/plots/first10_last10/dynamic_self_std/dynamic_self_extreme_pattern_section.png" alt="section"></p>
+<h2 id="6-problems">6. problems</h2>
+<ul>
+<li>papers to read</li>
+</ul>
+
+</body>
+</html>
