@@ -76,3 +76,8 @@ all_last.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind/last_patte
 all_all.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind/all_pattern/all_all_nonstd.nc")
 
 # %%
+# save the spatial pattern for visulazation
+
+# %%
+eof_all_all.to_netcdf("/work/mh0033/m300883/3rdPanel/data/allPattern/ind/first_pattern/all_all_eof.nc")
+# %%
