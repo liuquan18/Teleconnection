@@ -12,7 +12,7 @@ import seaborn as sns
 
 #%%
 # config
-vertical_eof = 'ind'  # independently decompose each altitude levels
+vertical_eof = 'dep'  # independently decompose each altitude levels
 pattern = 'all'       # project onto the 'all' pattern (150 years and 100 ensemble members)
 
 # the name of the folder to store the plots
