@@ -9,6 +9,15 @@ import src.extreme.period_pattern_extreme as extreme
 import importlib
 importlib.reload(extreme)
 
+#%%
+# config
+vertical_eof = 'dep'  # independently decompose each altitude levels
+pattern = 'all'       # project onto the 'all' pattern (150 years and 100 ensemble members)
+
+if vertical_eof == 'ind':
+    independent = True
+elif vertical_eof == 'dep':
+    independent = False
 # %%
 # data
 print("data reading")
@@ -31,7 +40,8 @@ print("decomposing first data...")
 
 # all_fist, all_last and all_all, without the standardarization
 _, all_first, _ = season_eof.season_eof(
-    trop, nmode=2, window=10, fixed_pattern="first", independent=True, standard=False
+    trop, nmode=2, window=10, fixed_pattern=pattern, 
+    independent=independent, standard=False
 )
 
 
