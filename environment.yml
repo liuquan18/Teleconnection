@@ -25,6 +25,7 @@ dependencies:
     - proplot
     - iris
     - scikit
+    - mdutils
     - pip:
         - myst_parser
         - nc-time-axis
