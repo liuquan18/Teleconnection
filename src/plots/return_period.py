@@ -29,6 +29,7 @@ def return_period_scatter(index, mode, hlayers=50000):
         suptitle=f"return period of {mode} index at {hlayers/100:.0f}hpa",
         xlabel="return period / yr",
         ylabel="pc / std",
+        grid=False,
     )
 
     # pos
@@ -111,6 +112,7 @@ def return_period_profile(pos, neg, index, mode):
         xlabel="return period / yr",
         ylabel="gph/hpa",
         ylim=(1000, 200),
+        grid=False,
     )
 
     y = index.hlayers.values / 100
