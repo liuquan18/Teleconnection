@@ -23,7 +23,11 @@ import src.plots.return_period as RP_plots
 
 import src.extreme.period_pattern_extreme as extreme
 import src.EVT.return_period as EVT
+import src.html.create_md as create_md
 
+#%%
+import importlib
+importlib.reload(create_md)
 
 #%%
 class first10_last10_index:
@@ -42,7 +46,11 @@ class first10_last10_index:
         )  # for name/ ind_all_
 
         # the destination for savinig plots
-        self.save_dir = "/work/mh0033/m300883/3rdPanel/docs/source/plots/quick_plots/"
+        self.plot_dir = "/work/mh0033/m300883/3rdPanel/docs/source/plots/quick_plots/"
+
+        # the destination for the doc
+        self.img_dir = "plots/quick_plots/" # relative, no why
+        self.doc_dir = "/work/mh0033/m300883/3rdPanel/docs/source/"
 
         # read data of eof, index and explained variance
         self.eof, self.pc, self.fra = self.read_data()
@@ -79,7 +87,11 @@ class first10_last10_index:
     def sel_500hpa(self):
         eof_500 = self.eof.sel(hlayers=50000)
         pc_500 = self.pc.sel(hlayers=50000)
-        fra_500 = self.fra.sel(hlayers=50000)
+        
+        if self.vertical_eof == 'ind':
+            fra_500 = self.fra.sel(hlayers=50000)
+        elif self.vertical_eof == 'dep':
+            fra_500 = self.fra
 
         return eof_500, pc_500, fra_500
 
@@ -110,7 +122,7 @@ class first10_last10_index:
         )
 
         plt.savefig(
-            self.save_dir + self.prefix + "spatial_pattern_violin500hpa.png", dpi=300
+            self.plot_dir + self.prefix + "spatial_pattern_violin500hpa.png", dpi=300
         )
 
     def plot_500hpa_spatial_hist(self):
@@ -123,13 +135,13 @@ class first10_last10_index:
         )
 
         plt.savefig(
-            self.save_dir + self.prefix + "spatial_pattern_hist500hpa.png", dpi=300
+            self.plot_dir + self.prefix + "spatial_pattern_hist500hpa.png", dpi=300
         )
 
     def violin_profile(self):
         print("ploting the violin profile of NAO and EA index ...")
         fig = violin_plots.plot_vilion(self.first10_pc, self.last10_pc, "whole")
-        plt.savefig(self.save_dir + self.prefix + "violin_profile.png", dpi=300)
+        plt.savefig(self.plot_dir + self.prefix + "violin_profile.png", dpi=300)
 
     def extreme_count_profile(self, mode):
         print(f"ploting the profile of extreme event count of {mode} index ...")
@@ -137,21 +149,21 @@ class first10_last10_index:
             self.first_ext_count, self.last_ext_count, mode=mode, std_type="all"
         )
         plt.savefig(
-            self.save_dir + self.prefix + mode + "_extreme_count_profile.png", dpi=300
+            self.plot_dir + self.prefix + mode + "_extreme_count_profile.png", dpi=300
         )
 
     def return_period_scatter(self, mode, hlayers=50000):
         print("scatter plot of return period")
         fig = RP_plots.return_period_scatter(self.pc, mode, hlayers=hlayers)
         plt.savefig(
-            self.save_dir + self.prefix + mode + "_return_period_scatter.png", dpi=300
+            self.plot_dir + self.prefix + mode + "_return_period_scatter.png", dpi=300
         )
 
     def return_period_profile(self, mode):
         pos, neg = EVT.vertical_return_period(self.pc, mode)
         fig = RP_plots.return_period_profile(pos, neg, self.pc, mode)
         plt.savefig(
-            self.save_dir + self.prefix + mode + "_return_period_profile.png", dpi=300
+            self.plot_dir + self.prefix + mode + "_return_period_profile.png", dpi=300
         )
 
     def plot_all(self):
@@ -165,8 +177,16 @@ class first10_last10_index:
         self.return_period_profile("NAO")
         self.return_period_profile("EA")
 
+    def create_doc(self):
+        create_md.doc_quick_plots(self.doc_dir+self.vertical_eof+self.fixed_pattern,"independent decomposition all-pattern", 
+        self.img_dir,self.prefix)
 
 # %%
 ind_all = first10_last10_index("ind", "all")
 ind_all.plot_all()
+ind_all.create_doc()
+# %%
+dep_all = first10_last10_index("dep","all")
+dep_all.plot_all()
+dep_all.create_doc()
 # %%
