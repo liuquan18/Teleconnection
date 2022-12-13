@@ -21,15 +21,18 @@ import src.plots.vertical_profile as profile_plots
 import src.plots.PDF as pdf_plots
 import src.plots.plot_violin as violin_plots
 import src.plots.spatial_distribution_plot as spatial_dis_plots
-import src.extreme.period_pattern_extreme as extreme
+import src.plots.return_period as RP_plots
 
+import src.extreme.period_pattern_extreme as extreme
+import src.EVT.return_period as EVT
 
 #%%
-from pyextremes import get_extremes, get_return_periods
 
 #%%
 import importlib
+
 importlib.reload(spatial_dis_plots)
+importlib.reload(RP_plots)
 #%%
 class first10_last10_index:
     def __init__(
@@ -37,6 +40,8 @@ class first10_last10_index:
         vertical_eof: str,  # 'ind' or 'dep'
         fixed_pattern: str,  # 'all','first','last'
     ):
+
+        #### some definitions here ####
         self.vertical_eof = vertical_eof
         self.fixed_pattern = fixed_pattern
 
@@ -44,8 +49,14 @@ class first10_last10_index:
             self.vertical_eof + "_" + self.fixed_pattern + "_"
         )  # for name/ ind_all_
 
+        # the destination for savinig plots
+        self.save_dir = (
+            "/work/mh0033/m300883/3rdPanel/docs/source/plots/class_decompose/"
+        )
+
+        # read data of eof, index and explained variance
         self.eof, self.pc, self.fra = self.read_data()
-        self.pc['time'] = self.pc.indexes['time'].to_datetimeindex()
+        self.pc["time"] = self.pc.indexes["time"].to_datetimeindex()
 
         # data of 500 hpa.
         self.eof_500hpa, self.pc_500hpa, self.fra_500hpa = self.sel_500hpa()
@@ -58,11 +69,6 @@ class first10_last10_index:
         # extreme counts
         self.first_ext_count = extreme.period_extreme_count(self.first10_pc)
         self.last_ext_count = extreme.period_extreme_count(self.last10_pc)
-
-        # the destination for savinig plots
-        self.save_dir = (
-            "/work/mh0033/m300883/3rdPanel/docs/source/plots/class_decompose/"
-        )
 
     def read_data(self):
         print("reading data...")
@@ -130,13 +136,25 @@ class first10_last10_index:
         fig = violin_plots.plot_vilion(self.first10_pc, self.last10_pc, "whole")
         plt.savefig(self.save_dir + self.prefix + "violin_profile.png", dpi=300)
 
-
     def extreme_count_profile(self, mode):
         fig = profile_plots.plot_vertical_profile(
             self.first_ext_count, self.last_ext_count, mode=mode, std_type="all"
         )
         plt.savefig(
             self.save_dir + self.prefix + mode + "_extreme_count_profile.png", dpi=300
+        )
+
+    def return_period_scatter(self, mode, hlayers=50000):
+        fig = RP_plots.return_period_scatter(self.pc, mode, hlayers=hlayers)
+        plt.savefig(
+            self.save_dir + self.prefix + mode + "_return_period_scatter.png", dpi=300
+        )
+
+    def return_period_profile(self, mode):
+        pos, neg = EVT.vertical_return_period(self.pc, mode)
+        fig = RP_plots.return_period_profile(pos, neg, self.pc, mode)
+        plt.savefig(
+            self.save_dir + self.prefix + mode + "_return_period_profile.png", dpi=300
         )
 
 
