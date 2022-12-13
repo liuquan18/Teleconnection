@@ -87,7 +87,7 @@ class first10_last10_index:
     def sel_500hpa(self):
         eof_500 = self.eof.sel(hlayers=50000)
         pc_500 = self.pc.sel(hlayers=50000)
-        
+
         if self.vertical_eof == 'ind':
             fra_500 = self.fra.sel(hlayers=50000)
         elif self.vertical_eof == 'dep':
@@ -178,7 +178,7 @@ class first10_last10_index:
         self.return_period_profile("EA")
 
     def create_doc(self):
-        create_md.doc_quick_plots(self.doc_dir+self.vertical_eof+self.fixed_pattern,"independent decomposition all-pattern", 
+        create_md.doc_quick_plots(self.doc_dir+self.vertical_eof+"_" + self.fixed_pattern,"independent decomposition all-pattern", 
         self.img_dir,self.prefix)
 
 # %%
