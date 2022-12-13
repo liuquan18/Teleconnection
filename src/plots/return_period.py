@@ -97,6 +97,8 @@ def return_period_scatter(index, mode, hlayers=50000):
         ix.set_ylabel(None)
 
     axes[0].legend(loc="lr", ncols=1)
+    axes[0].format(title = "pos")
+    axes[1].format(title = 'neg')
 
 
 def return_period_profile(pos, neg, index, mode):
@@ -132,3 +134,6 @@ def return_period_profile(pos, neg, index, mode):
     for ax in axes:
         ax.spines["right"].set_visible(False)
         ax.spines["top"].set_visible(False)
+        
+    axes[0].format(title = "pos")
+    axes[1].format(title = 'neg')

@@ -15,8 +15,6 @@ import matplotlib.pyplot as plt
 import proplot as pplt
 import seaborn as sns
 
-
-#%%
 import src.plots.vertical_profile as profile_plots
 import src.plots.PDF as pdf_plots
 import src.plots.plot_violin as violin_plots
@@ -44,9 +42,7 @@ class first10_last10_index:
         )  # for name/ ind_all_
 
         # the destination for savinig plots
-        self.save_dir = (
-            "/work/mh0033/m300883/3rdPanel/docs/source/plots/quick_plots/"
-        )
+        self.save_dir = "/work/mh0033/m300883/3rdPanel/docs/source/plots/quick_plots/"
 
         # read data of eof, index and explained variance
         self.eof, self.pc, self.fra = self.read_data()
@@ -122,7 +118,9 @@ class first10_last10_index:
         sptail maps and violin plots of indexes.
         """
         print("ploting spatial patterns map and histgram of NAO and EA index ...")
-        fig = spatial_dis_plots.spatialMap_hist(self.eof_500hpa, self.pc_500hpa_df)
+        fig = spatial_dis_plots.spatialMap_hist(
+            self.eof_500hpa, self.pc_500hpa_df, self.fra_500hpa
+        )
 
         plt.savefig(
             self.save_dir + self.prefix + "spatial_pattern_hist500hpa.png", dpi=300
@@ -156,5 +154,19 @@ class first10_last10_index:
             self.save_dir + self.prefix + mode + "_return_period_profile.png", dpi=300
         )
 
+    def plot_all(self):
+        self.plot_500hpa_spatial_violin()
+        self.plot_500hpa_spatial_hist()
+        self.violin_profile()
+        self.extreme_count_profile("NAO")
+        self.extreme_count_profile("EA")
+        self.return_period_scatter("NAO")
+        self.return_period_scatter("EA")
+        self.return_period_profile("NAO")
+        self.return_period_profile("EA")
 
+
+# %%
+ind_all = first10_last10_index("ind", "all")
+ind_all.plot_all()
 # %%
