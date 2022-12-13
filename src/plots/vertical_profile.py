@@ -44,6 +44,7 @@ def plot_vertical_profile(first_ec, last_ec, mode, std_type):
         xminorticks="null",
         yminorticks="null",
         suptitle=f"{mode} extreme event counts standardizised with {std_type}",
+        grid = False,
     )
 
     titles = ["pos", "neg", "diff"]
