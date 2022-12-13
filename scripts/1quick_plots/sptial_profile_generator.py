@@ -26,13 +26,7 @@ import src.plots.return_period as RP_plots
 import src.extreme.period_pattern_extreme as extreme
 import src.EVT.return_period as EVT
 
-#%%
 
-#%%
-import importlib
-
-importlib.reload(spatial_dis_plots)
-importlib.reload(RP_plots)
 #%%
 class first10_last10_index:
     def __init__(
@@ -51,7 +45,7 @@ class first10_last10_index:
 
         # the destination for savinig plots
         self.save_dir = (
-            "/work/mh0033/m300883/3rdPanel/docs/source/plots/class_decompose/"
+            "/work/mh0033/m300883/3rdPanel/docs/source/plots/quick_plots/"
         )
 
         # read data of eof, index and explained variance
@@ -112,8 +106,9 @@ class first10_last10_index:
 
     def plot_500hpa_spatial_violin(self):
         """
-        sptail maps and violin plots of indexes.
+        sptail maps and violin plots of indexes (NAO and EA).
         """
+        print("ploting spatial patterns and violin plot of NAO and EA index ...")
         fig = spatial_dis_plots.spatialMap_violin(
             self.eof_500hpa, self.pc_500hpa_df, self.fra_500hpa
         )
@@ -126,6 +121,7 @@ class first10_last10_index:
         """
         sptail maps and violin plots of indexes.
         """
+        print("ploting spatial patterns map and histgram of NAO and EA index ...")
         fig = spatial_dis_plots.spatialMap_hist(self.eof_500hpa, self.pc_500hpa_df)
 
         plt.savefig(
@@ -133,10 +129,12 @@ class first10_last10_index:
         )
 
     def violin_profile(self):
+        print("ploting the violin profile of NAO and EA index ...")
         fig = violin_plots.plot_vilion(self.first10_pc, self.last10_pc, "whole")
         plt.savefig(self.save_dir + self.prefix + "violin_profile.png", dpi=300)
 
     def extreme_count_profile(self, mode):
+        print(f"ploting the profile of extreme event count of {mode} index ...")
         fig = profile_plots.plot_vertical_profile(
             self.first_ext_count, self.last_ext_count, mode=mode, std_type="all"
         )
@@ -145,6 +143,7 @@ class first10_last10_index:
         )
 
     def return_period_scatter(self, mode, hlayers=50000):
+        print("scatter plot of return period")
         fig = RP_plots.return_period_scatter(self.pc, mode, hlayers=hlayers)
         plt.savefig(
             self.save_dir + self.prefix + mode + "_return_period_scatter.png", dpi=300

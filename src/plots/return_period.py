@@ -107,7 +107,7 @@ def return_period_profile(pos, neg, index, mode):
         xlim=(0, 5),
         xminorlocator="null",
         yminorlocator="null",
-        suptitle=f"return period of {mode} index at 500hpa",
+        suptitle=f"media return period of {mode} index",
         xlabel="return period / yr",
         ylabel="gph/hpa",
         ylim=(1000, 200),
