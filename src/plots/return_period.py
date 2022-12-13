@@ -128,3 +128,7 @@ def return_period_profile(pos, neg, index, mode):
 
     axes[0].legend(loc="lr", ncols=1)
     axes[1].legend(loc="lr", ncols=1)
+
+    for ax in axes:
+        ax.spines["right"].set_visible(False)
+        ax.spines["top"].set_visible(False)
