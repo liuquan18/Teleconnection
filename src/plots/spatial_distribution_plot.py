@@ -64,7 +64,7 @@ def spatialMap_violin(eof_500hpa, index_500hpa, fra_500hpa):
 
 # %%
 # plot
-def spatialMap_hist(eof_500hpa, index_500hpa):
+def spatialMap_hist(eof_500hpa, index_500hpa, fra_500hpa):
     """
     spatial maps and hist of index
     """
