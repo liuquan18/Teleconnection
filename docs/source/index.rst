@@ -9,14 +9,14 @@ Welcome to thirdPanel's documentation!
 .. toctree::
    :maxdepth: 2
 
-   .. Analysis_process
-   .. functions
-   .. 3rd Panel meeting <result>
-   .. first10_last10_dynamic_pattern
-   .. first10_last10_all_pattern
-   .. climate influence dep <visiting_Athens>
-   .. climate influence ind <climate_influence_ind>
-   .. problems   
+   Analysis_process
+   functions
+   3rd Panel meeting <result>
+   first10_last10_dynamic_pattern
+   first10_last10_all_pattern
+   climate influence dep <visiting_Athens>
+   climate influence ind <climate_influence_ind>
+   problems   
    
    independently decomposed <ind_all>
    dependently decomposed <dep_all>
