@@ -36,11 +36,11 @@ def composite_spatial_pattern(
     for i, extr_type in enumerate(extr_types):
         for j, mode in enumerate(modes):  # one row
 
-            first = first.sel(mode=mode, extr_type=extr_type, hlayers=hlayers)
-            last = last.sel(mode=mode, extr_type=extr_type, hlayers=hlayers)
+            first_single = first.sel(mode=mode, extr_type=extr_type, hlayers=hlayers)
+            last_single = last.sel(mode=mode, extr_type=extr_type, hlayers=hlayers)
 
             first_m = axes[i, j].contourf(
-                first,
+                first_single,
                 x="lon",
                 y="lat",
                 levels=levels,
@@ -49,7 +49,7 @@ def composite_spatial_pattern(
                 cmap="RdBu_r",
             )
             axes[i, j].contour(
-                last,
+                last_single,
                 x="lon",
                 y="lat",
                 color="gray8",
