@@ -15,18 +15,24 @@ import matplotlib.pyplot as plt
 import proplot as pplt
 import seaborn as sns
 
+# functions to plot
 import src.plots.vertical_profile as profile_plots
 import src.plots.PDF as pdf_plots
 import src.plots.plot_violin as violin_plots
 import src.plots.spatial_distribution_plot as spatial_dis_plots
 import src.plots.return_period as RP_plots
+import src.plots.composite_spatial_pattern as composite_plots
 
 import src.extreme.period_pattern_extreme as extreme
 import src.EVT.return_period as EVT
+import src.composite.field_composite as composite
 import src.html.create_md as create_md
+import src.Teleconnection.tools as tools
+
 
 #%%
 import importlib
+
 importlib.reload(create_md)
 
 #%%
@@ -49,11 +55,11 @@ class first10_last10_index:
         self.plot_dir = "/work/mh0033/m300883/3rdPanel/docs/source/plots/quick_plots/"
 
         # the destination for the doc
-        self.img_dir = "plots/quick_plots/" # relative, no why
+        self.img_dir = "plots/quick_plots/"  # relative, no why
         self.doc_dir = "/work/mh0033/m300883/3rdPanel/docs/source/"
 
         # read data of eof, index and explained variance
-        self.eof, self.pc, self.fra = self.read_data()
+        self.eof, self.pc, self.fra = self.read_eof_data()
         self.pc["time"] = self.pc.indexes["time"].to_datetimeindex()
 
         # data of 500 hpa.
@@ -68,8 +74,11 @@ class first10_last10_index:
         self.first_ext_count = extreme.period_extreme_count(self.first10_pc)
         self.last_ext_count = extreme.period_extreme_count(self.last10_pc)
 
-    def read_data(self):
-        print("reading data...")
+        # read the original gph data to do the composite spatial pattern
+        self.gph = self.read_gph_data()
+
+    def read_eof_data(self):
+        print("reading eof result data...")
         odir = (
             "/work/mh0033/m300883/3rdPanel/data/class_decompose/"
             + self.fixed_pattern
@@ -84,13 +93,33 @@ class first10_last10_index:
         fra = xr.open_dataset(odir + self.prefix + "fra.nc").exp_var
         return eof, pc, fra
 
+    def read_gph_data(self):
+        print("reading gph data...")
+        # data
+        allens = xr.open_dataset(
+            "/work/mh0033/m300883/transition/gr19/gphSeason/allens_season_time.nc"
+        )
+        # split ens
+        splitens = tools.split_ens(allens)
+
+        # demean ens-mean
+        demean = splitens - splitens.mean(dim="ens")
+
+        # select traposphere
+        trop = demean.sel(hlayers=slice(20000, 100000))
+
+        trop = trop.var156
+
+        trop = tools.standardize(trop)
+        return trop
+
     def sel_500hpa(self):
         eof_500 = self.eof.sel(hlayers=50000)
         pc_500 = self.pc.sel(hlayers=50000)
 
-        if self.vertical_eof == 'ind':
+        if self.vertical_eof == "ind":
             fra_500 = self.fra.sel(hlayers=50000)
-        elif self.vertical_eof == 'dep':
+        elif self.vertical_eof == "dep":
             fra_500 = self.fra
 
         return eof_500, pc_500, fra_500
@@ -166,6 +195,23 @@ class first10_last10_index:
             self.plot_dir + self.prefix + mode + "_return_period_profile.png", dpi=300
         )
 
+    def extreme_spatial_pattern(self, hlayers=100000):
+        # do the composite of gph to get the extreme sptial patterns
+        first_sptial_pattern = composite.Tel_field_composite(self.first10_pc, self.gph)
+        last_sptial_pattern = composite.Tel_field_composite(self.first10_pc, self.gph)
+        fig = composite_plots.composite_gph(
+            first_sptial_pattern,
+            last_sptial_pattern,
+            levels=np.arange(-3, 3.1, 0.5),
+            hlayers=hlayers,
+        )
+        plt.savefig(
+            self.plot_dir
+            + self.prefix
+            + f"extreme_spatial_pattern_{hlayers/100:.0f}hpa.png",
+            dpi=300,
+        )
+
     def plot_all(self):
         self.plot_500hpa_spatial_violin()
         self.plot_500hpa_spatial_hist()
@@ -178,15 +224,20 @@ class first10_last10_index:
         self.return_period_profile("EA")
 
     def create_doc(self):
-        create_md.doc_quick_plots(self.doc_dir+self.vertical_eof+"_" + self.fixed_pattern,"independent decomposition all-pattern", 
-        self.img_dir,self.prefix)
+        create_md.doc_quick_plots(
+            self.doc_dir + self.vertical_eof + "_" + self.fixed_pattern,
+            "independent decomposition all-pattern",
+            self.img_dir,
+            self.prefix,
+        )
+
 
 # %%
 ind_all = first10_last10_index("ind", "all")
 ind_all.plot_all()
 ind_all.create_doc()
 # %%
-dep_all = first10_last10_index("dep","all")
+dep_all = first10_last10_index("dep", "all")
 dep_all.plot_all()
 dep_all.create_doc()
 # %%
