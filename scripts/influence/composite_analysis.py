@@ -9,7 +9,7 @@ import seaborn as sns
 import xarray as xr
 
 import src.composite.composite as scp
-import src.plots.composite_plots as spcp
+import plots.composite_var as spcp
 
 importlib.reload(spcp)
 importlib.reload(scp)

@@ -11,7 +11,7 @@ import xarray as xr
 
 import composite.composite as scp
 import plots.eof_plots as sept
-import src.plots.composite_plots as spcp
+import plots.composite_var as spcp
 import src.Teleconnection.index_statistic as sis
 import src.Teleconnection.pattern_statistic as sps
 import src.Teleconnection.spatial_pattern as ssp

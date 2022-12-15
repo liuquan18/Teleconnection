@@ -19,7 +19,7 @@ from cartopy.util import add_cyclic_point
 
 
 import src.composite.composite as scp
-import src.plots.composite_plots as spcp
+import plots.composite_var as spcp
 import src.plots.utils as spu
 
 importlib.reload(spcp)

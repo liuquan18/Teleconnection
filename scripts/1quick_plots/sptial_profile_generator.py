@@ -77,6 +77,7 @@ class first10_last10_index:
         # read the original gph data to do the composite spatial pattern
         self.gph = self.read_gph_data()
 
+
     def read_eof_data(self):
         print("reading eof result data...")
         odir = (
@@ -211,6 +212,31 @@ class first10_last10_index:
             + f"extreme_spatial_pattern_{hlayers/100:.0f}hpa.png",
             dpi=300,
         )
+
+    def read_var(self,var):
+        """
+        read the tsurf or wind, precipitation for composite analysis
+        """
+        data_path = (
+        "/work/mh0033/m300883/3rdPanel/data/influence/"
+        + var
+        + "/"
+        + "onepct_1850-1999_ens_1-100."
+        + var
+        + ".nc"
+        )
+        var_data = xr.open_dataset(data_path)[var]
+        return var_data
+
+
+    def composite_tsurf(self,var, hlayers = 50000):
+        var_data = self.read_var(var)
+        first_index = self.first10_pc.sel(hlayers = hlayers)
+        last_index = self.last10_pc.sel(hlayers = hlayers)
+
+        first_var = composite.Tel_field_composite(first_index,var_data)
+        last_var = composite.Tel_field_composite(last_index,var_data)
+
 
     
 
