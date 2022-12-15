@@ -2,10 +2,11 @@ import cartopy.crs as ccrs
 import proplot as pplt
 import src.plots.utils as utils
 
-def composite_var(var,first,last,mode,unit=None):
 
-    if var == 'tsurf':
-        unit = 'K'
+def composite_var(var, first, last, mode, unit=None):
+
+    if var == "tsurf":
+        unit = "K"
 
     first = utils.erase_white_line(first)
     last = utils.erase_white_line(last)
@@ -33,9 +34,9 @@ def composite_var(var,first,last,mode,unit=None):
         coast=True,
         coastlinewidth=0.5,
         coastcolor="gray7",
-        toplabels=  ["first10", "last10", "last10 - first10"],
+        toplabels=["first10", "last10", "last10 - first10"],
         leftlabels=("pos", "neg"),
-        suptitle = f"Change in influence of extreme {mode} on {var}",
+        suptitle=f"Change in influence of extreme {mode} on {var}",
     )
 
     extr_types = ["pos", "neg"]
@@ -43,7 +44,7 @@ def composite_var(var,first,last,mode,unit=None):
         for j, data in enumerate(data_all):  # one row
 
             first_m = axes[i, j].contourf(
-                data.sel(extr_type = extr_type),
+                data.sel(extr_type=extr_type),
                 x="lon",
                 y="lat",
                 # levels=levels,

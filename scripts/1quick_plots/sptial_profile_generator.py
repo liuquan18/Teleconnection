@@ -268,7 +268,7 @@ class first10_last10_index:
     def create_doc(self):
         create_md.doc_quick_plots(
             self.doc_dir + self.vertical_eof + "_" + self.fixed_pattern,
-            "independent decomposition all-pattern",
+            f"{self.vertical_eof} decomposition {self.fixed_pattern}-pattern quick plots",
             self.img_dir,
             self.prefix,
         )
