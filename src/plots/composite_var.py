@@ -2,7 +2,11 @@ import cartopy.crs as ccrs
 import proplot as pplt
 import src.plots.utils as utils
 
-def composite_var(var,first,last,mode):
+def composite_var(var,first,last,mode,unit=None):
+
+    if var == 'tsurf':
+        unit = 'K'
+
     first = utils.erase_white_line(first)
     last = utils.erase_white_line(last)
 
@@ -48,4 +52,4 @@ def composite_var(var,first,last,mode):
                 cmap="RdBu_r",
             )
 
-    fig.colorbar(first_m, loc="r", pad=3, title="gph/std")
+    fig.colorbar(first_m, loc="r", pad=3, title=f"{var}/{unit}")
