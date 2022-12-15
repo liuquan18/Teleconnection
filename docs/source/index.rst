@@ -17,7 +17,6 @@ Welcome to thirdPanel's documentation!
    climate influence dep <visiting_Athens>
    climate influence ind <climate_influence_ind>
    problems   
-   
    independently decomposed <ind_all>
    dependently decomposed <dep_all>
 
