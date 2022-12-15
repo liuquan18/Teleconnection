@@ -201,7 +201,7 @@ class first10_last10_index:
     def extreme_spatial_pattern(self, hlayers=100000):
         # do the composite of gph to get the extreme sptial patterns
         first_sptial_pattern = composite.Tel_field_composite(self.first10_pc, self.gph)
-        last_sptial_pattern = composite.Tel_field_composite(self.first10_pc, self.gph)
+        last_sptial_pattern = composite.Tel_field_composite(self.last10_pc, self.gph)
         fig = composite_spatial_pattern.composite_spatial_pattern(
             first_sptial_pattern,
             last_sptial_pattern,
