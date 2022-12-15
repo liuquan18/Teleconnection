@@ -1,70 +1,61 @@
+import proplot as pplt
+import numpy as np
 import cartopy.crs as ccrs
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-import src.plots.utils as utils
 
 
-def composite_gph(first, last, levels, hlayers=100000):
+def composite_spatial_pattern(
+    first, last, levels=np.arange(-2.0, 2.1, 0.4), hlayers=100000
+):
     """
     composite map of first10 and last10 years, contourf and contour
     respectively.
     """
-    proj = ccrs.Orthographic(central_longitude=-20, central_latitude=60)
-    fig, axes = plt.subplots(
-        2,
-        2,
-        dpi=300,
-        subplot_kw={"projection": proj},
+    fig, axes = pplt.subplots(
+        space=0,
+        refwidth="25em",
+        wspace=3,
+        hspace=3,
+        proj="ortho",
+        proj_kw=({"lon_0": -20, "lat_0": 60}),
+        nrows=2,
+        ncols=2,
+    )
+    axes.format(
+        latlines=20,
+        lonlines=30,
+        coast=True,
+        coastlinewidth=0.5,
+        coastcolor="gray7",
+        toplabels=("NAO", "EA"),
+        leftlabels=("pos", "neg"),
+        suptitle="Change in spatial patterns for extremes of NAO and EA",
     )
 
-    periods = ["first10", "last10"]
-    modes = ["NAO", "EA"]
-    extr_type = ["pos", "neg"]
-    levels = levels
+    modes = ["NAO", "EA"]  # different cols
+    extr_types = ["pos", "neg"]
+    for i, extr_type in enumerate(extr_types):
+        for j, mode in enumerate(modes):  # one row
 
-    shadings = []
-    for i, row in enumerate(axes):  # for extr_type
-        for j, col in enumerate(row):  # for modes
-            data_first = first.sel(
-                extr_type=extr_type[i], mode=modes[j], hlayers=hlayers
-            )
-            data_last = last.sel(extr_type=extr_type[i], mode=modes[j], hlayers=hlayers)
+            first = first.sel(mode=mode, extr_type=extr_type, hlayers=hlayers)
+            last = last.sel(mode=mode, extr_type=extr_type, hlayers=hlayers)
 
-            lats = data_first.lat
-            lons = data_first.lon
-
-            imf = col.contourf(
-                lons,
-                lats,
-                data_first,
+            first_m = axes[i, j].contourf(
+                first,
+                x="lon",
+                y="lat",
                 levels=levels,
                 extend="both",
                 transform=ccrs.PlateCarree(),
                 cmap="RdBu_r",
             )
-            shadings.append(imf)
-            with mpl.rc_context({"lines.linewidth": 0.6}):
-                iml = col.contour(
-                    lons,
-                    lats,
-                    data_last,
-                    levels=levels,
-                    extend="both",
-                    colors="k",
-                    linewidth=0.1,
-                    transform=ccrs.PlateCarree(),
-                )
+            axes[i, j].contour(
+                last,
+                x="lon",
+                y="lat",
+                color="gray8",
+                nozero=True,
+                labels=True,
+                labels_kw={"weight": "bold"},
+            )
 
-            col.set_title(f"{modes[j]}  {extr_type[i]}")
-            utils.buildax(col, alpha_grid=0.3, alpha_coast=0.3)
-
-    fig.subplots_adjust(hspace=0.3, wspace=0.1, right=0.8)
-    cbar_ax = fig.add_axes([0.85, 0.25, 0.03, 0.5])
-    cbar = fig.colorbar(
-        imf,
-        cax=cbar_ax,
-        label="gph / std",
-    )
-
-    plt.show()
+    fig.colorbar(first_m, loc="r", pad=3, title="gph/std")
