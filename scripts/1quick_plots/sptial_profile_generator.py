@@ -199,10 +199,10 @@ class first10_last10_index:
         # do the composite of gph to get the extreme sptial patterns
         first_sptial_pattern = composite.Tel_field_composite(self.first10_pc, self.gph)
         last_sptial_pattern = composite.Tel_field_composite(self.first10_pc, self.gph)
-        fig = composite_plots.composite_gph(
+        fig = composite_plots.composite_spatial_pattern(
             first_sptial_pattern,
             last_sptial_pattern,
-            levels=np.arange(-3, 3.1, 0.5),
+            levels=np.arange(-2, 2.1, 0.4),
             hlayers=hlayers,
         )
         plt.savefig(
@@ -211,6 +211,8 @@ class first10_last10_index:
             + f"extreme_spatial_pattern_{hlayers/100:.0f}hpa.png",
             dpi=300,
         )
+
+    
 
     def plot_all(self):
         self.plot_500hpa_spatial_violin()
@@ -222,6 +224,7 @@ class first10_last10_index:
         self.return_period_scatter("EA")
         self.return_period_profile("NAO")
         self.return_period_profile("EA")
+        self.extreme_spatial_pattern(hlayers=100000)
 
     def create_doc(self):
         create_md.doc_quick_plots(
