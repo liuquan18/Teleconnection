@@ -55,6 +55,7 @@ def composite_spatial_pattern(
                 color="gray8",
                 nozero=True,
                 labels=True,
+                levels=np.delete(levels, int((len(levels) - 1) / 2)),
                 labels_kw={"weight": "bold"},
             )
 
