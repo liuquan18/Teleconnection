@@ -1,6 +1,5 @@
 #%%
 from mdutils.mdutils import MdUtils
-from mdutils import Html
 
 #%%
 def doc_quick_plots(file_name, title, plot_dir, prefix):
