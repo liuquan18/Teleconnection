@@ -107,3 +107,5 @@ def doc_quick_plots(file_name, title, plot_dir, prefix):
     # Create a table of contents
     qp.new_table_of_contents(table_title="Contents", depth=2)
     qp.create_md_file()
+
+# %%

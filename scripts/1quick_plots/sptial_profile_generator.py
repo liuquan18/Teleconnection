@@ -113,6 +113,7 @@ class first10_last10_index:
         trop = trop.var156
 
         trop = tools.standardize(trop)
+        trop['time'] = trop.indexes['time'].to_datetimeindex() # the same time type as index
         return trop
 
     def sel_500hpa(self):
