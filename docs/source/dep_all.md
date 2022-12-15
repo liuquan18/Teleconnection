@@ -1,6 +1,6 @@
 
-independent decomposition all-pattern
-=====================================
+dep decomposition all-pattern quick plots
+=========================================
 
 Contents
 ========
@@ -13,6 +13,10 @@ Contents
 	* [500hpa scatter](#500hpa-scatter)
 	* [NAO profile](#nao-profile)
 	* [EA profile](#ea-profile)
+* [extreme spatial patterns](#extreme-spatial-patterns)
+* [Influence on surface temperature](#influence-on-surface-temperature)
+	* [NAO index at 500hpa](#nao-index-at-500hpa)
+	* [EA index at 500hpa](#ea-index-at-500hpa)
 
 # statistical overview
 
@@ -48,3 +52,14 @@ the return period of NAO and EA at 500hpa in different periods
 ## EA profile
   
 ![EA profile return period](plots/quick_plots/dep_all_EA_return_period_profile.png)
+# extreme spatial patterns
+  
+![extreme sptial pattern](plots/quick_plots/dep_all_extreme_spatial_pattern_1000hpa.png)
+# Influence on surface temperature
+
+## NAO index at 500hpa
+  
+![tsurf](plots/quick_plots/dep_all_composite_tsurf_NAO.png)
+## EA index at 500hpa
+  
+![tsurf](plots/quick_plots/dep_all_composite_tsurf_EA.png)
