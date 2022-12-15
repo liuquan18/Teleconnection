@@ -86,6 +86,23 @@ def doc_quick_plots(file_name, title, plot_dir, prefix):
         )
     )
 
+    qp.new_header(level=1, title="Influence on surface temperature")
+    
+    qp.new_header(level = 2, title = 'NAO index at 500hpa')
+    qp.new_line(
+        qp.new_inline_image(
+            text="tsurf",
+            path=plot_dir + prefix + "composite_tsurf_NAO.png"
+        )
+    )
+
+    qp.new_header(level = 2, title = 'EA index at 500hpa')
+    qp.new_line(
+        qp.new_inline_image(
+            text="tsurf",
+            path=plot_dir + prefix + "composite_tsurf_EA.png"
+        )
+    )
 
     # Create a table of contents
     qp.new_table_of_contents(table_title="Contents", depth=2)

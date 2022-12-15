@@ -21,7 +21,8 @@ import src.plots.PDF as pdf_plots
 import src.plots.plot_violin as violin_plots
 import src.plots.spatial_distribution_plot as spatial_dis_plots
 import src.plots.return_period as RP_plots
-import src.plots.composite_spatial_pattern as composite_plots
+import src.plots.composite_spatial_pattern as composite_spatial_pattern
+import src.plots.composite_var as composite_var
 
 import src.extreme.period_pattern_extreme as extreme
 import src.EVT.return_period as EVT
@@ -200,7 +201,7 @@ class first10_last10_index:
         # do the composite of gph to get the extreme sptial patterns
         first_sptial_pattern = composite.Tel_field_composite(self.first10_pc, self.gph)
         last_sptial_pattern = composite.Tel_field_composite(self.first10_pc, self.gph)
-        fig = composite_plots.composite_spatial_pattern(
+        fig = composite_spatial_pattern.composite_spatial_pattern(
             first_sptial_pattern,
             last_sptial_pattern,
             levels=np.arange(-2, 2.1, 0.4),
@@ -229,16 +230,25 @@ class first10_last10_index:
         return var_data
 
 
-    def composite_tsurf(self,var, hlayers = 50000):
+    def composite_var(self,var, mode,hlayers = 50000):
+
         var_data = self.read_var(var)
+        var_data = var_data-var_data.mean(dim = 'ens') # demean ens mean
+
         first_index = self.first10_pc.sel(hlayers = hlayers)
         last_index = self.last10_pc.sel(hlayers = hlayers)
 
         first_var = composite.Tel_field_composite(first_index,var_data)
         last_var = composite.Tel_field_composite(last_index,var_data)
 
+        fig = composite_var.composite_var(var,first_var, last_var,mode )
+        plt.savefig(
+            self.plot_dir
+            + self.prefix
+            + f"composite_{var}_{mode}.png",
+            dpi=300,
+        )
 
-    
 
     def plot_all(self):
         self.plot_500hpa_spatial_violin()
@@ -251,6 +261,8 @@ class first10_last10_index:
         self.return_period_profile("NAO")
         self.return_period_profile("EA")
         self.extreme_spatial_pattern(hlayers=100000)
+        self.composite_var('tsurf','NAO',hlayers=50000)
+        self.composite_var('tsurf','EA', hlayers = 50000)
 
     def create_doc(self):
         create_md.doc_quick_plots(
