@@ -49,8 +49,7 @@ def return_period_scatter(index, mode, hlayers=50000):
         data=first10_median_pos,
         color="k",
         label="first10 median",
-        marker="+",
-        s=80,
+        marker="P",
     )
     axes[0].scatter(
         x="return period",
@@ -58,8 +57,7 @@ def return_period_scatter(index, mode, hlayers=50000):
         data=last10_median_pos,
         color="k",
         label="last10 median",
-        marker="*",
-        s=80,
+        marker="X",
     )
 
     # neg
