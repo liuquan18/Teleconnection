@@ -37,16 +37,13 @@ def return_period_scatter(index, mode, hlayers=50000):
         x="return period",
         y="pc",
         data=first10_all_pos,
-        color="gray7",
-        marker="+",
         label="first10",
     )
     axes[0].scatter(
         x="return period",
         y="pc",
         data=last10_all_pos,
-        color="k",
-        marker=(5, 2),
+        color="r",
         label="last10",
     )
 
@@ -73,16 +70,13 @@ def return_period_scatter(index, mode, hlayers=50000):
         x="return period",
         y="pc",
         data=first10_all_neg,
-        color="gray7",
-        marker="+",
         label="first10",
     )
     axes[1].scatter(
         x="return period",
         y="pc",
         data=last10_all_neg,
-        color="k",
-        marker=(5,2),
+        color="r",
         label="last10",
     )
     # neg media
@@ -90,7 +84,7 @@ def return_period_scatter(index, mode, hlayers=50000):
         x="return period",
         y="pc",
         data=first10_median_neg,
-        color="gray7",
+        color="k",
         label="first10 median",
         marker="P",
     )
