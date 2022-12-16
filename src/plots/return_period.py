@@ -33,16 +33,24 @@ def return_period_scatter(index, mode, hlayers=50000):
     )
 
     # pos
-    axes[0].scatter(x="return period", y="pc", data=first10_all_pos, label="first10")
+    axes[0].scatter(
+        x="return period",
+        y="pc",
+        data=first10_all_pos,
+        color="gray7",
+        marker="+",
+        label="first10",
+    )
     axes[0].scatter(
         x="return period",
         y="pc",
         data=last10_all_pos,
         color="k",
-        marker="+",
+        marker=(5, 2),
         label="last10",
     )
 
+    # pos media
     axes[0].scatter(
         x="return period",
         y="pc",
@@ -57,25 +65,32 @@ def return_period_scatter(index, mode, hlayers=50000):
         data=last10_median_pos,
         color="k",
         label="last10 median",
-        marker="X",
+        marker="*",
     )
 
     # neg
-    axes[1].scatter(x="return period", y="pc", data=first10_all_neg, label="first10")
+    axes[1].scatter(
+        x="return period",
+        y="pc",
+        data=first10_all_neg,
+        color="gray7",
+        marker="+",
+        label="first10",
+    )
     axes[1].scatter(
         x="return period",
         y="pc",
         data=last10_all_neg,
         color="k",
-        marker="x",
+        marker=(5,2),
         label="last10",
     )
-
+    # neg media
     axes[1].scatter(
         x="return period",
         y="pc",
         data=first10_median_neg,
-        color="k",
+        color="gray7",
         label="first10 median",
         marker="P",
     )
@@ -85,7 +100,7 @@ def return_period_scatter(index, mode, hlayers=50000):
         data=last10_median_neg,
         color="k",
         label="last10 median",
-        marker="X",
+        marker="*",
     )
 
     # a zoom out for NAO very extreme events.
