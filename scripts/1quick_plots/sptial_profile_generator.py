@@ -273,13 +273,13 @@ class first10_last10_index:
             self.prefix,
         )
 
-
-# %%
-ind_all = first10_last10_index("ind", "all")
-ind_all.plot_all()
-ind_all.create_doc()
-# %%
-dep_all = first10_last10_index("dep", "all")
-dep_all.plot_all()
-dep_all.create_doc()
-# %%
+if __name__ == "__main__":
+    # %%
+    ind_all = first10_last10_index("ind", "all")
+    ind_all.plot_all()
+    ind_all.create_doc()
+    # %%
+    dep_all = first10_last10_index("dep", "all")
+    dep_all.plot_all()
+    dep_all.create_doc()
+    # %%
